@@ -285,7 +285,7 @@ public function update(Request $request)
                 ->with('error', 'Cannot delete its used.');
         }
 
-    if (!canDeleteRecord('emp_avance_pay', 'account_no', $id)) {
+    if (!canDeleteRecord('employee_advance_payments', 'account_no', $id)) {
             return redirect()
                 ->route('BankAcc')
                 ->with('error', 'Cannot delete its used.');

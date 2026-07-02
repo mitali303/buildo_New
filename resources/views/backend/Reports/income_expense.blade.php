@@ -36,7 +36,7 @@
     }
 }
 </style>
-
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <main class="content">
     <div class="container-fluid p-0">
 
@@ -59,6 +59,7 @@
             <div class="col-md-3 align-self-end">
                 <button class="btn btn-primary" id="filter">Show Report</button>
                 <button class="btn btn-primary" onclick="printReport()">Print</button>
+                
             </div>
         </div>
 
@@ -86,7 +87,12 @@
     </div>
 </main>
 @endsection
-
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 @push('scripts')
 <script>
 $(document).ready(function () {
@@ -97,6 +103,14 @@ $(document).ready(function () {
         ordering: false,
         paging: false,
         searching: false,
+        dom: 'Bfrtip', 
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fa fa-file-excel"></i> Export Excel',
+                title: 'Income Expense Report'
+            }
+        ],
         ajax: {
             url: "{{ route('report.income_expense') }}",
             data: function (d) {
@@ -116,7 +130,8 @@ $(document).ready(function () {
             { data: 'payment_details' },
             { data: 'debit', render: function(data){ return data; } },
             { data: 'credit', render: function(data){ return data; } }
-        ]
+        ],
+        
     });
 
     $('#filter').on('click', function () {

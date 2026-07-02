@@ -5,8 +5,6 @@ namespace App\Models\backend;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\backend\Staff;
-
 
 class EmployeeAdvance extends Model
 {
@@ -15,12 +13,12 @@ class EmployeeAdvance extends Model
     protected $table = 'employee_advance';
 
     protected $fillable = [
-        'record_no', 'ClientID', 'Date', 'emp_id','advance','emi_amount','total_installments', 'payment_method',
-        'account_no', 'remaining_amount','narration','createdby', 'cheque_no',
+        'record_no', 'date', 'emp_id','advance','emi_amount','total_installments',
+        'remaining_amount','narration','createdby',
     ];
 
-    public function staff()
+    public function user()
     {
-        return $this->belongsTo(Staff::class, 'emp_id', 'ID');
+        return $this->belongsTo(User::class, 'emp_id', 'ID');
     }
 }

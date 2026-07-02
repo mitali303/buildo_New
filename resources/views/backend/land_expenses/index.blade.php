@@ -51,7 +51,7 @@
                                     <th>Narration</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -62,7 +62,7 @@
                                     <th></th>
                                     <th></th>
                                    
-                                </tr>
+                                </tr> -->
                             </thead>
                         </table>
                     </div>

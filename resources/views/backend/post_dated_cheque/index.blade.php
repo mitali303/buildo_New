@@ -12,7 +12,7 @@
             <div class="col-auto ms-auto text-end mt-n1">
                 
                 @if (hasPermission('create_post_dated_cheque') == true)
-                    <a href="{{route('post_dated_cheque.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i>Receive Payment</a>
+                    <a href="{{route('post_dated_cheque.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> New Post Dated Cheque</a>
                 @endif
             </div>
         </div>
@@ -51,17 +51,6 @@
                                     <th>Bank Name</th>
                                     <th>Cheque Amount</th>
                                     <th>Action</th>
-                                </tr>
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th><input type="text" placeholder="Search Customer From" class="form-control"/></th>
-                                    <th><input type="text" placeholder="Search Scheme" class="form-control"/></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
                                 </tr>
                             </thead>
                         </table>

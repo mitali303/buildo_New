@@ -1,441 +1,944 @@
 @extends('backend.partials.master')
+
 @section('title')
-   Salary Master
+Salary Master
 @endsection
+
 @section('maincontent')
+
 <main class="content">
-    <div class="container-fluid p-0">
 
-        <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Salary Master</h1>
-        </div>
+<div class="container-fluid p-0">
 
-        <div class="row">
+    <div class="mb-3">
 
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="@if(!empty($old)){{ route('SalaryMaster.update') }}@else{{ route('SalaryMaster.store') }}@endif" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @if(!empty($old))
-                                @method('PUT')
-                                <input type="hidden" name="id" id="id" value="{{ $old->id }}"/>
-                            @endif
-                            <div class="row">
+        <h1 class="h3 d-inline align-middle">
 
+            {{ !empty($old) ? 'Update Salary Master' : 'Create Salary Master' }}
 
-                               <div class="mb-3 col-md-4">
-                                    <label class="form-label" for="date">Date<small class="text-danger">*</small></label>
-                                    <input type="date" class="form-control @error('date') is-invalid @enderror"
-                                        value="{{ old('date', $old->Date ?? date('Y-m-d')) }}"
-                                        name="date" id="date" placeholder="Date">
-                                    @error('date')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
+        </h1>
 
-<div class="mb-3 col-md-4">
-    <label class="form-label">Month <small class="text-danger">*</small></label>
-    <select name="month" class="form-control" required>
-        <option value="">-- Select Month --</option>
-        @for($m = 1; $m <= 12; $m++)
-            <option value="{{ $m }}" 
-                {{ old('month', $old->month ?? '') == $m ? 'selected' : '' }}>
-                {{ date('F', mktime(0, 0, 0, $m, 10)) }}
-            </option>
-        @endfor
-    </select>
-    @error('month')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
-
-<div class="mb-3 col-md-4">
-    <label class="form-label">Year <small class="text-danger">*</small></label>
-    <input type="number" name="year" class="form-control"
-        value="{{ old('year', $old->year ?? date('Y')) }}" required>
-    @error('year')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
-
-
-                                @php
-                                    $selecteduser = old('emp_id', $old->emp_id ?? '');
-                                @endphp
-                                <div class="mb-3 col-md-4">
-                                    <label class="form-label">Employee<small class="text-danger">*</small></label>
-                                    <select name="emp_id" id="emp_id" class="form-control" required>
-                                        
-                                        <option value="" disabled {{ empty($selecteduser) ? 'selected' : '' }}>
-                                            -- Select Employee --
-                                        </option>
-
-                                        @foreach($staffs as $user)
-                                            <option value="{{ $user->ID }}"
-                                                {{ (string)$user->ID === (string)$selecteduser ? 'selected' : '' }}>
-                                                {{ $user->Name }}
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-                                </div>
-
-<div class="mb-3 col-md-4">
-        <label class="form-label">Salary No <small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('salary_no') is-invalid @enderror"
-            value="{{ old('salary_no', $old->salary_no ?? '') }}"
-            name="salary_no" placeholder="Salary No" required>
-        @error('salary_no')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
     </div>
 
+    <div class="row">
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label">Gross Salary <small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('gross') is-invalid @enderror"
-            value="{{ old('gross', $old->gross ?? '') }}"
-            name="gross" placeholder="Gross Salary" id="gross" required>
-        @error('gross')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
-                                <!-- Task Description -->
-    <div class="mb-3 col-md-4">
-        <label class="form-label">Basic Salary <small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('basic_salary') is-invalid @enderror"
-            value="{{ old('basic_salary', $old->basic_salary ?? '') }}"
-            name="basic_salary" placeholder="Basic Salary" required>
-        @error('basic_salary')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+        <div class="col-md-12">
 
-     <div class="mb-3 col-md-4">
-        <label class="form-label">PF <small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('pf') is-invalid @enderror"
-            value="{{ old('pf', $old->pf ?? '') }}"
-            name="pf" placeholder="PF" required>
-        @error('pf')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+            <div class="card">
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label">ESI <small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('esi') is-invalid @enderror"
-            value="{{ old('esi', $old->esi ?? '') }}"
-            name="esi" placeholder="ESI" required>
-        @error('esi')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                <div class="card-body">
 
-     <div class="mb-3 col-md-4">
-        <label class="form-label">Advance EMI<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('advance_emi') is-invalid @enderror"
-            value="{{ old('advance_emi', $old->advance_emi ?? '') }}"
-            name="advance_emi" placeholder="Advance EMI" required>
-        @error('advance_emi')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                    <form action="@if(!empty($old))
+                                    {{ route('SalaryMaster.update') }}
+                                  @else
+                                    {{ route('SalaryMaster.store') }}
+                                  @endif"
+                          method="POST">
 
-      <div class="mb-3 col-md-4">
-        <label class="form-label">Net Salary<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('net_salary') is-invalid @enderror"
-            value="{{ old('net_salary', $old->net_salary ?? '') }}"
-            name="net_salary" placeholder="Net Salary" required>
-        @error('net_salary')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                        @csrf
 
-      {{-- <div class="mb-3 col-md-4">
-        <label class="form-label">Net Salary<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('net_salary') is-invalid @enderror"
-            value="{{ old('net_salary', $old->net_salary ?? '') }}"
-            name="net_salary" placeholder="Net Salary" required>
-        @error('net_salary')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div> --}}
+                        @if(!empty($old))
 
-    
+                            @method('PUT')
 
-   <div class="mb-3 col-md-4">
-    <label class="form-label">Payment Method<small class="text-danger">*</small></label>
-    <select id="payment_method" name="payment_method" class="form-control choices-single" required>
-        <option value="" disabled selected>Select Payment Method</option>
-        <option value="cash" {{ old('payment_method', $old->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
-        <option value="cheque" {{ old('payment_method', $old->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-        <option value="DD" {{ old('payment_method', $old->payment_method ?? '') == 'DD' ? 'selected' : '' }}>DD</option>
-    </select>
-    @error('payment_method')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
+                            <input type="hidden"
+                                   name="id"
+                                   value="{{ $old->id }}">
 
-<div class="mb-3 col-md-4">
-    <label class="form-label">Account No <small class="text-danger">*</small></label>
-    <div id="Ac">
-        <select name="account_no" id="account_no" class="form-control">
-            <option value="">Select</option>
-        </select>
-    </div>
-</div>
-
-<div class="mb-3 col-md-4">
-    <label class="form-label">Balance</label>
-    <input type="text" readonly id="balanceamt" name="balanceamt" class="form-control">
-</div>
-
-<div class="mb-3 col-md-4" id="cheque_no_div" style="display: none;">
-    <label class="form-label">Cheque No<small class="text-danger">*</small></label>
-    <input type="number" class="form-control @error('cheque_no') is-invalid @enderror"
-           value="{{ old('cheque_no', $old->cheque_no ?? '') }}"
-           name="cheque_no" placeholder="Cheque No">
-    @error('cheque_no')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
-
-<script>
-    const paymentSelect = document.getElementById('payment_method');
-    const chequeDiv = document.getElementById('cheque_no_div');
-
-    function toggleChequeField() {
-        if (paymentSelect.value === 'cheque') {
-            chequeDiv.style.display = 'block';
-            chequeDiv.querySelector('input').setAttribute('required', 'required');
-        } else {
-            chequeDiv.style.display = 'none';
-            chequeDiv.querySelector('input').removeAttribute('required');
-        }
-    }
-
-    // Initial check in case old value is 'cheque'
-    toggleChequeField();
-
-    // Listen to changes
-    paymentSelect.addEventListener('change', toggleChequeField);
-</script>
+                        @endif
 
 
+                        <div class="row">
 
+                            {{-- DATE --}}
 
-      <div class="mb-3 col-md-4">
-        <label class="form-label">Amount <small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('amount') is-invalid @enderror"
-            value="{{ old('amount', $old->amount ?? '') }}"
-            name="amount" placeholder="Amount" id="amount" required>
-        @error('amount')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                            <div class="mb-3 col-md-4">
 
-      <div class="mb-3 col-md-4">
-        <label class="form-label">Narration  <small class="text-danger">*</small></label>
-        <input type="text" class="form-control @error('narration') is-invalid @enderror"
-            value="{{ old('narration ', $old->narration ?? '') }}"
-            name="narration" placeholder="Narration" required>
-        @error('amount')
-        <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                                <label class="form-label">
+
+                                    Date
+                                    <small class="text-danger">*</small>
+
+                                </label>
+
+                                <input type="date"
+                                       name="date"
+                                       class="form-control @error('date') is-invalid @enderror"
+                                       value="{{ old('date', $old->date ?? date('Y-m-d')) }}">
+
+                                @error('date')
+
+                                    <small class="text-danger">
+
+                                        {{ $message }}
+
+                                    </small>
+
+                                @enderror
 
                             </div>
 
-                            <button type="submit" class="btn btn-primary">{{ !empty($old) ? 'Update' : 'Create' }}</button>
-                            <a href="{{ route('SalaryMaster') }}" class="btn btn-secondary">Cancel</a>
-                        </form>
 
-                    </div>
+                            {{-- EMPLOYEE --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Employee
+                                    <small class="text-danger">*</small>
+
+                                </label>
+
+                                <select name="emp_id"
+                                        id="emp_id"
+                                        class="form-control choices-single-user">
+
+                                    <option value="">
+                                        Select Employee
+                                    </option>
+
+                                    @foreach($users as $user)
+
+                                        <option value="{{ $user->id }}" {{ old('emp_id', $old->emp_id ?? '') == $user->id ? 'selected' : '' }}>
+
+                                            {{ $user->name }}
+
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                                @error('emp_id')
+
+                                    <small class="text-danger">
+
+                                        {{ $message }}
+
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- MONTH --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Month
+                                    <small class="text-danger">*</small>
+
+                                </label>
+
+                                <select name="month"
+                                        id="month"
+                                        class="form-control choices-single-month">
+
+                                    <option value="">
+                                        Select Month
+                                    </option>
+
+                                    @foreach([
+                                        'January',
+                                        'February',
+                                        'March',
+                                        'April',
+                                        'May',
+                                        'June',
+                                        'July',
+                                        'August',
+                                        'September',
+                                        'October',
+                                        'November',
+                                        'December'
+                                    ] as $month)
+
+                                        <option value="{{ $month }}" {{ old('month', $old->month ?? '') == $month ? 'selected' : '' }}>
+
+                                            {{ $month }}
+
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                                @error('month')
+
+                                    <small class="text-danger">
+
+                                        {{ $message }}
+
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- YEAR --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Year
+                                    <small class="text-danger">*</small>
+
+                                </label>
+
+                                <select name="year"
+                                        id="year"
+                                        class="form-control choices-single-year">
+
+                                    @for($y = date('Y') + 1; $y >= 2020; $y--)
+
+                                        <option value="{{ $y }}"
+                                            {{ old('year', $old->year ?? date('Y')) == $y ? 'selected' : '' }}>
+
+                                            {{ $y }}
+
+                                        </option>
+
+                                    @endfor
+
+                                </select>
+
+                                @error('year')
+
+                                    <small class="text-danger">
+
+                                        {{ $message }}
+
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- SALARY NO --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Salary No
+                                    <small class="text-danger">*</small>
+
+                                </label>
+
+                                <input type="text"
+                                       name="salary_no"
+                                       class="form-control @error('salary_no') is-invalid @enderror"
+                                       value="{{ old('salary_no', $salaryNo ?? '') }}" readonly>
+
+                                @error('salary_no')
+
+                                    <small class="text-danger">
+
+                                        {{ $message }}
+
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+                            {{-- =========================================================
+PRESENT DAYS
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        Present Days
+
+    </label>
+
+    <input type="number"
+           id="total_present_days"
+           name="total_present_days"
+           class="form-control @error('total_present_days') is-invalid @enderror"
+           value="{{ old('total_present_days', $old->total_present_days ?? 0) }}"
+           readonly>
+
+    @error('total_present_days')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+ABSENT DAYS
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        Absent Days
+
+    </label>
+
+    <input type="number"
+           id="total_absent_days"
+           name="total_absent_days"
+           class="form-control @error('total_absent_days') is-invalid @enderror"
+           value="{{ old('total_absent_days', $old->total_absent_days ?? 0) }}"
+           readonly>
+
+    @error('total_absent_days')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+PAID LEAVES
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        Paid Leaves
+
+    </label>
+
+    <input type="number"
+           id="paid_leaves"
+           name="paid_leaves"
+           class="form-control @error('paid_leaves') is-invalid @enderror"
+           value="{{ old('paid_leaves', $old->paid_leaves ?? 0) }}"
+           readonly>
+
+    @error('paid_leaves')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+WORKING DAYS
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        Working Days
+
+    </label>
+
+    <input type="number"
+           id="working_days"
+           name="working_days"
+           class="form-control @error('working_days') is-invalid @enderror"
+           value="{{ old('working_days', $old->working_days ?? 0) }}"
+           readonly>
+
+    @error('working_days')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+PER DAY SALARY
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        Per Day Salary
+
+    </label>
+
+    <input type="number"
+           step="0.01"
+           id="per_day_salary"
+           name="per_day_salary"
+           class="form-control @error('per_day_salary') is-invalid @enderror"
+           value="{{ old('per_day_salary', $old->per_day_salary ?? 0) }}"
+           readonly>
+
+    @error('per_day_salary')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+ABSENT DEDUCTION
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        Absent Deduction
+
+    </label>
+
+    <input type="number"
+           step="0.01"
+           id="absent_deduction"
+           name="absent_deduction"
+           class="form-control @error('absent_deduction') is-invalid @enderror"
+           value="{{ old('absent_deduction', $old->absent_deduction ?? 0) }}"
+           readonly>
+
+    @error('absent_deduction')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+OVERTIME HOURS
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        OT Hours
+
+    </label>
+
+    <input type="number"
+           step="0.01"
+           id="overtime_hours"
+           name="overtime_hours"
+           class="form-control @error('overtime_hours') is-invalid @enderror"
+           value="{{ old('overtime_hours', $old->overtime_hours ?? 0) }}"
+           readonly>
+
+    @error('overtime_hours')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+{{-- =========================================================
+OT RATE PER HOUR
+========================================================= --}}
+
+<div class="mb-3 col-md-3">
+
+    <label class="form-label">
+
+        OT Rate / Hour
+
+    </label>
+
+    <input type="number"
+           step="0.01"
+           id="per_hour_ot_rate"
+           name="per_hour_ot_rate"
+           class="form-control @error('per_hour_ot_rate') is-invalid @enderror"
+           value="{{ old('per_hour_ot_rate', $old->per_hour_ot_rate ?? 0) }}"
+           readonly>
+
+    @error('per_hour_ot_rate')
+
+        <small class="text-danger">
+
+            {{ $message }}
+
+        </small>
+
+    @enderror
+
+</div>
+
+
+                            {{-- BASIC SALARY --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Basic Salary
+
+                                </label>
+
+                                <input type="number"
+                                       id="basic_salary"
+                                       name="basic_salary"
+                                       class="form-control"
+                                       value="{{ old('basic_salary', $old->basic_salary ?? '') }}"
+                                       readonly>
+
+                            </div>
+
+
+                            {{-- GROSS --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Gross Salary
+
+                                </label>
+
+                                <input type="number"
+                                       id="gross"
+                                       name="gross"
+                                       class="form-control"
+                                        value="{{ old('gross', $old->gross ?? '') }}"
+                                       readonly>
+
+                            </div>
+
+
+                            {{-- PF --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    PF
+
+                                </label>
+
+                                <input type="number"
+                                       id="pf"
+                                       name="pf"
+                                       class="form-control"
+                                        value="{{ old('pf', $old->pf ?? '') }}"
+                                       readonly>
+
+                            </div>
+
+
+                            {{-- ESI --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    ESI
+
+                                </label>
+
+                                <input type="number"
+                                       id="esi"
+                                       name="esi"
+                                       class="form-control"
+                                       value="{{ old('esi', $old->esi ?? '') }}"
+                                       readonly>
+
+                            </div>
+
+
+                            {{-- ADVANCE EMI --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Advance EMI
+
+                                </label>
+
+                                <input type="number"
+                                       id="advance_emi"
+                                       name="advance_emi"
+                                       class="form-control"
+                                       value="{{ old('advance_emi', $old->advance_emi ?? 0) }}">
+
+                            </div>
+
+
+                            {{-- LATE DEDUCTION --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Late Deduction
+
+                                </label>
+
+                                <input type="number"
+                                       id="late_deduction"
+                                       class="form-control"
+                                       value="{{ old('late_deduction', $old->late_deduction ?? 0) }}"
+                                       readonly>
+
+                            </div>
+
+
+                            {{-- OVERTIME --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Overtime Amount
+
+                                </label>
+
+                                <input type="number"
+                                       id="overtime_amount"
+                                       class="form-control"
+                                       value="{{ old('overtime_amount', $old->overtime_amount ?? 0) }}"
+                                       readonly>
+
+                            </div>
+
+
+                            {{-- NET SALARY --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Net Salary
+
+                                </label>
+
+                                <input type="number"
+                                       id="net_salary"
+                                       name="net_salary"
+                                       class="form-control"
+                                       value="{{ old('net_salary', $old->net_salary ?? '') }}" readonly >
+
+                            </div>
+
+
+                            {{-- PAYMENT METHOD --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Payment Method
+                                    <small class="text-danger">*</small>
+
+                                </label>
+
+                                <select name="payment_method"
+                                        id="payment_method"
+                                        class="form-control choices-single-payment">                                   
+
+                                    <option value="">
+                                        Select Payment Method
+                                    </option>
+
+                                    <option value="cash"
+                                        {{ old('payment_method', $old->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
+                                        Cash
+                                    </option>
+
+                                    <option value="cheque"
+                                        {{ old('payment_method', $old->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
+                                        Cheque
+                                    </option>
+
+                                    <option value="DD"
+                                        {{ old('payment_method', $old->payment_method ?? '') == 'DD' ? 'selected' : '' }}>
+                                        DD
+                                    </option>
+
+                                </select>
+
+                                @error('payment_method')
+
+                                    <small class="text-danger">
+
+                                        {{ $message }}
+
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- CHEQUE NO --}}
+
+                            <div class="mb-3 col-md-4"
+                                 id="cheque_div"
+                                 style="display:none;">
+
+                                <label class="form-label">
+
+                                    Cheque No
+
+                                </label>
+
+                                <input type="text"
+                                       name="cheque_no"
+                                       class="form-control">
+
+                            </div>
+
+
+                            {{-- NARRATION --}}
+
+                            <div class="mb-3 col-md-4">
+
+                                <label class="form-label">
+
+                                    Narration
+
+                                </label>
+
+                                <input type="text"
+                                       name="narration"
+                                       class="form-control"
+                                       value="{{ old('narration', $old->narration ?? '') }}">
+
+                            </div>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            {{ !empty($old) ? 'Update' : 'Create' }}
+
+                        </button>
+
+                        <a href="{{ route('SalaryMaster') }}"
+                           class="btn btn-secondary">
+
+                            Cancel
+
+                        </a>
+
+                    </form>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
+</div>
+
 </main>
+
 @endsection
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+@push('scripts')
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    document.getElementById('emp_id').addEventListener('change', fetchSalary);
-    document.querySelector('[name="month"]').addEventListener('change', fetchSalary);
-    document.querySelector('[name="year"]').addEventListener('input', fetchSalary);
+    new Choices('.choices-single-user', {
 
-    function fetchSalary() {
+        searchEnabled: true,
+        itemSelectText: '',
+        shouldSort: false
 
-        let empId = document.getElementById('emp_id').value;
-        let month = document.querySelector('[name="month"]').value;
-        let year  = document.querySelector('[name="year"]').value;
+    });
 
-        if (empId && month && year) {
+    new Choices('.choices-single-month', {
 
-            fetch(`../get-employee-salary/${empId}?month=${month}&year=${year}`)
-            .then(res => res.json())
-            .then(data => {
+        searchEnabled: false,
+        itemSelectText: '',
+        shouldSort: false
 
-                if (data.status) {
+    });
 
-                    let monthly = parseFloat(data.daily_wage); // actually monthly salary
-                    let totalDays = 30; // or dynamic based on month
-                    let present = parseFloat(data.present);
+    new Choices('.choices-single-year', {
 
-                    // ✅ correct calculation
-                    let perDay = monthly / totalDays;
-                    let gross = perDay * present;
+        searchEnabled: false,
+        itemSelectText: '',
+        shouldSort: false
 
-                    document.getElementById('gross').value = gross;
+    });
 
-                    calculateNet(gross);
+    new Choices('.choices-single-payment', {
+
+        searchEnabled: false,
+        itemSelectText: '',
+        shouldSort: false
+
+    });
+
+});
+
+
+/* =========================================================
+PAYMENT METHOD
+========================================================= */
+
+$('#payment_method').on('change', function(){
+
+    if($(this).val() == 'cheque'){
+
+        $('#cheque_div').show();
+
+    }else{
+
+        $('#cheque_div').hide();
+    }
+});
+
+
+/* =========================================================
+AUTO SALARY CALCULATION
+========================================================= */
+
+$('#emp_id, #month, #year').on('change', function () {
+
+    let empId = $('#emp_id').val();
+    let month = $('#month').val();
+    let year  = $('#year').val();
+
+    let editId = "{{ $old->id ?? '' }}";
+
+    if(empId && month && year){
+
+        $.ajax({
+
+            url: "{{ url('salary/get-details') }}/" 
+                    + empId + "/" 
+                    + month + "/" 
+                    + year + "/" 
+                    + editId,
+
+            type: "GET",
+
+            beforeSend: function(){
+
+                $('button[type="submit"]').prop('disabled', true);
+            },
+
+            success: function(res){
+
+                console.log(res);
+
+                if(res.status == false){
+
+                    alert(res.message);
+
+                    $('button[type="submit"]').prop('disabled', true);
+
+                    return;
                 }
-            });
-        }
-    }
 
-    function calculateNet(gross) {
+                $('button[type="submit"]').prop('disabled', false);
 
-        let pf = parseFloat(document.querySelector('[name="pf"]').value) || 0;
-        let esi = parseFloat(document.querySelector('[name="esi"]').value) || 0;
-        let advance = parseFloat(document.querySelector('[name="advance_emi"]').value) || 0;
+                $('#gross').val(res.gross_salary);
+                $('#pf').val(res.pf);
+                $('#esi').val(res.esi);
+                $('#advance_emi').val(res.advance_emi);
 
-        let net = gross - (pf + esi + advance);
+                $('#basic_salary').val(res.basic_salary);
+                $('#late_deduction').val(res.late_deduction);
+                $('#overtime_amount').val(res.overtime_amount);
+                $('#net_salary').val(res.net_salary);
 
-        document.getElementById('amount').value = net;
-        document.querySelector('[name="net_salary"]').value = net;
-    }
+                $('#total_present_days').val(res.total_present_days);
+                $('#total_absent_days').val(res.total_absent_days);
+                $('#paid_leaves').val(res.paid_leaves);
+                $('#working_days').val(res.working_days);
+                $('#per_day_salary').val(res.per_day_salary);
+                $('#absent_deduction').val(res.absent_deduction);
+                $('#overtime_hours').val(res.overtime_hours);
+                $('#per_hour_ot_rate').val(res.per_hour_ot_rate);
+            },
 
-    // ✅ Recalculate when deductions change
-    document.querySelectorAll('[name="pf"], [name="esi"], [name="advance_emi"]').forEach(el => {
-        el.addEventListener('input', function () {
-            let gross = parseFloat(document.getElementById('gross').value) || 0;
-            calculateNet(gross);
+            error: function(xhr){
+
+                console.log(xhr.responseText);
+
+                alert('Something went wrong');
+            }
         });
-    });
+    }
+});
+
+/* =========================================================
+NET SALARY RECALCULATE
+========================================================= */
+
+$('#advance_emi').on('keyup change', function(){
+
+    let gross       = parseFloat($('#gross').val()) || 0;
+
+    let pf          = parseFloat($('#pf').val()) || 0;
+
+    let esi         = parseFloat($('#esi').val()) || 0;
+
+    let advance     = parseFloat($('#advance_emi').val()) || 0;
+
+    let late        = parseFloat($('#late_deduction').val()) || 0;
+
+    let net = gross - pf - esi - advance - late;
+
+    $('#net_salary').val(net.toFixed(2));
 
 });
 
-$(document).ready(function () {
-
-    $(document).on('change', '#emp_id, [name="month"], [name="year"]', function () {
-        fetchSalary();
-    });
-
-});
 </script>
 
-
-<script>
-
-
-// 🔹 Account change → get balance
-$(document).on('change', '#account_no', function () {
-    getBalance();
-});
-
-
-// 🔹 Get balance function
-function getBalance() {
-
-    let accId = $("#account_no").val();
-    let date  = $("#date").val();
-    let iid = $("#id").length ? $("#id").val() : 0;
-
-    if (!accId) {
-        $("#balanceamt").val("");
-        return;
-    }
-
-    $.ajax({
-        url: "{{ route('ajax.getBalance') }}",
-        type: "POST",
-        data: {
-            matid: accId,
-            date: date,
-            iid: iid,
-            _token: "{{ csrf_token() }}"
-        },
-        success: function(response) {
-            $("#balanceamt").val(response.balance);
-        }
-    });
-}
-
-
-// 🔹 If date changes → refresh balance
-$(document).on('change', '#date', function () {
-    getBalance();
-});
-
-$(document).ready(function () {
-
-    $("form").on("submit", function (e) {
-
-        let netSalary = parseFloat($('[name="net_salary"]').val()) || 0;
-        let amount    = parseFloat($('#amount').val()) || 0; // optional
-        let balance   = parseFloat($('#balanceamt').val()) || 0;
-
-        // use net_salary OR amount (based on your logic)
-        let finalAmount = netSalary || amount;
-
-        if (finalAmount > balance) {
-            e.preventDefault(); // ❌ stop form submit
-
-            alert("❌ Insufficient Balance! Salary amount is greater than available balance.");
-
-            return false;
-        }
-
-    });
-
-});
-
-
-let oldPaymentMethod = "{{ old('payment_method', $old->payment_method ?? '') }}";
-let oldAccountNo     = "{{ old('account_no', $old->account_no ?? '') }}";
-
-// 🔹 Load accounts (COMMON function)
-function loadAccounts(pay_method, selectedAccount = null) {
-
-    $.ajax({
-        url: "{{ route('ajax.getAccountList') }}",
-        type: "POST",
-        data: {
-            pay_method: pay_method,
-            selected_id: selectedAccount, // ✅ IMPORTANT
-            _token: "{{ csrf_token() }}"
-        },
-        success: function (response) {
-
-            $("#Ac").html(response.html);
-
-            // ✅ just trigger balance (no val setting here)
-            getBalance();
-        }
-    });
-}
-
-
-// 🔹 On page load (EDIT)
-$(document).ready(function () {
-
-    if (oldPaymentMethod) {
-        loadAccounts(oldPaymentMethod, oldAccountNo); // ✅ pass here
-    }
-
-});
-
-
-// 🔹 On user change
-$(document).on('change', '#payment_method', function () {
-
-    let pay_method = $(this).val();
-
-    loadAccounts(pay_method); // ❌ no oldAccount here
-
-});
-</script>
+@endpush

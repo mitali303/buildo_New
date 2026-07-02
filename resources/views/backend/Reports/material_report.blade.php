@@ -80,19 +80,6 @@ Material Purchase Report
                             <input type="date" name="to_date" class="form-control"
                                    value="{{ $toDate }}">
                         </div>
-
-                        <div class="col-md-2">
-                            <select name="material_id" class="form-control">
-                                <option value="">Select Material</option>
-                                @foreach($materials as $material)
-                                    <option value="{{ $material->id }}"
-                                        {{ request('material_id') == $material->id ? 'selected' : '' }}>
-                                        {{ $material->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
                         <div class="col-md-2">
                             <select name="vendor_id" class="form-control">
                                 <option value="">Select Supplier</option>
@@ -104,7 +91,17 @@ Material Purchase Report
                                 @endforeach
                             </select>
                         </div>
-
+                        <div class="col-md-2">
+                            <select name="material_id" class="form-control">
+                                <option value="">Select Material</option>
+                                @foreach($materials as $material)
+                                    <option value="{{ $material->id }}"
+                                        {{ request('material_id') == $material->id ? 'selected' : '' }}>
+                                        {{ $material->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-md-2">
                             <select name="scheme_id" class="form-control">
                                 <option value="">Select Site</option>

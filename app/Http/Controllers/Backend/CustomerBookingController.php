@@ -11,6 +11,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\Backend\CustomerBooking;
 use App\Models\Backend\CustomerPayment;
 use App\Models\Backend\Flat_details;
+use Illuminate\Support\Facades\File;
 
 use App\Models\Backend\Bank_Acc;
 use Illuminate\Support\Facades\DB;
@@ -664,14 +665,14 @@ class CustomerBookingController extends Controller
             'FlatNo'            => $request->fno,
             'RateSqft'          => $request->RateSqft,
             'vatAmt'            => $request->vat,
-            'BspAmount'         => $request->costBSP,
+            'BspAmount'      => $request->filled('costBSP') ? (float)$request->costBSP : null,
             'agreementAmt'      => $request->cost,
             'lightChrg'         => $request->light,
             'parkingChrg'       => $request->parking,
             'maintances'        => $request->maintance,
             'othersTotal'       => $request->totalOthers,
             'docChrg'           => $request->documentation,
-            'sitedevcharges'    => $request->sitedevCharges,
+            'sitedevcharges' => $request->filled('sitedevcharges') ? (float)$request->sitedevcharges : null,
             'regiChrgPer'       => $request->regist_per,
             'vatAmtPer'         => $request->vat_per,
             'servicetaxPer'     => $request->servicetax_per,
@@ -680,7 +681,7 @@ class CustomerBookingController extends Controller
             'servicetax'        => $request->servicetax,
             'TaxamtTotal'       => $request->TotalTaxAmt,
             'rate_per_sqft_type'=> $request->rateamt,
-            'roundUp'           => $request->roundUp,
+            'roundUp'        => $request->filled('roundUp') ? (float)$request->roundUp : null,
             'TotalFlatAmt'      => $request->TotalFlatAmt,
             'Wing'              => $request->typesrch,
             'pilnth'            => $request->pilnth,
@@ -691,7 +692,7 @@ class CustomerBookingController extends Controller
             'plumbing'          => $request->plumbing,
             'project'           => $request->project,
             'userID'            => session('userID'),
-            'stamp_amt'         => $request->stamp_amt,
+            'stamp_amt'      => $request->filled('stamp_amt') ? (float)$request->stamp_amt : null,
             'Ptype'             => $request->rateamt,
             'loan_sanction_amt' => $request->loan_sanction_amt,
             'bankname'          => $request->bankname,

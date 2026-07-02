@@ -443,7 +443,7 @@ public function getbalance($matid, $payid, $date, $paymentId)
         ->orWhere('payment_method', '!=', 'cheque');
     })
     ->whereDate('Date', '<=', '2026-04-22')
-    ->sum('amount');
+    ->sum('net_salary');
 
     // Income
     $getIncome_loan = DB::table('loan')->whereRaw("$condition AND ClientID='$cid' AND paytype='Received' AND ID!='$pid' $condition5")->sum('amt_pay');
@@ -458,7 +458,7 @@ public function getbalance($matid, $payid, $date, $paymentId)
     $acto = DB::table('account_transfer')->whereRaw("$cond2 AND ClientID='$cid' AND ID!='$pid' $condition5")->sum('amt_pay');
     
     //payroll income
-   $emp_adv_pay = DB::table('emp_avance_pay')
+   $emp_adv_pay = DB::table('employee_advance_payments')
     ->where('account_no', $accno)
     ->where('ClientID', $clientId)
     ->where(function ($q) {
@@ -469,7 +469,7 @@ public function getbalance($matid, $payid, $date, $paymentId)
         ->orWhere('payment_method', '!=', 'cheque');
     })
     ->whereDate('Date', '<=', '2026-04-22')
-    ->sum('amt_pay');
+    ->sum('advance');
 
     /** -------------------------
      *  FINAL CALCULATION
@@ -735,7 +735,8 @@ public function store(Request $request)
     $maxReceipt = DB::table('workorder_payment')
         ->max('receipt_no');
     $nextReceiptNo = $maxReceipt ? $maxReceipt + 1 : 1;
-
+        $receiptNo = DB::table('workorder_payment')->max('receipt_no');
+        $receiptNo = $receiptNo ? $receiptNo + 1 : 1;
     // 5) Insert into workorder_payment
     DB::table("workorder_payment")->insert([
         "ID"            => $id,
@@ -743,13 +744,14 @@ public function store(Request $request)
         "Created"       => now(),
         "Lastedited"    => now(),
         "Date"          => date("Y-m-d", strtotime($request->Date)),
+          "receipt_no"    => $receiptNo,
         "WorkorderID"   => $workorderId,
         "WorkorderType" => $wtype,
 
         "amt_pay"       => $request->payable,
         "Payable"       => $request->amount_pay,
 
-        "TaxAMt"        => $request->tax,
+        "TaxAmt"        => $request->tax,
         "TDSAmt"        => $request->tds,
         "bankcharge"    =>  $bankcharge,
 
@@ -913,6 +915,8 @@ $remainingTds = max(0, ($invoice->TDSAmt ?? 0) - $usedTds);
 
 public function update(Request $request, $id)
 {
+    
+    
     // 1) Validation (same rules as store)
     $request->validate([
         "Date"          => "required|date_format:d-m-Y",
@@ -1008,6 +1012,8 @@ public function update(Request $request, $id)
     if ($bankcharge === null || $bankcharge === '') {
         $bankcharge = 0;
     }
+    $receiptNo = DB::table('workorder_payment')->max('receipt_no');
+    $receiptNo = $receiptNo ? $receiptNo + 1 : 1;
     // 5) UPDATE workorder_payment
     DB::table('workorder_payment')->insert([
         "ID"            => $newPaymentId,
@@ -1016,13 +1022,14 @@ public function update(Request $request, $id)
         "Lastedited"    => now(),
 
         "Date"          => date("Y-m-d", strtotime($request->Date)),
+         "receipt_no"    => $receiptNo,
         "WorkorderID"   => $workorderId,
         "WorkorderType" => $request->worktype,
 
         "amt_pay"       => $request->payable,
         "Payable"       => $request->amount_pay,
 
-        "TaxAMt"        => $request->tax,
+        "TaxAmt"        => $request->tax,
         "TDSAmt"        => $request->tds,
         "bankcharge"    => $bankcharge,
 

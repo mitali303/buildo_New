@@ -36,7 +36,7 @@
     }
 }
 </style>
-
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <main class="content">
     <div class="container-fluid p-0">
         <div class="row align-items-center mb-3">
@@ -110,6 +110,10 @@
     </div>
 </main>
 @endsection
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -137,7 +141,19 @@ document.addEventListener("DOMContentLoaded", function() {
         responsive: true,
         orderCellsTop: true,
         fixedHeader: true,
+        dom: '<"row"<"col-md-6"l><"col-md-6"Bf>>rtip',
 
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel"></i> Export Excel',
+                    title: 'Customer Refund Report',
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: [0,1,2,3,4]
+                    }
+                }
+            ],
         ajax: {
             url: "{{ route('customer_refund') }}",
             data: function(d){

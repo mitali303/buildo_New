@@ -12,7 +12,7 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        <h1 class="h3 mb-3">{{ 'Create Payment' }}</h1>
+        <h1 class="h3 mb-3">{{ 'Edit Payment' }}</h1>
 
         @if ($errors->any())
     <div class="alert alert-danger">

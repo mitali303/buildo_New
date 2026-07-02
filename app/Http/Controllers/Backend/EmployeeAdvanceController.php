@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Backend\EmployeeAdvancePayment;
 use Illuminate\Http\Request;
 use App\Models\Backend\EmployeeAdvance;
-use App\Models\Backend\Empadv_Pay;
-use App\Models\Backend\Staff;
 use App\Models\User;
+use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
@@ -18,48 +18,102 @@ class EmployeeAdvanceController extends Controller
 {
     if ($request->ajax()) {
 
-        $query = EmployeeAdvance::leftJoin('staff', 'staff.ID', '=', 'employee_advance.emp_id')
+        $query = EmployeeAdvance::with('user')
             ->select([
-                'employee_advance.id',
-                'employee_advance.Date',
-                'employee_advance.advance',
-                'employee_advance.emi_amount',
-                'employee_advance.total_installments',
-                'staff.Name as employee_name'
+                'id',
+                'date',
+                'emp_id',
+                'advance',
+                'remaining_amount',
+                'emi_amount',
+                'total_installments'
             ])
-            ->orderByDesc('employee_advance.id');
+            ->orderByDesc('id');
+
+        // Custom Search Filters
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
+        }
+
+        if ($request->filled('employee_name')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->employee_name . '%');
+            });
+        }
+
+        if ($request->filled('advance')) {
+            $query->where('advance', 'like', '%' . $request->advance . '%');
+        }
+
+        if ($request->filled('emi_amount')) {
+            $query->where('emi_amount', 'like', '%' . $request->emi_amount . '%');
+        }
+
+        if ($request->filled('remaining_amount')) {
+            $query->where('remaining_amount', 'like', '%' . $request->remaining_amount . '%');
+        }
+
+        if ($request->filled('total_installments')) {
+            $query->where('total_installments', 'like', '%' . $request->total_installments . '%');
+        }
 
         return DataTables::of($query)
+
             ->addIndexColumn()
 
-             ->editColumn('Date', function ($row) {
-                    return \Carbon\Carbon::parse($row->Date)->format('d-m-Y');
-                })
+            ->addColumn('employee_name', function ($row) {
+                return $row->user->name ?? 'N/A';
+            })
+
+            ->editColumn('date', function ($row) {
+                return $row->date
+                    ? \Carbon\Carbon::parse($row->date)->format('d-m-Y')
+                    : '';
+            })
 
             ->addColumn('actions', function ($row) {
 
-                $editUrl   = route('EmployeeAdvance.edit', $row->id);
-                $deleteUrl = route('EmployeeAdvance.destroy', $row->id);
+                $editUrl = route('EmployeeAdvance.edit', $row->id);
+                $deleteUrl = route('EmployeeAdvance.delete', $row->id);
                 $paymentUrl = url('backend/EmployeeAdvance/employee_advance_payment/' . $row->id);
+                $historyUrl = route('EmployeeAdvance.history', $row->id);
 
-                return '
-                    <a href="'.$editUrl.'" class="me-2 text-primary">
-                        <i data-feather="edit-2"></i>
-                    </a>
+                $formId = 'delete-form-' . $row->id;
 
-                    <a href="'.$paymentUrl.'" class="me-2 text-success">
-                        <i data-feather="credit-card"></i>
-                    </a>
+                $actions = '';
 
-                    <a href="#" class="text-danger delete-confirm" data-id="delete-'.$row->id.'">
-                        <i data-feather="trash"></i>
-                    </a>
+                if (hasPermission('edit_EmployeeAdvance')) {
+                    $actions .= '
+                        <a href="'.$editUrl.'" class="me-2 text-primary">
+                            <i data-feather="edit-2"></i>
+                        </a>';
+                }
 
-                    <form id="delete-'.$row->id.'" action="'.$deleteUrl.'" method="POST" class="d-none">
-                        '.csrf_field().'
-                        '.method_field('DELETE').'
-                    </form>
-                ';
+                if (hasPermission('edit_EmployeeAdvance')) {
+                    $actions .= '
+                        <a href="'.$paymentUrl.'" class="me-2 text-success">
+                            <i data-feather="credit-card"></i>
+                        </a>';
+                }
+
+                $actions .= '
+                    <a href="'.$historyUrl.'" class="me-2 text-info">
+                        <i data-feather="clock"></i>
+                    </a>';
+
+                if (hasPermission('delete_EmployeeAdvance')) {
+                    $actions .= '
+                        <a href="#" class="text-danger delete-confirm" data-id="'.$formId.'">
+                            <i data-feather="trash"></i>
+                        </a>
+
+                        <form id="'.$formId.'" action="'.$deleteUrl.'" method="POST" class="d-none">
+                            '.csrf_field().'
+                            '.method_field('DELETE').'
+                        </form>';
+                }
+
+                return $actions;
             })
 
             ->rawColumns(['actions'])
@@ -68,19 +122,11 @@ class EmployeeAdvanceController extends Controller
 
     return view('backend.EmployeeAdvance.index');
 }
-
  public function create()
     {
          $users = User::select('id', 'name')->orderBy('name')->get();
-         $staffs = Staff::select('ID', 'Name')->orderBy('ID')->get();
-
-          // 🔥 Get last record_no
-            $lastRecord = EmployeeAdvance::max('record_no');
-
-            // If null → start from 1
-            $nextRecordNo = $lastRecord ? $lastRecord + 1 : 1;
-
-        return view('backend.EmployeeAdvance.create', compact('users','staffs', 'nextRecordNo'));
+        $nextRecordNo = EmployeeAdvance::max('record_no') + 1;
+        return view('backend.EmployeeAdvance.create', compact('users','nextRecordNo'));
     }
 
      /**
@@ -90,7 +136,8 @@ class EmployeeAdvanceController extends Controller
 
     public function store(Request $request)
     {
-        $clientId = session()->get('selected_scheme_id');
+
+    $clientId = session('selected_scheme_id');
 
        $validated = $request->validate([
           'emp_id' => 'required',
@@ -101,11 +148,6 @@ class EmployeeAdvanceController extends Controller
           'total_installments' => 'required|numeric',
           'remaining_amount' => 'required|numeric',
           'narration' => 'required|string|max:255|regex:/^[A-Za-z ]+$/',
-          'cheque_no' => 'numeric',
-
-          // ✅ ADD THESE
-        'Pay_type' => 'required',
-        'account_no' => 'required',
 
         ]);
 
@@ -113,17 +155,15 @@ class EmployeeAdvanceController extends Controller
 
         $data->record_no = $validated['record_no'];
         $data->ClientID = $clientId;
-        $data->Date = $validated['date'];
+        $data->account_no = $request['account_no'];
+        $data->date = $validated['date'];
         $data->emp_id = $validated['emp_id'];
         $data->advance = $validated['advance'];
         $data->emi_amount = $validated['emi_amount'];
         $data->total_installments = $validated['total_installments'];
         $data->remaining_amount = $validated['remaining_amount'];
+        $data->reconciliation = 0;
         $data->narration = $validated['narration'];
-        $data->cheque_no = $validated['cheque_no'];
-
-        $data->payment_method = $validated['Pay_type'];
-        $data->account_no     = $validated['account_no'];
 
         $data->createdby = Auth::id();
 
@@ -136,10 +176,7 @@ class EmployeeAdvanceController extends Controller
     {
        $old = EmployeeAdvance::find($id);
         $users = User::select('id', 'name')->orderBy('name')->get();
-
-        $staffs = Staff::select('ID', 'Name')->orderBy('ID')->get();
-
-        return view('backend.EmployeeAdvance.create', compact('old','users', 'staffs'));
+        return view('backend.EmployeeAdvance.create', compact('old','users'));
     }
 
     /**
@@ -147,10 +184,10 @@ class EmployeeAdvanceController extends Controller
      */
     public function update(Request $request)
     {
-        $clientId = session()->get('selected_scheme_id');
-
         $id = $request->id;
         $data = EmployeeAdvance::find($id);
+
+        $clientId = session('selected_scheme_id');
 
         $validated = $request->validate([
         'emp_id' => 'required',
@@ -162,27 +199,19 @@ class EmployeeAdvanceController extends Controller
           'total_installments' => 'required|numeric',
           'remaining_amount' => 'required|numeric',
           'narration' => 'required|string|max:255|regex:/^[A-Za-z ]+$/',
-          'cheque_no' => 'numeric',
-
-          // ✅ ADD THESE
-            'Pay_type' => 'required',
-            'account_no' => 'required',
         ]);
 
         $data->record_no = $validated['record_no'];
         $data->ClientID = $clientId;
-        $data->Date = $validated['date'];
+        $data->date = $validated['date'];
+        $data->account_no = $request['account_no'];
         $data->emp_id = $validated['emp_id'];
         $data->advance = $validated['advance'];
         $data->emi_amount = $validated['emi_amount'];
         $data->total_installments = $validated['total_installments'];
         $data->remaining_amount = $validated['remaining_amount'];
         $data->narration = $validated['narration'];
-        $data->cheque_no = $validated['cheque_no'];
-
-        $data->payment_method = $validated['Pay_type'];
-        $data->account_no     = $validated['account_no'];
-
+        $data->reconciliation = 0;
         $data->save(); // ✅ Save the rack
 
         return redirect()->route('EmployeeAdvance')->with('success', 'Employee Advance updated successfully!');
@@ -194,23 +223,43 @@ class EmployeeAdvanceController extends Controller
     public function destroy(string $id)
     {
         $data = EmployeeAdvance::findOrFail($id);
-
-        if (!canDeleteRecord('emp_avance_pay', 'pid', $id)) {
-            return redirect()
-                ->route('EmployeeAdvance')
-                ->with('error', 'Cannot delete its used.');
-        }
-        
         $data->delete();
         return redirect()->route('EmployeeAdvance')->with('success', 'Employee Advance deleted successfully!');
     }
+
+    public function paymentHistory($id)
+{
+    $advance = EmployeeAdvance::with('user')
+                ->findOrFail($id);
+
+    $payments = EmployeeAdvancePayment::where(
+                    'parent_id',
+                    $id
+                )
+                ->orderBy('id','desc')
+                ->get();
+    $paidInstallments =
+    EmployeeAdvancePayment::where(
+        'parent_id',
+        $id
+    )->count();
+
+    $remainingInstallments =
+    $advance->total_installments -
+    $paidInstallments;            
+
+    return view(
+        'backend.EmployeeAdvance.payment_history',
+        compact('advance','payments','remainingInstallments','paidInstallments')
+    );
+}
 
 
   public function employeeAdvancePayment($id)
 {
     $old = EmployeeAdvance::findOrFail($id);
 
-    $users = Staff::select('ID', 'Name')
+    $users = User::select('id', 'name')
         ->where('id', $old->emp_id)
         ->first(); // use first() instead of get() to get single model
 
@@ -219,48 +268,44 @@ class EmployeeAdvanceController extends Controller
 
 public function storePayment(Request $request)
 {
-    $clientId = session()->get('selected_scheme_id');
-
     $request->validate([
-        'id'             => 'required', // EmployeeAdvance ID
-        'date'           => 'required|date',
-        'payment_method' => 'required',
-        'account_no' => 'required',
-        'amt_pay'        => 'required|numeric',
-        'narration'      => 'required',
-        'cheque_no'      => 'nullable|required_if:payment_method,cheque'
+        'id'               => 'required',
+        'date'             => 'required|date',
+        'payment_method'   => 'required',
+        'cheque_no'        => 'required_if:payment_method,cheque',
+        'received_amount' => 'required|numeric',
+        'narration'        => 'required'
     ]);
 
-    // Get advance record
     $advance = EmployeeAdvance::findOrFail($request->id);
 
-    // 👉 Total already paid
-    $totalPaid = Empadv_Pay::where('pid', $advance->id)->sum('amt_pay');
+    $newRemaining =
+            $advance->remaining_amount - $request->received_amount;
 
-    // 👉 New remaining
-    $remaining = $advance->advance - ($totalPaid + $request->amt_pay);
+        if ($newRemaining < 0) {
+            $newRemaining = 0;
+        }
 
-    // 👉 Save payment
-    Empadv_Pay::create([
-        'Id'          => uniqid(),
-        'pid'         => $advance->id, // ✅ IMPORTANT
-        'ClientID'         => $clientId, // ✅ IMPORTANT
-        'emp_id'      => $advance->emp_id,
-        'Date'        => $request->date,
-        'account_no'        => $request->account_no,
-        'payment_method'  => $request->payment_method,
-        'amt_pay'     => $request->amt_pay,
-        'cheque_no' => $request->payment_method == 'cheque' ? $request->cheque_no : null,
-        'narration'   => $request->narration,
-        'created_by'  => Auth::id(),
-    ]);
+    // Save Payment entry
+    $payment = new EmployeeAdvancePayment();
+    $payment->parent_id = $advance->id;
+    $payment->emp_id              = $advance->emp_id;
+    $payment->advance      = $request->received_amount;
+    $payment->payment_method      = $request->payment_method;
+    $payment->cheque_no           = $request->cheque_no;
+    $payment->remaining_amount    = $newRemaining;
+    $payment->narration           = $request->narration;
+    $payment->date                = $request->date;
+    $payment->save();
 
-    // 👉 Update remaining in main table (optional but recommended)
-    $advance->remaining_amount = $remaining;
-    $advance->save();
+    // Update advance remaining
+        $advance->update([
+
+            'remaining_amount' => $newRemaining
+        ]);
 
     return redirect()->route('EmployeeAdvance')
-        ->with('success', 'Payment Saved Successfully!');
+                     ->with('success','Employee Advance Payment Saved Successfully!');
 }
 
 

@@ -213,11 +213,14 @@ function printReport() {
 
 // 🔹 Export Excel (same page)
 function exportExcel() {
+
     let fdate = $('input[name="FromDate"]').val();
     let tdate = $('input[name="ToDate"]').val();
 
     window.location.href =
-        "{{ route('reports.loan_payment_report') }}?type=excel&FromDate=" + fdate + "&ToDate=" + tdate;
+    "{{ route('reports.loan_payment_report') }}" +
+    "?type=excel&FromDate=" + fdate +
+    "&ToDate=" + tdate;
 }
 
 </script>

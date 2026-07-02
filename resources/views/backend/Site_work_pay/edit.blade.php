@@ -12,7 +12,7 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        <h1 class="h3 mb-3">{{ 'Create Purchase Invoice' }}</h1>
+        <h1 class="h3 mb-3">{{ 'Edit Site Work Payment ' }}</h1>
 
         @if ($errors->any())
     <div class="alert alert-danger">
@@ -208,7 +208,7 @@
 
                             {{-- Balance --}}
                             <td>
-                                <input type="text" readonly class="form-control" id="balanceamt" name="balanceamt">
+                                <input type="text" readonly class="form-control" id="balanceamt" name="balanceamt" value="{{ old('balanceamt', $old->balanceamt ?? '') }}">
                                 @error('balanceamt')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -280,7 +280,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-primary">
-                                {{ 'Create' }}
+                                {{ 'Update' }}
                             </button>
                             <a href="{{ route('Site_work_pay') }}" class="btn btn-secondary">Cancel</a>
                         </div>

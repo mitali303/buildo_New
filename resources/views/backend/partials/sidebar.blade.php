@@ -348,49 +348,7 @@
 			</li>
 			@endif
 
-			<!-- Payroll Management -->
-		@php
-			$activePayrollRoutes = request()->is(
-				'EmployeeAdvance', 'EmployeeAdvance/create', 'EmployeeAdvance/edit*',
-			'AttendanceMaster', 'AttendanceMaster/create', 'AttendanceMaster/edit*',
-				'SalaryMaster', 'SalaryMaster/create', 'SalaryMaster/edit*',
-				);
-		@endphp
-
-		@if (hasPermission('EmployeeAdvance_read')||hasPermission('EmployeeAdvance_read'))
-		<li class="sidebar-item {{ $activePayrollRoutes ? 'active' : '' }}">
-			<a data-bs-target="#payrollMenu" data-bs-toggle="collapse"
-				class="sidebar-link {{ $activePayrollRoutes ? '' : 'collapsed' }}">
-				<i class="align-middle" data-feather="briefcase"></i>
-				<span class="align-middle">Payroll</span>
-			</a>
-
-			<ul id="payrollMenu"
-				class="sidebar-dropdown list-unstyled collapse {{ $activePayrollRoutes ? 'show' : '' }}"
-				data-bs-parent="#sidebar">
-
-				@if (hasPermission('EmployeeAdvance_read'))
-					<li class="sidebar-item {{ request()->is('EmployeeAdvance', 'EmployeeAdvance/create', 'EmployeeAdvance/edit*') ? 'active' : '' }}">
-						<a class="sidebar-link" href="{{ route('EmployeeAdvance') }}">Employee Advance</a>
-					</li>
-				@endif
-
-				@if (hasPermission('AttendanceMaster_read'))
-					<li class="sidebar-item {{ request()->is('AttendanceMaster', 'AttendanceMaster/create', 'AttendanceMaster/edit*') ? 'active' : '' }}">
-						<a class="sidebar-link" href="{{ route('AttendanceMaster') }}">Attendance Master</a>
-					</li>
-				@endif 
-
-					@if (hasPermission('SalaryMaster_read'))
-					<li class="sidebar-item {{ request()->is('SalaryMaster', 'SalaryMaster/create', 'SalaryMaster/edit*') ? 'active' : '' }}">
-						<a class="sidebar-link" href="{{ route('SalaryMaster') }}">Salary Master</a>
-					</li>
-				@endif 
-
-			</ul>
-		</li>
-		@endif
-
+			
 
 			<!-- Financial Accounting -->
 @php
@@ -560,6 +518,79 @@ $isTdsActive = request()->is(
 </li>
 
 			@endif
+
+			<!-- Payroll Management -->
+		@php
+			$activePayrollRoutes = request()->is(
+				'EmployeeAdvance', 'EmployeeAdvance/create', 'EmployeeAdvance/edit*',
+				'AttendanceMaster', 'AttendanceMaster/create', 'AttendanceMaster/edit*',
+				'SalaryMaster', 'SalaryMaster/create', 'SalaryMaster/edit*',
+				'LateMarkCalculation', 'LateMarkCalculation/create', 'LateMarkCalculation/edit*',
+				'UserShift', 'UserShift/create', 'UserShift/edit*',
+				'salary/generate*',
+        		'salary-report*'
+				);
+		@endphp
+
+		@if (hasPermission('EmployeeAdvance_read') || hasPermission('EmployeeAdvance_read') || hasPermission('UserShift_read') )
+		<li class="sidebar-item {{ $activePayrollRoutes ? 'active' : '' }}">
+			<a data-bs-target="#payrollMenu" data-bs-toggle="collapse"
+				class="sidebar-link {{ $activePayrollRoutes ? '' : 'collapsed' }}">
+				<i class="align-middle" data-feather="briefcase"></i>
+				<span class="align-middle">Payroll</span>
+			</a>
+
+			<ul id="payrollMenu"
+				class="sidebar-dropdown list-unstyled collapse {{ $activePayrollRoutes ? 'show' : '' }}"
+				data-bs-parent="#sidebar">
+
+				@if (hasPermission('UserShift_read'))
+					<li class="sidebar-item {{ request()->is('UserShift', 'UserShift/create', 'UserShift/edit*') ? 'active' : '' }}">
+						<a class="sidebar-link" href="{{ route('UserShift') }}">Assign Shift</a>
+					</li>
+				@endif
+
+				@if (hasPermission('EmployeeAdvance_read'))
+					<li class="sidebar-item {{ request()->is('EmployeeAdvance', 'EmployeeAdvance/create', 'EmployeeAdvance/edit*') ? 'active' : '' }}">
+						<a class="sidebar-link" href="{{ route('EmployeeAdvance') }}">Employee Advance</a>
+					</li>
+				@endif
+
+				@if (hasPermission('AttendanceMaster_read'))
+					<li class="sidebar-item {{ request()->is('AttendanceMaster', 'AttendanceMaster/create', 'AttendanceMaster/edit*') ? 'active' : '' }}">
+						<a class="sidebar-link" href="{{ route('AttendanceMaster') }}">Attendance Master</a>
+					</li>
+				@endif 
+
+				@if (hasPermission('LateMarkCalculation_read'))
+					<li class="sidebar-item {{ request()->is('LateMarkCalculation', 'LateMarkCalculation/create', 'LateMarkCalculation/edit*') ? 'active' : '' }}">
+						<a class="sidebar-link" href="{{ route('LateMarkCalculation') }}">Late Mark Calculation Master</a>
+					</li>
+				@endif 
+
+				 {{-- Generate Salary --}}
+				<li class="sidebar-item {{ request()->is('salary/generate*') ? 'active' : '' }}">
+					<a class="sidebar-link" href="{{ route('salary.generate.page') }}">
+						Generate Salary
+					</a>
+				</li>
+
+				@if (hasPermission('SalaryMaster_read'))
+					<li class="sidebar-item {{ request()->is('SalaryMaster', 'SalaryMaster/create', 'SalaryMaster/edit*') ? 'active' : '' }}">
+						<a class="sidebar-link" href="{{ route('SalaryMaster') }}">Salary Master</a>
+					</li>
+				@endif 
+				 {{-- Salary Report --}}
+				<li class="sidebar-item {{ request()->is('salary-report*') ? 'active' : '' }}">
+					<a class="sidebar-link" href="{{ route('salary.report') }}">
+						Salary Report
+					</a>
+				</li>
+				
+
+			</ul>
+		</li>
+		@endif	
 
 						{{-- Reports --}}
 					@php

@@ -214,7 +214,7 @@
 
                             {{-- Balance --}}
                             <td>
-                                <input type="text" readonly class="form-control" id="balanceamt" name="balanceamt">
+                                <input type="text" readonly class="form-control" id="balanceamt" name="balanceamt" >
                                 @error('balanceamt')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror

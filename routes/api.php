@@ -57,6 +57,9 @@ Route::post('/deleteLaborWork', [UserAppController::class, 'deleteLaborWork']);
     Route::post('/getMaterialStock', [UserAppController::class, 'getMaterialStock']);
 
     Route::post('/saveMaterialTransfer', [UserAppController::class, 'saveMaterialTransfer']);
+
+    Route::post('/deleteMaterialTransfer', [UserAppController::class, 'deleteMaterialTransfer']);
+
     
     
     // Material Consumption
@@ -64,9 +67,12 @@ Route::post('/deleteLaborWork', [UserAppController::class, 'deleteLaborWork']);
 
     Route::post('/saveMaterialConsumption', [UserAppController::class, 'saveMaterialConsumption']);
 
+    Route::post('/deleteMaterialConsumption', [UserAppController::class, 'deleteMaterialConsumption']);
+
 
     // Material Inward
     Route::post('/getMaterialInward', [UserAppController::class, 'getMaterialInward']);
+
 
     Route::post('/getMaterialInwardDetails', [UserAppController::class, 'getMaterialInwardDetails']);
 

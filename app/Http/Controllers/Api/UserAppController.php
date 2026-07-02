@@ -161,6 +161,10 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
             'material_consumption' => (string) (\DB::table('material_consumption')
                 ->where('ClientID', $schemeId)
                 ->sum('Qty') ?? 0),
+
+            'enquiry' => (string) (\DB::table('enquiries')
+                ->where('scheme_id', $schemeId)
+                ->count() ?? 0),
         ];
         
         return response()->json([
@@ -262,6 +266,8 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
     {
         $request->validate([
             'scheme_id' => 'required|string',
+            'from_date' => 'required|date',
+            'to_date' => 'required|date',
         ]);
         
         try {
@@ -270,6 +276,7 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 ->leftJoin('scheme_step1', 'labour_work.schemeID', '=', 'scheme_step1.ID')
                 ->leftJoin('agency', 'labour_work.Agency_ID', '=', 'agency.ID')  // Join agency table
                 ->where('labour_work.schemeID', $request->scheme_id)
+                ->whereBetween('labour_work.Date', [$request->from_date, $request->to_date])
                 ->select(
                     'labour_work.*',
                     'user.Name as user_name',
@@ -556,7 +563,7 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 // Insert new materials
                 foreach ($materials as $material) {
                     DB::table('transfer_material')->insert([
-                        'ID' => (string) Str::uuid(),
+                        'ID' => uniqid(),
                         'PID' => $id,
                         'matrialID' => $material['material_type_id'] ?? '',
                         'qty' => $material['quantity'] ?? 0,
@@ -635,7 +642,10 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
     {
         $request->validate([
             'scheme_id' => 'required|string',
+            'from_date' => 'required|date',
+            'to_date' => 'required|date',
         ]);
+
         
         try {
             // Get all transfer details with from_site and to_site names
@@ -643,6 +653,7 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 ->leftJoin('scheme_step1 as from_scheme', 'transfer_detail.from_site', '=', 'from_scheme.ID')
                 ->leftJoin('scheme_step1 as to_scheme', 'transfer_detail.To_site', '=', 'to_scheme.ID')
                 ->where('transfer_detail.ClientID', $request->scheme_id)
+                ->whereBetween('transfer_detail.Date', [$request->from_date, $request->to_date])
                 ->select(
                     'transfer_detail.*',
                     'from_scheme.Name as from_site_name',
@@ -674,6 +685,46 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
             return response()->json([
                 'status' => false,
                 'message' => 'Failed to fetch transfers: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+     public function deleteMaterialtransfer(Request $request)
+    {
+        try {
+            $validator = validator($request->all(), [
+                'id' => 'required|string',
+                'scheme_id' => 'required|string',
+            ]);
+            
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            
+            // Delete materials first
+            DB::table('transfer_material')
+                ->where('ID', $request->id)
+                ->delete();
+            
+            // Delete main record
+            DB::table('transfer_detail')
+                ->where('ID', $request->id)
+                ->where('ClientID', $request->scheme_id)
+                ->delete();
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Material transfer deleted successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -828,7 +879,13 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
     // <---- Material Consumption ---->
     // LIST API
     public function getMaterialConsumptions(Request $request)
-    {
+    {   
+        $request->validate([
+            'scheme_id' => 'required|string',
+            'from_date' => 'required|date',
+            'to_date' => 'required|date',
+        ]);
+
         try {
             $clientId = $request->scheme_id;
             
@@ -842,6 +899,7 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
             // Get all consumption records
             $consumptions = DB::table('consumption_detail')
                 ->where('ClientID', $clientId)
+                ->whereBetween('consumption_detail.Date', [$request->from_date, $request->to_date])
                 ->orderBy('Created', 'desc')
                 ->get();
             
@@ -1064,7 +1122,13 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
 
     // <---- Material Consumption ---->
     public function getMaterialInward(Request $request)
-    {
+    {   
+        $request->validate([
+            'scheme_id' => 'required|string',
+            'from_date' => 'required|date',
+            'to_date' => 'required|date',
+        ]);
+
         try {
             $clientId = $request->scheme_id;
             
@@ -1080,6 +1144,7 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 ->leftJoin('vendor', 'inv_detail.purchasefrom', '=', 'vendor.ID')
                 ->leftJoin('scheme_step1', 'inv_detail.destination', '=', 'scheme_step1.ID')
                 ->where('inv_detail.ClientID', $clientId)
+                ->whereBetween('inv_detail.Date', [$request->from_date, $request->to_date])
                 ->select(
                     'inv_detail.ID',
                     'inv_detail.Date',

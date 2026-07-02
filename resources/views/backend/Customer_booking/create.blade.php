@@ -31,6 +31,7 @@
           <div class="card-body">
             <form action="@if(!empty($postdated)){{ route('customer_booking.update') }}@else{{ route('customer_booking.store') }}@endif"
                   method="POST" enctype="multipart/form-data">
+                  
               @csrf
               
               @if(!empty($postdated))

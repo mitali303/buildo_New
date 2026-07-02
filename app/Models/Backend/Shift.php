@@ -9,7 +9,7 @@ class Shift extends Model
 {
     use HasFactory;
 
-     protected $table = 'Shift';
+     protected $table = 'shift';
 
     protected $primaryKey = 'id';
     public $incrementing = true; // id is auto-increment

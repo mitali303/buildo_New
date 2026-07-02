@@ -12,7 +12,7 @@ class Empadv_Pay extends Model
 {
     use HasFactory;
 
-    protected $table = 'emp_avance_pay';
+    protected $table = 'employee_advance_payments';
 
     protected $fillable = [
         'Id', 'ClientID', 'pid', 'Date', 'emp_id','advance','payment_method','amt_pay','cheque_no','created_by', 'account_no',

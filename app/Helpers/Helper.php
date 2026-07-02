@@ -258,7 +258,7 @@ function getBalanceTransferRefund($matid, $payid, $date)
         ->orWhere('payment_method', '!=', 'cheque');
     })
     ->whereDate('Date', '<=', '2026-04-22')
-    ->sum('amount');
+    ->sum('net_salary');
 
     // Income
     $getIncome_loan = DB::table('loan')->whereRaw("$condition AND ClientID='$cid' AND paytype='Received' AND ID!='$pid' $condition5")->sum('amt_pay');
@@ -273,7 +273,7 @@ function getBalanceTransferRefund($matid, $payid, $date)
     $acto = DB::table('account_transfer')->whereRaw("$cond2 AND ClientID='$cid' AND ID!='$pid' $condition5")->sum('amt_pay');
 
     //payroll income
-   $emp_adv_pay = DB::table('emp_avance_pay')
+   $emp_adv_pay = DB::table('employee_advance_payments')
     ->where('account_no', $accno)
     ->where('ClientID', $clientId)
     ->where(function ($q) {
@@ -284,7 +284,7 @@ function getBalanceTransferRefund($matid, $payid, $date)
         ->orWhere('payment_method', '!=', 'cheque');
     })
     ->whereDate('Date', '<=', '2026-04-22')
-    ->sum('amt_pay');
+    ->sum('advance');
 
     /** -------------------------
      *  FINAL CALCULATION

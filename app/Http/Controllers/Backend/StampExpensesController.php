@@ -271,13 +271,20 @@ class StampExpensesController extends Controller
         ->where('ID', $id)
         ->firstOrFail();
 
+        $titles = DB::table('stampotherexpenses')
+        ->select('title')
+        ->whereNotNull('title')
+        ->groupBy('title')
+        ->pluck('title')
+        ->toArray();
+
         $banks = Bank_Acc::where('ClientID', $clientId)->get();
         $schemes = SchemeDetail::where('ID', $clientId)->get();
         $db_record = new StampOtherExpenses();
         
 
         return view('backend.stamp_other_expenses.create', compact(
-            'postdated','banks','schemes','db_record'
+            'postdated', 'titles','banks','schemes','db_record'
         ));
     }
     public function update(Request $request)

@@ -13,6 +13,7 @@ use App\Models\Backend\Role;
 use App\Models\Backend\Scheme;
 use App\Models\Backend\Permission;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {
@@ -61,7 +62,20 @@ class UsersController extends Controller
         $schemes = Scheme::all();
         $permissions = Permission::all();
 
-        return view('backend.users.create', compact('roles','permissions','schemes'));
+         $designations = DB::table('user')
+        ->whereNotNull('designation')
+        ->where('designation', '!=', '')
+        ->select('designation')
+        ->distinct()
+        ->orderBy('designation')
+        ->get();
+
+    return view('backend.users.create', compact(
+        'roles',
+        'permissions',
+        'schemes',
+        'designations'
+    ));
     }
 
     /**
@@ -84,6 +98,21 @@ class UsersController extends Controller
         'schemes' => 'required|array',
         'schemes.*' => 'exists:scheme_step1,ID', // optional: ensure each selected scheme exists
         'access_type' => 'required|in:web,mobile,both',  // ✅ Add this
+        'total_salary' => 'nullable|numeric',
+    'perhour_salary' => 'nullable|numeric',
+    'overtime_salary_perhour' => 'nullable|numeric',
+    'designation' => 'nullable|string|max:255',
+    'account_no' => 'nullable|string|max:100',
+    'IFSC' => 'nullable|string|max:20',
+    'bank_name' => 'nullable|string|max:255',
+    'PF' => 'nullable',
+    'PF_No' => 'nullable|string|max:100',
+    'ESI' => 'nullable',
+    'ESI_No' => 'nullable|string|max:100',
+    'allowance_amount' => 'nullable|numeric',
+    'pf_amount' => 'nullable|numeric',
+    'hra_allowance_amount' => 'nullable|numeric',
+    'emp_id' => 'nullable|string|max:100',
     ],[
             'password.regex' => 'Password must contain at least one uppercase letter and one number.',
     ]);
@@ -103,6 +132,22 @@ class UsersController extends Controller
         $user->ClientID = Session::get('selected_scheme_id');
         $user->access_type = $request->input('access_type', 'web'); // <- add this
         $user->device_token = '';
+        $user->total_salary = $request->total_salary;
+$user->perhour_salary = $request->perhour_salary;
+$user->overtime_salary_perhour = $request->overtime_salary_perhour;
+$user->designation = $request->designation;
+$user->account_no = $request->account_no;
+$user->IFSC = $request->IFSC;
+$user->bank_name = $request->bank_name;
+$user->PF = $request->PF;
+$user->PF_No = $request->PF_No;
+$user->ESI = $request->ESI;
+$user->ESI_No = $request->ESI_No;
+$user->allowance_amount = $request->allowance_amount;
+$user->pf_amount = $request->pf_amount;
+$user->hra_allowance_amount = $request->hra_allowance_amount;
+$user->emp_id = $request->emp_id;
+
         $user->save();
     return redirect()->route('users')->with('success', 'User created successfully!');
     }
@@ -125,8 +170,23 @@ class UsersController extends Controller
         $permissions = Permission::all();
 
         
-        return view('backend.users.create', compact('roles','user', 'permissions','schemes'));
-    }
+        $designations = DB::table('user')
+        ->whereNotNull('designation')
+        ->where('designation', '!=', '')
+        ->select('designation')
+        ->distinct()
+        ->orderBy('designation')
+        ->get();
+
+    return view('backend.users.create', compact(
+        'roles',
+        'user',
+        'permissions',
+        'schemes',
+        'designations'
+    ));
+}
+    
 
     /**
      * Update the specified resource in storage.
@@ -147,8 +207,26 @@ class UsersController extends Controller
                 'min:5',
                 'max:16',
                 'regex:/^(?=.*\d)(?=.*[@$!%*#?&]).{5,16}$/'
+
             ],
-            'access_type' => 'required|in:web,mobile,both'  // ✅ Add this
+            'access_type' => 'required|in:web,mobile,both' , // ✅ Add this
+            'total_salary' => 'nullable|numeric',
+'perhour_salary' => 'nullable|numeric',
+'overtime_salary_perhour' => 'nullable|numeric',
+'designation' => 'nullable|string|max:255',
+'account_no' => 'nullable|string|max:100',
+'IFSC' => 'nullable|string|max:20',
+'bank_name' => 'nullable|string|max:255',
+'PF' => 'nullable',
+'PF_No' => 'nullable|string|max:100',
+'ESI' => 'nullable',
+'ESI_No' => 'nullable|string|max:100',
+'allowance_amount' => 'nullable|numeric',
+'pf_amount' => 'nullable|numeric',
+'hra_allowance_amount' => 'nullable|numeric',
+'shift_assign' => 'nullable|string|max:100',
+'emp_id' => 'nullable|string|max:100',
+            
         ], [
             'password.regex' => 'Password must contain at least one number and one special character.',
         ]);
@@ -165,6 +243,22 @@ class UsersController extends Controller
             $user->ClientID = Session::get('selected_scheme_id');     
             $user->access_type = $request->input('access_type', ''); // default empty if not sent
             $user->device_token = '';
+            $user->total_salary = $request->total_salary;
+$user->perhour_salary = $request->perhour_salary;
+$user->overtime_salary_perhour = $request->overtime_salary_perhour;
+$user->designation = $request->designation;
+$user->account_no = $request->account_no;
+$user->IFSC = $request->IFSC;
+$user->bank_name = $request->bank_name;
+$user->PF = $request->PF;
+$user->PF_No = $request->PF_No;
+$user->ESI = $request->ESI;
+$user->ESI_No = $request->ESI_No;
+$user->allowance_amount = $request->allowance_amount;
+$user->pf_amount = $request->pf_amount;
+$user->hra_allowance_amount = $request->hra_allowance_amount;
+$user->shift_assign = $request->shift_assign;
+$user->emp_id = $request->emp_id;
             
             $user->save();
 

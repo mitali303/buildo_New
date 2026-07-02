@@ -869,7 +869,7 @@ private function getbalance($matid, $payid, $date)
                 ->orWhere('payment_method', '!=', 'cheque');
             })
             ->whereDate('Date', '<=', '2026-04-22')
-            ->sum('amount');
+            ->sum('net_salary');
 
 
     /* =========================
@@ -891,7 +891,7 @@ private function getbalance($matid, $payid, $date)
 
         + DB::table('account_transfer')->where('ClientID',$clientId)->where($cond2)->whereDate('Date','<=',$date)->sum('amt_pay')
         
-        + DB::table('emp_avance_pay')
+        + DB::table('employee_advance_payments')
             ->where('account_no', $accno)
             ->where('ClientID', $clientId)
             ->where(function ($q) {
@@ -902,7 +902,7 @@ private function getbalance($matid, $payid, $date)
                 ->orWhere('payment_method', '!=', 'cheque');
             })
             ->whereDate('Date', '<=', '2026-04-22')
-            ->sum('amt_pay');
+            ->sum('advance');
 
     /* =========================
        FINAL BALANCE
@@ -1703,6 +1703,7 @@ public function abstractReport(Request $request)
                 $q->whereDate('Date','<=',$request->to_date);
             })
         ->get();
+        
         return view('backend.Reports.customer_refund', compact('customerRefund'));
 
     }
@@ -1846,21 +1847,70 @@ public function abstractReport(Request $request)
         });
 
         /* 🔹 Excel Download */
-        if ($request->type === 'excel') {
-            return response()->streamDownload(function () use ($loanData) {
-                $handle = fopen('php://output', 'w');
+        if ($request->type == 'excel') {
 
-                // Header
-                fputcsv($handle, array_keys((array) $loanData->first()));
+    return response()->streamDownload(function () use ($loanData) {
 
-                // Data
-                foreach ($loanData as $row) {
-                    fputcsv($handle, $row);
-                }
+        $handle = fopen('php://output', 'w');
 
-                fclose($handle);
-            }, 'loan_payment_report.csv');
-        }
+        // Header
+        fputcsv($handle, [
+            'Sr.No',
+            'Name',
+            'Total Credit Amount',
+            'Total Debit Amount',
+            'Interest Credit',
+            'Interest Debit',
+            'Balance'
+        ]);
+
+        $i = 1;
+
+        $credittotl = 0;
+$debittotl = 0;
+$intrestcredit = 0;
+$intrestdebit = 0;
+$totalbal = 0;
+
+foreach ($loanData as $row) {
+
+    $credittotl += $row['loanAmtTaken'];
+    $debittotl += $row['loanAmtGive'];
+    $intrestcredit += $row['interestRec'];
+    $intrestdebit += $row['interestPaid'];
+    $totalbal += $row['balance'];
+
+    fputcsv($handle, [
+        $i++,
+        $row['customer']->Name ?? '',
+        $row['loanAmtTaken'],
+        $row['loanAmtGive'],
+        $row['interestRec'],
+        $row['interestPaid'],
+        $row['balance'],
+    ]);
+}
+
+// Blank row
+fputcsv($handle, []);
+
+// Grand Total row
+fputcsv($handle, [
+    '',
+    'Grand Total',
+    $credittotl,
+    $debittotl,
+    $intrestcredit,
+    $intrestdebit,
+    $totalbal,
+]);
+
+        fclose($handle);
+
+    }, 'Loan_Payment_Report.csv', [
+        'Content-Type' => 'text/csv',
+    ]);
+}
 
         return view('backend.Reports.loan_report', compact('loanData', 'fromDate', 'toDate'));
     }
@@ -2036,10 +2086,16 @@ public function abstractReport(Request $request)
         ===============================*/
         $clientId = session('selected_scheme_id');
 
-        $materials = DB::table('material')
-            ->select('ID as id', 'Name as name')
-            ->where('ClientID', $clientId)
-            ->get();
+        $materials = DB::table('inv_product')
+        ->join('material', 'inv_product.Material', '=', 'material.ID')
+        ->select(
+            'material.ID as id',
+            'material.Name as name'
+        )
+        ->where('material.ClientID', $clientId)
+        ->distinct()
+        ->orderBy('material.Name')
+        ->get();
         
 
         $vendors = DB::table('vendor')
@@ -2059,13 +2115,16 @@ public function abstractReport(Request $request)
 
         $invoices = DB::table('inv_detail')
             ->join('inv_product', 'inv_detail.ID', '=', 'inv_product.Invno')
+            ->leftJoin('vendor', 'inv_detail.purchasefrom', '=', 'vendor.ID')
             ->select(
                 'inv_detail.ID',
                 'inv_detail.Date',
                 'inv_detail.Invno',
                 'inv_detail.gtotal',
-                'inv_detail.destination'
+                'inv_detail.destination',
+                'vendor.Name as supplier_name'
             )
+            
             ->whereBetween(DB::raw('date(inv_detail.Created)'), [$fromDate, $toDate]);
             
 
@@ -2087,7 +2146,8 @@ public function abstractReport(Request $request)
                 'inv_detail.Date',
                 'inv_detail.Invno',
                 'inv_detail.gtotal',
-                'inv_detail.destination'
+                'inv_detail.destination',
+                'vendor.Name'
             )
             ->get();
 

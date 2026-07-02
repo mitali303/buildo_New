@@ -491,7 +491,7 @@ $getIncome_payment = DB::table('income_payment')
     $acto = DB::table('account_transfer')->whereRaw("$cond2 AND ClientID='$cid' AND ID!='$pid' $condition5")->sum('amt_pay');
     
     //payroll income
-   $emp_adv_pay = DB::table('emp_avance_pay')
+   $emp_adv_pay = DB::table('employee_advance_payments')
     ->where('account_no', $accno)
     ->where('ClientID', $clientId)
     ->where(function ($q) {

@@ -48,10 +48,15 @@ use App\Http\Controllers\Backend\StampExpensesController;
 use App\Http\Controllers\Backend\LandExpensesController;
 use App\Http\Controllers\Backend\CustomerBookingController;
 use App\Http\Controllers\Backend\CompanySettingController;
-
 use App\Http\Controllers\Backend\EmployeeAdvanceController;
+use App\Http\Controllers\Backend\ShiftController;
 use App\Http\Controllers\Backend\AttendanceMasterController;
 use App\Http\Controllers\Backend\SalaryMasterController;
+use App\Http\Controllers\Backend\UserShiftAssignmentController;
+use App\Http\Controllers\Backend\LateMarkCalculationController;
+// use App\Http\Controllers\Backend\EmployeeAdvanceController;
+// use App\Http\Controllers\Backend\AttendanceMasterController;
+// use App\Http\Controllers\Backend\SalaryMasterController;
 use App\Http\Controllers\Backend\DailyWorkReportController;
 use App\Http\Controllers\Backend\EnquiryController;
 /*
@@ -503,6 +508,8 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('report.daily_diary');
         Route::get('reports/income-expense-report', [Report_Controller::class, 'incomeExpense'])
             ->name('report.income_expense');
+        Route::get('/report/income-expense/export', [ReportController::class, 'exportIncomeExpense'])
+            ->name('report.income_expense.export');
         Route::get('reports/tds-report', [Report_Controller::class, 'tdsReport'])
             ->name('report.tds');
         Route::get('reports/material-transfer-report', [Report_Controller::class, 'material_transfer_Report'])
@@ -512,6 +519,8 @@ Route::group(['middleware' => 'auth'], function () {
         // routes/web.php
         Route::match(['get', 'post'], '/reports/abstract', [Report_Controller::class, 'abstractReport'])->name('report.abstract');
         Route::get('/reports/customer_refund', [Report_Controller::class, 'customerRefund'])->name('reports.customer_refund');
+        Route::get('/customer-refund-export', [ReportController::class, 'customerRefundExport'])
+            ->name('customer_refund_export');
         Route::get('/reports/lbrpay_report', [Report_Controller::class, 'lbrpay_report'])->name('reports.lbrpay_report');
         Route::get('/reports/stamp_other_expense_report', [Report_Controller::class, 'stampOtherExpense'])
             ->name('reports.stamp_other_expense_report');
@@ -848,51 +857,51 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         //EmployeeAdvanceController
-        Route::get('/EmployeeAdvance', [EmployeeAdvanceController::class, 'index'])
-            ->name('EmployeeAdvance');
+        // Route::get('/EmployeeAdvance', [EmployeeAdvanceController::class, 'index'])
+        //     ->name('EmployeeAdvance');
 
-        Route::get('/EmployeeAdvance/create', [EmployeeAdvanceController::class, 'create'])
-            ->name('EmployeeAdvance.create');
-        Route::post('/EmployeeAdvance/save', [EmployeeAdvanceController::class, 'store'])
-            ->name('EmployeeAdvance.store');
+        // Route::get('/EmployeeAdvance/create', [EmployeeAdvanceController::class, 'create'])
+        //     ->name('EmployeeAdvance.create');
+        // Route::post('/EmployeeAdvance/save', [EmployeeAdvanceController::class, 'store'])
+        //     ->name('EmployeeAdvance.store');
 
-        Route::get('/EmployeeAdvance/edit/{id}', [EmployeeAdvanceController::class, 'edit'])
-            ->name('EmployeeAdvance.edit');
-        Route::put('/EmployeeAdvance/update', [EmployeeAdvanceController::class, 'update'])
-            ->name('EmployeeAdvance.update');
+        // Route::get('/EmployeeAdvance/edit/{id}', [EmployeeAdvanceController::class, 'edit'])
+        //     ->name('EmployeeAdvance.edit');
+        // Route::put('/EmployeeAdvance/update', [EmployeeAdvanceController::class, 'update'])
+        //     ->name('EmployeeAdvance.update');
 
-        Route::delete('/EmployeeAdvance/delete/{id}', [EmployeeAdvanceController::class, 'destroy'])
-            ->name('EmployeeAdvance.destroy');
-        // Route::delete('/EmployeeAdvance/delete/{id}', [EmployeeAdvanceController::class, 'destroy'])->name('EmployeeAdvance.delete');
+        // Route::delete('/EmployeeAdvance/delete/{id}', [EmployeeAdvanceController::class, 'destroy'])
+        //     ->name('EmployeeAdvance.destroy');
+        // // Route::delete('/EmployeeAdvance/delete/{id}', [EmployeeAdvanceController::class, 'destroy'])->name('EmployeeAdvance.delete');
 
-        Route::get(
-            'backend/EmployeeAdvance/employee_advance_payment/{id}',
-            [EmployeeAdvanceController::class, 'employeeAdvancePayment']
-        )->name('EmployeeAdvance.payment');
+        // Route::get(
+        //     'backend/EmployeeAdvance/employee_advance_payment/{id}',
+        //     [EmployeeAdvanceController::class, 'employeeAdvancePayment']
+        // )->name('EmployeeAdvance.payment');
 
-        Route::post(
-            '/employee-advance-payment/store',
-            [EmployeeAdvanceController::class, 'storePayment']
-        )->name('EmployeeAdvance.storePayment');
+        // Route::post(
+        //     '/employee-advance-payment/store',
+        //     [EmployeeAdvanceController::class, 'storePayment']
+        // )->name('EmployeeAdvance.storePayment');
 
         //AttendanceMaster Controller
-        Route::get('/AttendanceMaster', [AttendanceMasterController::class, 'index'])->name('AttendanceMaster');
-        Route::get('/AttendanceMaster/create', [AttendanceMasterController::class, 'create'])->name('AttendanceMaster.create');
-        Route::post('/AttendanceMaster/save', [AttendanceMasterController::class, 'store'])->name('AttendanceMaster.store');
-        Route::get('/AttendanceMaster/edit/{id}', [AttendanceMasterController::class, 'edit'])->name('AttendanceMaster.edit');
-        Route::put('/AttendanceMaster/update', [AttendanceMasterController::class, 'update'])->name('AttendanceMaster.update');
-        Route::delete('/AttendanceMaster/delete/{id}', [AttendanceMasterController::class, 'destroy'])->name('AttendanceMaster.destroy');
+        // Route::get('/AttendanceMaster', [AttendanceMasterController::class, 'index'])->name('AttendanceMaster');
+        // Route::get('/AttendanceMaster/create', [AttendanceMasterController::class, 'create'])->name('AttendanceMaster.create');
+        // Route::post('/AttendanceMaster/save', [AttendanceMasterController::class, 'store'])->name('AttendanceMaster.store');
+        // Route::get('/AttendanceMaster/edit/{id}', [AttendanceMasterController::class, 'edit'])->name('AttendanceMaster.edit');
+        // Route::put('/AttendanceMaster/update', [AttendanceMasterController::class, 'update'])->name('AttendanceMaster.update');
+        // Route::delete('/AttendanceMaster/delete/{id}', [AttendanceMasterController::class, 'destroy'])->name('AttendanceMaster.destroy');
 
         //SalaryMasterController Controller
-        Route::get('/SalaryMaster', [SalaryMasterController::class, 'index'])->name('SalaryMaster');
-        Route::get('/SalaryMaster/create', [SalaryMasterController::class, 'create'])->name('SalaryMaster.create');
-        Route::post('/SalaryMaster/save', [SalaryMasterController::class, 'store'])->name('SalaryMaster.store');
-        Route::get('/SalaryMaster/edit/{id}', [SalaryMasterController::class, 'edit'])->name('SalaryMaster.edit');
-        Route::put('/SalaryMaster/update', [SalaryMasterController::class, 'update'])->name('SalaryMaster.update');
-        Route::delete('/SalaryMaster/delete/{id}', [SalaryMasterController::class, 'destroy'])->name('SalaryMaster.destroy');
-        Route::get('/get-employee-salary/{id}', [SalaryMasterController::class, 'getEmployeeSalary']);
-        Route::get('/salary-slip/{id}', [SalaryMasterController::class, 'printSlip'])
-            ->name('SalaryMaster.print');
+        // Route::get('/SalaryMaster', [SalaryMasterController::class, 'index'])->name('SalaryMaster');
+        // Route::get('/SalaryMaster/create', [SalaryMasterController::class, 'create'])->name('SalaryMaster.create');
+        // Route::post('/SalaryMaster/save', [SalaryMasterController::class, 'store'])->name('SalaryMaster.store');
+        // Route::get('/SalaryMaster/edit/{id}', [SalaryMasterController::class, 'edit'])->name('SalaryMaster.edit');
+        // Route::put('/SalaryMaster/update', [SalaryMasterController::class, 'update'])->name('SalaryMaster.update');
+        // Route::delete('/SalaryMaster/delete/{id}', [SalaryMasterController::class, 'destroy'])->name('SalaryMaster.destroy');
+        // Route::get('/get-employee-salary/{id}', [SalaryMasterController::class, 'getEmployeeSalary']);
+        // Route::get('/salary-slip/{id}', [SalaryMasterController::class, 'printSlip'])
+        //     ->name('SalaryMaster.print');
 
             // Enquiry
         Route::get('/enquiries',[EnquiryController::class,'index'])
@@ -907,5 +916,147 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/enquiries/delete/{id}',[EnquiryController::class,'destroy'])
             ->name('enquiries.destroy');
 
+            //EmployeeAdvanceController
+     Route::get('/EmployeeAdvance', [EmployeeAdvanceController::class, 'index'])
+            ->name('EmployeeAdvance')
+            ->middleware('hasPermission:EmployeeAdvance_read');
+            Route::get('/EmployeeAdvance/create', [EmployeeAdvanceController::class, 'create'])
+            ->name('EmployeeAdvance.create')
+            ->middleware('hasPermission:create_EmployeeAdvance');
+
+        Route::post('/EmployeeAdvance/save', [EmployeeAdvanceController::class, 'store'])
+            ->name('EmployeeAdvance.store');
+
+        Route::get('/EmployeeAdvance/edit/{id}', [EmployeeAdvanceController::class, 'edit'])
+            ->name('EmployeeAdvance.edit')
+            ->middleware('hasPermission:edit_EmployeeAdvance');
+
+        Route::put('/EmployeeAdvance/update', [EmployeeAdvanceController::class, 'update'])
+            ->name('EmployeeAdvance.update');
+
+        Route::delete('/EmployeeAdvance/delete/{id}', [EmployeeAdvanceController::class, 'destroy'])
+            ->name('EmployeeAdvance.destroy')
+            ->middleware('hasPermission:delete_EmployeeAdvance');
+            Route::delete('/EmployeeAdvance/delete/{id}', [EmployeeAdvanceController::class, 'destroy'])->name('EmployeeAdvance.delete')->middleware('hasPermission:delete_Shift');
+
+        Route::get('/backend/EmployeeAdvance/employee_advance_payment/{id}',
+            [EmployeeAdvanceController::class, 'employeeAdvancePayment']
+        )->name('EmployeeAdvance.payment');
+
+        Route::post('/EmployeeAdvancePayment/save', [EmployeeAdvanceController::class, 'storePayment'])
+            ->name('EmployeeAdvancePayment.store');
+
+        Route::get(
+            '/EmployeeAdvance/history/{id}',
+            [EmployeeAdvanceController::class,'paymentHistory']
+        )->name('EmployeeAdvance.history');    
+
+        Route::get('/salary/generate',
+            [SalaryMasterController::class,'generateSalaryPage'])
+            ->name('salary.generate.page');
+
+        Route::post('/salary/generate',
+            [SalaryMasterController::class,'generateSalary'])
+            ->name('salary.generate');
+
+        Route::get('/salary-report',
+            [SalaryMasterController::class,'salaryReport'])
+            ->name('salary.report');    
+                
+           Route::get(
+                '/SalaryReport/data',
+                [SalaryMasterController::class, 'salaryReportData']
+            )->name('SalaryReport.data');  
+            
+            Route::post(
+                '/salary-summary',
+                [SalaryMasterController::class,'getSalarySummary']
+            )->name('salary.summary');
+
+            Route::post(
+                '/salary-delete-month',
+                [SalaryMasterController::class,'deleteMonthSalary']
+            )->name('salary.delete.month');
+
+            Route::get(
+                '/salary/generated-month-list',
+                [SalaryMasterController::class,'generatedMonthList']
+            )->name('salary.generated.month.list');
+
+     // Shift Controller
+        Route::get('/Shift', [ShiftController::class, 'index'])->name('Shift')->middleware('hasPermission:Shift_read');
+         Route::get('/Shift/create', [ShiftController::class, 'create'])->name('Shift.create')->middleware('hasPermission:create_Shift');
+        Route::post('/Shift/save', [ShiftController::class, 'store'])->name('Shift.store');
+        Route::get('/Shift/edit/{id}', [ShiftController::class, 'edit'])->name('Shift.edit')->middleware('hasPermission:edit_Shift');
+         Route::put('/Shift/update', [ShiftController::class, 'update'])->name('Shift.update');
+        Route::delete('/Shift/delete/{id}', [ShiftController::class, 'destroy'])->name('Shift.delete')->middleware('hasPermission:delete_Shift');
+
+
+ //AttendanceMaster Controller
+        Route::get('/AttendanceMaster', [AttendanceMasterController::class, 'index'])->name('AttendanceMaster')->middleware('hasPermission:AttendanceMaster_read');
+         Route::get('/AttendanceMaster/create', [AttendanceMasterController::class, 'create'])->name('AttendanceMaster.create')->middleware('hasPermission:create_AttendanceMaster');
+        Route::post('/AttendanceMaster/save', [AttendanceMasterController::class, 'store'])->name('AttendanceMaster.store');
+        Route::get('/AttendanceMaster/edit/{id}', [AttendanceMasterController::class, 'edit'])->name('AttendanceMaster.edit')->middleware('hasPermission:edit_AttendanceMaster');
+         Route::put('/AttendanceMaster/update', [AttendanceMasterController::class, 'update'])->name('AttendanceMaster.update');
+       Route::delete('/AttendanceMaster/delete/{id}', [AttendanceMasterController::class, 'destroy'])->name('AttendanceMaster.destroy')
+       ->middleware('hasPermission:delete_AttendanceMaster');
+       Route::post('/AttendanceMaster/import', [AttendanceMasterController::class, 'import'])
+    ->name('attendance.import');
+
+
+       //SalaryMasterController Controller
+        Route::get('/SalaryMaster', [SalaryMasterController::class, 'index'])->name('SalaryMaster')->middleware('hasPermission:SalaryMaster_read');
+        Route::get('/SalaryMaster/create', [SalaryMasterController::class, 'create'])->name('SalaryMaster.create')->middleware('hasPermission:create_SalaryMaster');
+        Route::post('/SalaryMaster/save', [SalaryMasterController::class, 'store'])->name('SalaryMaster.store');
+        Route::get('/SalaryMaster/edit/{id}', [SalaryMasterController::class, 'edit'])->name('SalaryMaster.edit')->middleware('hasPermission:edit_SalaryMaster');
+        Route::put('/SalaryMaster/update', [SalaryMasterController::class, 'update'])->name('SalaryMaster.update');
+        Route::delete('/SalaryMaster/delete/{id}', [SalaryMasterController::class, 'destroy'])->name('SalaryMaster.destroy')->middleware('hasPermission:delete_SalaryMaster');
+        Route::get('salary/get-details/{empId}/{month}/{year}/{id?}',[SalaryMasterController::class, 'getSalaryDetails'])->name('salary.get.details');
+       Route::get('salary-slip/{id}',[SalaryMasterController::class, 'salarySlip'])->name('SalaryMaster.slip');
+       
+       Route::get('/UserShift', [UserShiftAssignmentController::class, 'index'])
+            ->name('UserShift')
+            ->middleware('hasPermission:UserShift_read');
+
+        Route::get('/UserShift/create', [UserShiftAssignmentController::class, 'create'])
+            ->name('UserShift.create')
+            ->middleware('hasPermission:create_UserShift');
+
+        Route::post('/UserShift/save', [UserShiftAssignmentController::class, 'store'])
+            ->name('UserShift.store');
+
+        Route::delete('/UserShift/delete/{id}', [UserShiftAssignmentController::class, 'destroy'])
+            ->name('UserShift.delete')
+            ->middleware('hasPermission:delete_UserShift');
+        Route::get('/UserShift/edit/{id}', [UserShiftAssignmentController::class, 'edit'])
+            ->name('UserShift.edit')
+            ->middleware('hasPermission:edit_UserShift');
+
+        Route::put('/UserShift/update', [UserShiftAssignmentController::class, 'update'])
+            ->name('UserShift.update');
+
+        // Late Mark Calculation
+
+        Route::get('/LateMarkCalculation', [LateMarkCalculationController::class, 'index'])
+        ->name('LateMarkCalculation')
+        ->middleware('hasPermission:LateMarkCalculation_read');
+
+        Route::get('/LateMarkCalculation/create', [LateMarkCalculationController::class, 'create'])
+        ->name('LateMarkCalculation.create')
+        ->middleware('hasPermission:create_LateMarkCalculation');
+
+        Route::post('/LateMarkCalculation/save', [LateMarkCalculationController::class, 'store'])
+        ->name('LateMarkCalculation.store');
+
+        Route::get('/LateMarkCalculation/edit/{id}', [LateMarkCalculationController::class, 'edit'])
+        ->name('LateMarkCalculation.edit')
+        ->middleware('hasPermission:edit_LateMarkCalculation');
+
+        Route::put('/LateMarkCalculation/update', [LateMarkCalculationController::class, 'update'])
+        ->name('LateMarkCalculation.update');
+
+        Route::delete('/LateMarkCalculation/delete/{id}', [LateMarkCalculationController::class, 'destroy'])
+        ->name('LateMarkCalculation.delete')
+        ->middleware('hasPermission:delete_LateMarkCalculation');
     });
 });

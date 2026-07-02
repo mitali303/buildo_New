@@ -46,9 +46,9 @@
     </div>
 
     @php
-    use App\Models\Backend\Empadv_Pay;
+    use App\Models\backend\Empadv_Pay;
 
-        $paid = \App\Models\Backend\Empadv_Pay::where('pid', $old->id)->sum('amt_pay');
+        $paid = \App\Models\backend\Empadv_Pay::where('pid', $old->id)->sum('amt_pay');
         $remaining = $old->advance - $paid;
     @endphp
 

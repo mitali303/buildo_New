@@ -104,6 +104,8 @@ class PostDateChequeController extends Controller
     }
     public function store(Request $request)
     {
+        
+    
         // dd($request);
         $account=$request->validate([
             'scheme'      => 'required|string',

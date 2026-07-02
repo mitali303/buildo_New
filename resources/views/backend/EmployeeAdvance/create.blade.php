@@ -22,14 +22,20 @@
                                 @method('PUT')
                                 <input type="hidden" name="id" id="id" value="{{ $old->id }}"/>
                             @endif
-                            <div class="row">
-
+                            <div class="row">                               
 
                                 <div class="mb-3 col-md-4">
-                                    <label class="form-label" for="record_no">Record No <small class="text-danger">*</small></label>
-                                    <input type="text" class="form-control @error('record_no') is-invalid @enderror"
-                                        value="{{ old('record_no', $nextRecordNo ?? $old->record_no ?? '') }}" name="record_no" id="record_no"
-                                        placeholder="Record No" >
+                                    <label class="form-label" for="record_no">
+                                        Record No <small class="text-danger">*</small>
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control @error('record_no') is-invalid @enderror"
+                                        value="{{ old('record_no', $old->record_no ?? $nextRecordNo ?? '') }}"
+                                        name="record_no"
+                                        id="record_no"
+                                        readonly>
+
                                     @error('record_no')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
@@ -38,7 +44,7 @@
                                  <div class="mb-3 col-md-4">
                                     <label class="form-label" for="date">Date<small class="text-danger">*</small></label>
                                     <input type="date" class="form-control @error('date') is-invalid @enderror"
-                                        value="{{ old('date', $old->date ?? \Carbon\Carbon::today()->format('Y-m-d')) }}" name="date" id="date"
+                                        value="{{ old('date', $old->date ?? '') }}" name="date" id="date"
                                         placeholder="Date" >
                                     @error('date')
                                         <small class="text-danger">{{ $message }}</small>
@@ -57,10 +63,10 @@
     <select name="emp_id" class="form-control" required>
         <option value="" disabled selected>-- Select Employee --</option>
 
-        @foreach($staffs as $staff)
-            <option value="{{ $staff->ID }}"
-                {{ (string)$staff->ID === (string)$selecteduser ? 'selected' : '' }}>
-                {{ $staff->Name }}
+        @foreach($users as $user)
+            <option value="{{ $user->id }}"
+                {{ (string)$user->id === (string)$selecteduser ? 'selected' : '' }}>
+                {{ $user->name }}
             </option>
         @endforeach
     </select>
@@ -119,58 +125,31 @@
             <small class="text-danger">{{ $message }}</small>
         @enderror
     </div>
+    <!-- 👉 Payment Details येथे Add करा -->
 
-
-                            </div>
-
-                            <hr>
+<hr>
 <h5>Payment Details</h5>
 
 <div class="row">
 
-    <!-- Payment Method -->
     <div class="mb-3 col-md-3">
         <label class="form-label">Payment Method</label>
         <select id="Pay_type" name="Pay_type" class="form-control">
             <option value="">SELECT</option>
-            <option value="cash" {{ old('Pay_type', $old->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
-            <option value="cheque" {{ old('Pay_type', $old->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-            <option value="e-Payment" {{ old('Pay_type', $old->payment_method ?? '') == 'e-Payment' ? 'selected' : '' }}>E-Payment</option>
+            <option value="cash">Cash</option>
+            <option value="cheque">Cheque</option>
+            <option value="e-Payment">E-Payment</option>
         </select>
     </div>
 
-    <div class="mb-3 col-md-4" id="cheque_no_div" style="display: none;">
-    <label class="form-label">Cheque No<small class="text-danger">*</small></label>
-    <input type="number" class="form-control @error('cheque_no') is-invalid @enderror"
-           value="{{ old('cheque_no', $old->cheque_no ?? '') }}"
-           name="cheque_no" placeholder="Cheque No">
-    @error('cheque_no')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
+    <div class="mb-3 col-md-4" id="cheque_no_div" style="display:none;">
+        <label class="form-label">Cheque No</label>
+        <input type="number"
+               class="form-control"
+               name="cheque_no"
+               id="cheque_no">
+    </div>
 
-<script>
-    const paymentSelect = document.getElementById('Pay_type');
-    const chequeDiv = document.getElementById('cheque_no_div');
-
-    function toggleChequeField() {
-        if (paymentSelect.value === 'cheque') {
-            chequeDiv.style.display = 'block';
-            chequeDiv.querySelector('input').setAttribute('required', 'required');
-        } else {
-            chequeDiv.style.display = 'none';
-            chequeDiv.querySelector('input').removeAttribute('required');
-        }
-    }
-
-    // Initial check in case old value is 'cheque'
-    toggleChequeField();
-
-    // Listen to changes
-    paymentSelect.addEventListener('change', toggleChequeField);
-</script>
-
-    <!-- Account No -->
     <div class="mb-3 col-md-3">
         <label class="form-label">Account No</label>
         <div id="Ac">
@@ -180,13 +159,19 @@
         </div>
     </div>
 
-    <!-- Balance -->
-    <div class="mb-3 col-md-3">
+    <div class="mb-3 col-md-2">
         <label class="form-label">Balance</label>
-        <input type="text" readonly id="balanceamt" name="balanceamt" class="form-control">
+        <input type="text"
+               class="form-control"
+               id="balanceamt"
+               name="balanceamt"
+               readonly>
     </div>
 
 </div>
+
+
+                            </div>
 
                             <button type="submit" class="btn btn-primary">{{ !empty($old) ? 'Update' : 'Create' }}</button>
                             <a href="{{ route('EmployeeAdvance') }}" class="btn btn-secondary">Cancel</a>
@@ -201,62 +186,81 @@
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+let oldPayType   = "{{ old('Pay_type', $old->payment_method ?? '') }}";
+let oldAccountNo = "{{ old('account_no', $old->account_no ?? '') }}";
 
-    let oldPayType   = "{{ old('Pay_type', $old->payment_method ?? '') }}";
-    let oldAccountNo = "{{ old('account_no', $old->account_no ?? '') }}";
+$(document).ready(function () {
+
+    toggleChequeField();
+
+    if (oldPayType) {
+        loadAccounts(oldPayType, oldAccountNo);
+    }
+
+    $('#Pay_type').change(function () {
+        toggleChequeField();
+        loadAccounts($(this).val());
+    });
+
+    $(document).on('change', '#account_no', function () {
+        getBalance();
+    });
+
+    $('#date').change(function () {
+        getBalance();
+    });
+
+    $('#advance').on('input', function () {
+        validateAdvance();
+    });
+
+});
+
+function toggleChequeField() {
+
+    if ($('#Pay_type').val() == 'cheque') {
+        $('#cheque_no_div').show();
+        $('#cheque_no').prop('required', true);
+    } else {
+        $('#cheque_no_div').hide();
+        $('#cheque_no').prop('required', false).val('');
+    }
+}
 
 function loadAccounts(pay_method, selectedAccount = null) {
+
+    if (pay_method == '') {
+        $("#Ac").html(
+            '<select id="account_no" name="account_no" class="form-control"><option value="">Select</option></select>'
+        );
+        $("#balanceamt").val('');
+        return;
+    }
 
     $.ajax({
         url: "{{ route('ajax.getAccountList') }}",
         type: "POST",
         data: {
             pay_method: pay_method,
-            selected_id: selectedAccount, // ✅ IMPORTANT
+            selected_id: selectedAccount,
             _token: "{{ csrf_token() }}"
         },
         success: function (response) {
 
             $("#Ac").html(response.html);
 
-            // optional safety
             if (selectedAccount) {
-                $("#account_no").val(selectedAccount).trigger('change'); // ✅ IMPORTANT
-            } else {
-                getBalance();
+                $("#account_no").val(selectedAccount).trigger('change');
             }
         }
     });
 }
 
-$(document).ready(function () {
-
-    if (oldPayType) {
-        loadAccounts(oldPayType, oldAccountNo);
-    }
-
-});
-
-$(document).on('change', '#Pay_type', function () {
-    let pay_method = $(this).val();
-    loadAccounts(pay_method); // no old account here
-});
-
-
-// Account change → get balance
-$(document).on('change', '#account_no', function () {
-    getBalance();
-});
-
-
-// Get balance function
 function getBalance() {
 
     let accId = $("#account_no").val();
-    let date  = $("#date").val();
-    let iid = $("#id").length ? $("#id").val() : 0;
 
-    if (!accId) {
+    if (accId == "") {
         $("#balanceamt").val("");
         return;
     }
@@ -266,11 +270,12 @@ function getBalance() {
         type: "POST",
         data: {
             matid: accId,
-            date: date,
-            iid: iid,
+            date: $("#date").val(),
+            iid: $("#id").val() || 0,
             _token: "{{ csrf_token() }}"
         },
-        success: function(response) {
+        success: function (response) {
+
             $("#balanceamt").val(response.balance);
 
             validateAdvance();
@@ -278,27 +283,16 @@ function getBalance() {
     });
 }
 
-
-// If date changes → refresh balance
-$(document).on('change', '#date', function () {
-    getBalance();
-});
-
 function validateAdvance() {
 
     let advance = parseFloat($("#advance").val()) || 0;
     let balance = parseFloat($("#balanceamt").val()) || 0;
 
-    if (!balance) return; // no balance yet, skip
+    if (balance > 0 && advance > balance) {
 
-    if (advance > balance) {
-        alert("Advance amount cannot be greater than available balance!");
+        alert("Advance amount cannot be greater than available balance.");
 
         $("#advance").val(balance);
     }
 }
-
-$(document).on('input', '#advance', function () {
-    validateAdvance();
-});
 </script>

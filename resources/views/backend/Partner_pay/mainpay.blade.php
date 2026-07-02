@@ -5,9 +5,9 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        @if (hasPermission('create_purchase_order'))
+        <!-- @if (hasPermission('create_purchase_order'))
         <a href="{{route('Partner_pay.create', ['type' => $type])}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New {{ $type === 'investor' ? 'Investor' : 'Partner' }} Payment</a>
-        @endif
+        @endif -->
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">{{ $type === 'investor' ? 'Investor' : 'Partner' }} Payment Table</h1> 
         </div>

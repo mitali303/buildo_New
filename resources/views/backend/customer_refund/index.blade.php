@@ -49,15 +49,7 @@
                                     <th> Amount</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th><input type="text" placeholder="Search Customer From" class="form-control"/></th>
-                                    <th><input type="text" placeholder="Search Scheme" class="form-control"/></th>
-                                    <th></th>
-                                    <th></th>
-                                   
-                                </tr>
+                               
                             </thead>
                         </table>
                     </div>
