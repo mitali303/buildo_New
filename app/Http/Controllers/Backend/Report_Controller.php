@@ -2086,23 +2086,40 @@ fputcsv($handle, [
         ===============================*/
         $clientId = session('selected_scheme_id');
 
+        // $materials = DB::table('inv_product')
+        // ->join('material', 'inv_product.Material', '=', 'material.ID')
+        // ->select(
+        //     'material.ID as id',
+        //     'material.Name as name'
+        // )
+        // ->where('material.ClientID', $clientId)
+        // ->distinct()
+        // ->orderBy('material.Name')
+        // ->get();
         $materials = DB::table('inv_product')
-        ->join('material', 'inv_product.Material', '=', 'material.ID')
-        ->select(
-            'material.ID as id',
-            'material.Name as name'
-        )
-        ->where('material.ClientID', $clientId)
-        ->distinct()
-        ->orderBy('material.Name')
-        ->get();
+    ->join('material', 'inv_product.Material', '=', 'material.ID')
+    ->join('inv_detail', 'inv_product.Invno', '=', 'inv_detail.ID')
+    ->whereBetween(DB::raw('date(inv_detail.Created)'), [$fromDate, $toDate])
+    ->where('material.ClientID', $clientId)
+    ->select('material.ID as id', 'material.Name as name')
+    ->distinct()
+    ->orderBy('material.Name')
+    ->get();
         
 
-        $vendors = DB::table('vendor')
-            ->where('Type', 'VENDOR')
-            ->select('ID as id', 'Name')
-            ->where('ClientID', $clientId)
-            ->get();
+        // $vendors = DB::table('vendor')
+        //     ->where('Type', 'VENDOR')
+        //     ->select('ID as id', 'Name')
+        //     ->where('ClientID', $clientId)
+        //     ->get();
+        $vendors = DB::table('inv_detail')
+    ->join('vendor', 'inv_detail.purchasefrom', '=', 'vendor.ID')
+    ->whereBetween(DB::raw('date(inv_detail.Created)'), [$fromDate, $toDate])
+    ->where('vendor.ClientID', $clientId)
+    ->select('vendor.ID as id', 'vendor.Name')
+    ->distinct()
+    ->orderBy('vendor.Name')
+    ->get();
 
         $schemes = DB::table('scheme_step1')
             ->select('ID as id', 'Name')

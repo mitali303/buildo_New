@@ -158,19 +158,36 @@ function printReport() {
 
 // Export to Excel
 function exportExcel() {
-    var table = document.getElementById("ShowCashbook").querySelector("table");
-    if(!table) {
-        alert("No data available to export!");
+
+    var table = document.querySelector("#ShowCashbook table");
+
+    if (!table) {
+        alert("No data available!");
         return;
     }
-    var html = table.outerHTML.replace(/ /g, '%20');
-    var filename = 'bank_transaction_report.xls';
-    var a = document.createElement('a');
-    a.href = 'data:application/vnd.ms-excel,' + html;
-    a.download = filename;
-    a.click();
-}
 
+    var csv = [];
+
+    for (var i = 0; i < table.rows.length; i++) {
+        var row = [];
+        var cols = table.rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++) {
+            row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+        }
+
+        csv.push(row.join(","));
+    }
+
+    var csvFile = new Blob([csv.join("\n")], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    var downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(csvFile);
+    downloadLink.download = "Bank_Transaction_Report.csv";
+    downloadLink.click();
+}
 </script>
 
 @endpush

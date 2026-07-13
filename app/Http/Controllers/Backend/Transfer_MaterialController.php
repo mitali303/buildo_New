@@ -43,7 +43,10 @@ public function index(Request $request)
                 'materials.material'   // 👈 IMPORTANT
             ])
             ->select(['ID', 'Date', 'Srno', 'gtotal', 'from_site', 'To_site'])
-            ->where('ClientID', $clientId)
+            ->where(function($q) use ($clientId){
+                    $q->where('from_site', $clientId)
+                    ->orWhere('To_site', $clientId);
+                })
             ->orderBy('Srno', 'DESC');
 
             return DataTables::of($query)
@@ -585,7 +588,10 @@ public function edit($id)
 
     // 1️⃣ Parent
     $transfer = Transfer_detail::where('ClientID', $clientId)
-        ->where('ID', $id)
+         ->where(function($q) use ($clientId){
+                $q->where('from_site', $clientId)
+                ->orWhere('To_site', $clientId);
+            })
         ->firstOrFail();
 
     // 2️⃣ Child rows (KEEP AS ELOQUENT MODELS)
