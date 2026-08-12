@@ -65,6 +65,7 @@ class CustomerBooking extends Model
         'floaring',
         'plumbing',
         'project',
+        'slab_total',
         'agreement_complete',
         'agreement_no',
         'reg_date',

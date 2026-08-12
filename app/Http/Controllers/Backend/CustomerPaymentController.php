@@ -20,13 +20,25 @@ class CustomerPaymentController extends Controller
     {
         if ($request->ajax()) {
 // dd(session('selected_scheme_id'));
-           $payments = CustomerPayment::query()
-                        ->when($request->from_date, function ($q) use ($request) {
-                        $q->whereDate('Date', '>=', $request->from_date);
-                    })
-                    ->when($request->to_date, function ($q) use ($request) {
-                        $q->whereDate('Date', '<=', $request->to_date);
-                    })
+        //    $payments = CustomerPayment::query()
+        //                 ->when($request->from_date, function ($q) use ($request) {
+        //                 $q->whereDate('Date', '>=', $request->from_date);
+        //             })
+        //             ->when($request->to_date, function ($q) use ($request) {
+        //                 $q->whereDate('Date', '<=', $request->to_date);
+        //             })
+        //         ->selectRaw('
+        //             Booking_ID,
+        //             MAX(ID) as ID,
+        //             MAX(schemeID) as schemeID,
+        //             MAX(FlatID) as FlatID,
+        //             MAX(payement_by) as payement_by
+        //         ')
+        //         ->where('ClientID', session('selected_scheme_id'))
+        //         // ->where('type', 'Downpayment')
+        //         ->groupBy('Booking_ID');
+            $payments = CustomerPayment::query()
+                ->where('ClientID', session('selected_scheme_id'))
                 ->selectRaw('
                     Booking_ID,
                     MAX(ID) as ID,
@@ -34,10 +46,7 @@ class CustomerPaymentController extends Controller
                     MAX(FlatID) as FlatID,
                     MAX(payement_by) as payement_by
                 ')
-                ->where('ClientID', session('selected_scheme_id'))
-                ->where('type', 'Downpayment')
                 ->groupBy('Booking_ID');
-
             
             return DataTables::of($payments)
                 ->addIndexColumn()
@@ -156,8 +165,8 @@ class CustomerPaymentController extends Controller
             ->where('scheme_ID', $clientId)
             ->whereIn('ID', $booking_flats)
             ->get();
-        
-        return view('backend.customer_payment.create', compact('banks','schemes','booking_cust','clientId','flats'));
+        $orderNo = generateOrderNo();
+        return view('backend.customer_payment.create', compact('banks','schemes','booking_cust','clientId','flats' ,'orderNo'));
     }
     public function store(Request $request)
     {
@@ -176,7 +185,7 @@ class CustomerPaymentController extends Controller
             'bnk_charge'  => 'nullable|numeric',
             'narration'   => 'nullable|string',
         ]);
-
+        $orderNo = generateOrderNo();
         CustomerPayment::create([
             'ID'            => uniqid(),
             'ClientID'      => session('selected_scheme_id'),
@@ -189,7 +198,7 @@ class CustomerPaymentController extends Controller
             'payment_method'=> $request->Pay_type,
             'account_no'    => $request->account_no,
             'narration'     => $request->narration,
-            'receipt_no'    => $request->receipt_no,
+            'receipt_no'    => $orderNo,
             'Date'          => $request->date,
             'amt_pay'       => $request->amount_pay,
             'cheque_no'     => $request->cheque_no,
@@ -204,10 +213,14 @@ class CustomerPaymentController extends Controller
     public function edit($id)
     {
          $clientId = session('selected_scheme_id');
+
+
         $customerpayment = CustomerPayment::findOrFail($id);
         $banks = Bank_Acc::where('ClientID', $clientId)->get();
         $schemes = SchemeDetail::all();
          $booking_cust = Booking_Customer::first();
+
+         $orderNo = generateOrderNo($customerpayment->receipt_no);
 
         // Get booked flats for the selected scheme and wing
         $bookcancel_flats = DB::table('booking_cancel')
@@ -226,7 +239,7 @@ class CustomerPaymentController extends Controller
             ->get();
 
         return view('backend.customer_payment.create', compact(
-            'customerpayment', 'banks', 'schemes', 'flats','booking_cust'
+            'customerpayment', 'banks', 'schemes', 'flats','booking_cust','orderNo'
         ));
     }
 
@@ -469,7 +482,7 @@ class CustomerPaymentController extends Controller
         MAIN PAYMENT & BOOKING
         ------------------------------------------------- */
 
-        $payment = CustomerPayment::with(['schemes', 'booking_cust'])
+        $payment = CustomerPayment::with(['schemes', 'booking_cust',  'flat'])
             ->where('ID', $id)
             ->firstOrFail();
 
@@ -634,10 +647,13 @@ class CustomerPaymentController extends Controller
 
         $grandTotal=$payment->amt_pay;
 
-        $client = DB::table('Client')
-        ->where('ClientID', '')
-        ->orWhereRaw('1 = 1')
-        ->first();
+        // $client = DB::table('Client')
+        // ->where('ClientID', '')
+        // ->orWhereRaw('1 = 1')
+        // ->first();
+        $client = DB::table('client')
+            ->where('ClientID', $payment->ClientID)
+            ->first();
         $totalInWords = \CustomHelper::numberToWords(round($grandTotal));
 
         return view('backend.customer_payment.receipt_print', compact('payment', 'booking', 'client','totalInWords'));

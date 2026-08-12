@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Backend\Bank_Acc;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Backend\Labour_Work;
+use App\Models\Backend\Transfer_material;
+use App\Models\Backend\Material_Consumption;
+use App\Models\Backend\DailyWorkEntry;
 
 class DashboardController extends Controller
 {
@@ -485,6 +489,24 @@ class DashboardController extends Controller
         // Pending
         $lbr_pending = $lbr_total - $lbr_paid;
 
+        // Labour Work Count
+        $labourWorkCount = Labour_Work::where('schemeID', $clientId)->count();
+
+        //purchase invoice
+        $materialInwardCount = DB::table('inv_detail')
+        ->where('ClientID', $clientId)
+        ->count();
+
+            //material transfer
+        $materialTransferCount = Transfer_material::where('from_site', $clientId)
+        ->orWhere('To_site', $clientId)
+        ->count();
+        //materieal consumption
+        $materialConsumptionCount = Material_Consumption::where('ClientID', $clientId)->count();
+
+        //DailyWorkEntry
+       $dailyWorkCount = DailyWorkEntry::count();
+
         return view('backend.dashboard', compact(
             'totreceive',
             'totPaid',
@@ -508,7 +530,12 @@ class DashboardController extends Controller
             'inv_exp',
             'off_exp',
             'fromDate',
-            'toDate'
+            'toDate',
+            'labourWorkCount',
+            'materialInwardCount',
+            'materialTransferCount',
+            'materialConsumptionCount',
+            'dailyWorkCount'
         ));
     }
 }

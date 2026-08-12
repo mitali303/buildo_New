@@ -175,19 +175,25 @@ $(document).ready(function() {
                             Task: 'update',
                             _token: "{{ csrf_token() }}"
                         },
-                        success: function(response) {
-                            $('#flatDetailsContent').html(response);
+                        //success: function(response) {
+                           // $('#flatDetailsContent').html(response);
                             
                             // Make all inputs readonly and disable buttons in view mode
-                            $('#flatDetailsContent input, #flatDetailsContent select, #flatDetailsContent textarea')
-                                .prop('readonly', true)
-                                .prop('disabled', true);
+                           // $('#flatDetailsContent input, #flatDetailsContent select, #flatDetailsContent textarea')
+                              //  .prop('readonly', true)
+                            //    .prop('disabled', true);
                             
                             // Hide all action buttons
                             // $('#flatDetailsContent button, #flatDetailsContent .btn').hide();
                             
                             // Hide the action column header and all action cells
                             // $('#flatDetailsContent th:last-child, #flatDetailsContent td:last-child').hide();
+ 			success: function(response) {
+                            $('#flatDetailsContent').html(response);
+                        
+                            if (typeof feather !== 'undefined') {
+                                feather.replace();
+                            }
                         },
                         error: function(xhr) {
                             $('#flatDetailsContent').html(`
@@ -216,6 +222,91 @@ $(document).ready(function() {
         });
     }
 });
+</script>
+<script>
+function updateHiddenValues(rid){
+    var did = rid.split("_");
+    var id = did[1];
+    var val = $("#FlatType"+id).val()+"##"+$("#Wing"+id).val()+"##"+$("#Floor"+id).val()+"##"+$("#FlatNo"+id).val()+"##"+$("#Area"+id).val()+"##"+$("#Other1"+id).val()+"##"+$("#Other2"+id).val()+"##"+$("#Terrace"+id).val()+"##"+$("#Attribute"+id).val()+"##"+$("#TotalSqFt"+id).val()+"##"+$("#TotalSqMtr"+id).val();
+    $("#flatdet_"+id).val(val);
+}
+
+function calTotalsq(i) {
+    var totalSqft=0;
+    var Area=$("#Area"+i).val();
+    var Terrace=$("#Terrace"+i).val();
+    var Other1=$("#Other1"+i).val();
+    var Other2=$("#Other2"+i).val();
+    if(Area=='') Area=0;
+    if(Terrace=='') Terrace=0;
+    if(Other1=='') Other1=0;
+    if(Other2=='') Other2=0;
+    totalSqft=parseFloat(Area)+parseFloat(Terrace)+parseFloat(Other1)+parseFloat(Other2);
+    $("#TotalSqFt"+i).val(totalSqft);
+}
+
+function saveFlatRow(rowId) {
+    const data = {
+        FlatType: $("#FlatType" + rowId).val(),
+        Wing: $("#Wing" + rowId).val(),
+        Floor: $("#Floor" + rowId).val(),
+        FlatNo: $("#FlatNo" + rowId).val(),
+        Area: $("#Area" + rowId).val(),
+        Other1: $("#Other1" + rowId).val(),
+        Other2: $("#Other2" + rowId).val(),
+        Terrace: $("#Terrace" + rowId).val(),
+        FlatAttribute: $("#Attribute" + rowId).val(),
+        TotalSqFt: $("#TotalSqFt" + rowId).val(),
+        TotalSqMtr: $("#TotalSqMtr" + rowId).val(),
+        _token: "{{ csrf_token() }}"
+    };
+
+    $.ajax({
+        url: "{{ route('flatDetails.saveRow') }}",
+        method: 'POST',
+        data: data,
+        success: function(response) {
+            alert("Saved successfully");
+            const btn = $("#saveBtn" + rowId);
+            btn.removeClass("btn-primary").addClass("btn-success").text("Saved");
+        },
+        error: function(xhr) {
+            alert("Error: " + xhr.responseText);
+        }
+    });
+}
+
+function updateFlatRow(flatId, rowId) {
+    const data = {
+        ID: flatId,
+        FlatType: $("#FlatType" + rowId).val(),
+        Wing: $("#Wing" + rowId).val(),
+        Floor: $("#Floor" + rowId).val(),
+        FlatNo: $("#FlatNo" + rowId).val(),
+        Area: $("#Area" + rowId).val(),
+        Other1: $("#Other1" + rowId).val(),
+        Other2: $("#Other2" + rowId).val(),
+        Terrace: $("#Terrace" + rowId).val(),
+        FlatAttribute: $("#Attribute" + rowId).val(),
+        TotalSqFt: $("#TotalSqFt" + rowId).val(),
+        TotalSqMtr: $("#TotalSqMtr" + rowId).val(),
+        _token: "{{ csrf_token() }}"
+    };
+
+    $.ajax({
+        url: "{{ route('flatDetails.updateRow') }}",
+        type: 'POST',
+        data: data,
+        success: function(res) {
+            alert("Updated successfully");
+            const btn = $("#saveBtn" + rowId);
+            btn.removeClass('btn-primary').addClass('btn-success').text('Updated');
+        },
+        error: function(err) {
+            alert("Error updating flat row: " + err.responseText);
+        }
+    });
+}
 </script>
 
 <style>

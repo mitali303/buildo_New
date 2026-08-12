@@ -24,7 +24,18 @@ class BankAccController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Bank_Acc::select(['ID', 'Name', 'ACNo', 'Branch','IFSC', 'ClientID','Created']);
+               $clientId = session('selected_scheme_id');
+
+        $query = Bank_Acc::where('ClientID', $clientId)
+            ->select([
+                'ID',
+                'Name',
+                'ACNo',
+                'Branch',
+                'IFSC',
+                'ClientID',
+                'Created'
+            ]);
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('scheme', function ($row) {
@@ -144,9 +155,11 @@ public function store(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
- public function edit($id)
+public function edit($id)
 {
-    $bankacc = Bank_Acc::findOrFail($id);  
+    $bankacc = Bank_Acc::where('ClientID', session('selected_scheme_id'))
+                ->findOrFail($id);
+
     return view('backend.BankAcc.create', compact('bankacc'));
 }
 
@@ -154,7 +167,13 @@ public function update(Request $request)
 {
     /* 1️⃣ VALIDATE -------------------------------------------------- */
     $validated = $request->validate([
-        'id'              => ['required', 'exists:accounts,ID'], // hidden input
+        'id' => [
+    'required',
+    Rule::exists('accounts', 'ID')
+        ->where(function ($query) {
+            $query->where('ClientID', session('selected_scheme_id'));
+        })
+], // hidden input
         'bank_name'       => ['required', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
         'account_no'      => ['required', 'regex:/^[0-9]{9,18}$/',],
         'branch'          => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
@@ -166,7 +185,8 @@ public function update(Request $request)
     ]);
 
     /* 2️⃣ UPDATE THE CHOSEN ACCOUNT -------------------------------- */
-    $acc              = Bank_Acc::findOrFail($validated['id']);
+    $acc = Bank_Acc::where('ClientID', session('selected_scheme_id'))
+        ->findOrFail($validated['id']);
     $acc->LastEdited  = now();
     $acc->Name        = $validated['bank_name'];       // ← column = Name
     $acc->ACNo        = $validated['account_no'];      // ← column = ACNo
@@ -205,7 +225,8 @@ public function update(Request $request)
      */
    public function destroy($id)
 {
-    $bankacc = Bank_Acc::findOrFail($id);
+      $bankacc = Bank_Acc::where('ClientID', session('selected_scheme_id'))
+                ->findOrFail($id);
 
     if (!canDeleteRecord('workorder_payment', 'account_no', $id)) {
             return redirect()

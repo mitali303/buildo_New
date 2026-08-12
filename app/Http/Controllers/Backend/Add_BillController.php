@@ -44,6 +44,14 @@ public function index(Request $request)
                 return $row->Scheme->Name ?? '-';
             })
 
+            ->addColumn('CustomerName', function ($row) {
+            return $row->Customer ?? '-';
+        })
+
+        ->addColumn('FlatNo', function ($row) {
+                return $row->flatno->FlatNo ?? '-';
+            })
+
             ->addColumn('actions', function ($row) {
 
                 $editUrl   = route('Add_bill.edit', $row->ID);

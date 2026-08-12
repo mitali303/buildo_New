@@ -35,11 +35,12 @@ class LateMarkCalculationController extends Controller
         // Employee Name
         if ($request->filled('employee')) {
 
-            $query->whereHas('employee', function ($q) use ($request) {
+    $search = trim($request->employee);
 
-                $q->where('Name', 'like', '%' . trim($request->employee) . '%');
-            });
-        }
+    $query->whereHas('employee', function ($q) use ($search) {
+        $q->where('name', 'LIKE', "%{$search}%");
+    });
+}
 
         // Month
         if ($request->filled('month')) {

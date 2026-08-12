@@ -64,7 +64,8 @@
 						'staff', 'staff/create', 'staff/edit*',
 						'partner-loan-investors', 'partner-loan-investors/create', 'partner-loan-investors/edit*',
 						'bank-loan-requests', 'bank-loan-requests/create', 'bank-loan-requests/edit*',
-						'bank-accounts', 'bank-accounts/create', 'bank-accounts/edit*'
+						'bank-accounts', 'bank-accounts/create', 'bank-accounts/edit*',
+						
 					);
 				@endphp
 				@if (
@@ -77,7 +78,8 @@
 					hasPermission('staff_read') || 
 					hasPermission('partner_loan_investor_read') || 
 					hasPermission('bank_loan_request_read') || 
-					hasPermission('Bank_Account_read')
+					hasPermission('Bank_Account_read') ||
+					hasPermission('Shift_read')
 				)
 
 				<li class="sidebar-item {{ $activeMastersRoutes ? 'active' : '' }}">
@@ -146,6 +148,11 @@
 							<a class='sidebar-link' href="{{route('BankAcc')}}">Bank Accounts</a>
 						</li>
 						@endif
+						  @if (hasPermission('Shift_read'))
+					<li class="sidebar-item {{ request()->is('Shift', 'Shift/create', 'Shift/edit*') ? 'active' : '' }}">
+						<a class='sidebar-link' href="{{ route('Shift') }}">Shift</a>
+					</li>
+					@endif
 
 					</ul>
 				</li>
@@ -240,41 +247,121 @@
 				</li>
 				@endif
 
-				<!-- Enquiry -->
 				@php
-					$activeEnquiryRoutes = request()->is('enquiries*');
+				$activeCRMRoutes = request()->is(
+					'enquiries*',
+					'CallOutcome*',
+					'CallStatus*',
+					'CallPurpose*',
+					'CreateLead*',
+					'DailyWork*'
+					);
 				@endphp
+			@if(
+				Auth::user()->Role == 2 ||
+				hasPermission('call_outcome_read') ||
+				hasPermission('call_status_read') ||
+				hasPermission('call_purpose_read') || 
+				hasPermission('lead_read') ||
+				hasPermission('daily_work_read') ||
+				Auth::user()->Role == 2
+			)
 
-				@if (hasPermission('enquiry_read'))
-				<li class="sidebar-item {{ $activeEnquiryRoutes ? 'active' : '' }}">
-					<a data-bs-target="#enquiry" data-bs-toggle="collapse"
-					class="sidebar-link {{ $activeEnquiryRoutes ? '' : 'collapsed' }}">
-
-						<i class="align-middle fas fa-headset"></i>
-						<span class="align-middle">Enquiry</span>
+		<li class="sidebar-item {{ $activeCRMRoutes ? 'active' : '' }}">
+			<a data-bs-target="#crm" data-bs-toggle="collapse" class="sidebar-link {{ $activeCRMRoutes ? '' : 'collapsed' }}">
+				<i class="align-middle fas fa-headset"></i>
+					<span class="align-middle">CRM</span>
+			</a>
+			<ul id="crm" class="sidebar-dropdown list-unstyled collapse {{ $activeCRMRoutes ? 'show' : '' }}" data-bs-parent="#sidebar">
+		<!-- @if(hasPermission('enquiry_read') || Auth::user()->Role == 2)
+				<li class="sidebar-item">
+					<a class="sidebar-link" href="{{ route('enquiries.index') }}">
+						Enquiry List
 					</a>
-
-					<ul id="enquiry"
-						class="sidebar-dropdown list-unstyled collapse {{ $activeEnquiryRoutes ? 'show' : '' }}"
-						data-bs-parent="#sidebar">
-
-						<li class="sidebar-item {{ request()->is('enquiries') ? 'active' : '' }}">
-							<a class="sidebar-link" href="{{ route('enquiries.index') }}">
-								Enquiry List
-							</a>
-						</li>
-
-						@if (hasPermission('enquiry_create'))
-						<li class="sidebar-item {{ request()->is('enquiries/create') ? 'active' : '' }}">
-							<a class="sidebar-link" href="{{ route('enquiries.create') }}">
-								Add Enquiry
-							</a>
-						</li>
-						@endif
-
-					</ul>
 				</li>
-				@endif
+			@endif -->
+			@if(Auth::user()->Role == 2)
+    <li class="sidebar-item">
+        <a class="sidebar-link" href="{{ route('enquiries.index') }}">
+            Enquiry List
+        </a>
+    </li>
+@endif
+	
+		@if(hasPermission('call_outcome_read'))
+        	<li class="sidebar-item">
+            	<a class="sidebar-link" href="{{ route('CallOutcome') }}">
+                	Call Outcome
+            	</a>
+        	</li>
+        @endif
+		@if(hasPermission('call_status_read'))
+        	<li class="sidebar-item">
+				<a class="sidebar-link" href="{{ route('CallStatus') }}">
+                	Call Status
+            	</a>
+        	</li>
+        @endif
+		@if(hasPermission('call_purpose_read'))
+        	<li class="sidebar-item">
+            	<a class="sidebar-link" href="{{ route('CallPurpose') }}">
+               		 Call Purpose
+            	</a>
+        	</li>
+        @endif
+			@if(hasPermission('lead_read'))
+			<li class="sidebar-item {{ request()->is('CreateLead','CreateLead/create','CreateLead/edit*') ? 'active' : '' }}">
+    			<a class="sidebar-link" href="{{ route('CreateLead') }}">
+        			Lead / Enquiry
+    			</a>
+			</li>
+		@endif
+				<!-- @if(hasPermission('daily_work_read'))
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="{{ route('DailyWork') }}">
+					<i data-feather="clipboard"></i>
+					<span>Daily Work Entry</span>
+				</a>
+			</li>
+			@endif -->
+	</ul>
+	</li>
+	@endif
+		<!--DailyWork-->
+	@php
+        $activeDailyWorkRoutes = request()->is('DailyWork*');
+        @endphp
+        
+        @if(hasPermission('daily_work_read'))
+        
+        <li class="sidebar-item {{ $activeDailyWorkRoutes ? 'active' : '' }}">
+        
+            <a data-bs-target="#dailywork" 
+               data-bs-toggle="collapse" 
+               class="sidebar-link {{ $activeDailyWorkRoutes ? '' : 'collapsed' }}">
+        
+                <i class="align-middle fas fa-clipboard"></i>
+                <span class="align-middle">Daily Work</span>
+        
+            </a>
+        
+            <ul id="dailywork" 
+                class="sidebar-dropdown list-unstyled collapse {{ $activeDailyWorkRoutes ? 'show' : '' }}"
+                data-bs-parent="#sidebar">
+        
+                <li class="sidebar-item {{ request()->is('DailyWork*') ? 'active' : '' }}">
+                    <a class="sidebar-link" href="{{ route('DailyWork') }}">
+                        Daily Work Entry
+                    </a>
+                </li>
+        
+            </ul>
+        
+        </li>
+        
+        @endif
+
+
 
 			<!--  Work/Material Order -->
 				@php
@@ -450,19 +537,19 @@ $activeFinanceRoutes = request()->is(
             <a class='sidebar-link' href="{{ route('Return_pay') }}">Return Payment</a>
         </li>
         @endif
-@php
-$isTdsActive = request()->is(
-    'tds-payments*',
-    'view-payment-tds*'
-);
-@endphp
-        {{-- TDS --}}
-        @if (hasPermission('tds_payment_read'))
-       <li class="sidebar-item {{ $isTdsActive ? 'active' : '' }}">
-    <a class='sidebar-link' href="{{ route('Tds_pay') }}">
-        TDS Payment
-    </a>
-</li>
+		@php
+		$isTdsActive = request()->is(
+			'tds-payments*',
+			'view-payment-tds*'
+		);
+		@endphp
+				{{-- TDS --}}
+				@if (hasPermission('tds_payment_read'))
+			<li class="sidebar-item {{ $isTdsActive ? 'active' : '' }}">
+			<a class='sidebar-link' href="{{ route('Tds_pay') }}">
+				TDS Payment
+			</a>
+		</li>
         @endif
 
         {{-- Bank --}}
@@ -758,6 +845,7 @@ $isTdsActive = request()->is(
 						<a class='sidebar-link' href="{{ route('reports.site_expenses_report') }}">Site Expenses Report</a>
 					</li>
 					@endif
+			
 				@if (hasPermission('customer_payment_report_read'))
 					@php
 						$customerPaymentActive = request()->is('reports/customer-payment/*');
@@ -790,6 +878,9 @@ $isTdsActive = request()->is(
 									Self Payment
 								</a>
 							</li>
+							<li class="sidebar-item {{ request()->is('reports/customer-payment-report') ? 'active' : '' }}">
+						<a class='sidebar-link' href="{{ route('reports.customer.payment.report') }}">Receipt Report</a>
+					</li>
 
 						</ul>
 					</li>
@@ -836,11 +927,11 @@ $isTdsActive = request()->is(
 					</li>
 					@endif
 					
-					@if (hasPermission('gst_report_read'))
+					<!-- @if (hasPermission('gst_report_read'))
 					<li class="sidebar-item {{ request()->is('reports/customer-payment-report') ? 'active' : '' }}">
 						<a class='sidebar-link' href="{{ route('reports.customer.payment.report') }}">Customer Payment Report</a>
 					</li>
-					@endif
+					@endif -->
 
 					@if (hasPermission('daily_work_report_read'))
 					<li class="sidebar-item {{ request()->routeIs('dailyworkreport.index') ? 'active' : '' }}">
@@ -849,13 +940,18 @@ $isTdsActive = request()->is(
 						</a>
 					</li>
 					@endif
+							<li class="sidebar-item {{ request()->is('material-request-list*') ? 'active' : '' }}">
+			<a class="sidebar-link" href="{{ route('material_request.list') }}">
+				Material Request
+			</a>
+		</li>
 					
 				</ul>
 			</li>
 			@endif
 
 			<!-- App Report -->
-			@php
+			{{--@php
 				$activeAppReportRoutes = request()->is('appreport');
 			@endphp
 			@if (hasPermission('app_report_read'))
@@ -870,7 +966,7 @@ $isTdsActive = request()->is(
 					</li>
 				</ul>
 			</li>
-			@endif
+			@endif --}}
 			
 
 			<!-- users and roles -->
@@ -886,13 +982,13 @@ $isTdsActive = request()->is(
 					@if (hasPermission('user_read'))
 						<li class="sidebar-item {{ request()->is('users*') ? 'active' : '' }}"><a class='sidebar-link' href="{{route('users')}}">Users</a></li>
 					@endif
-					{{-- @if (hasPermission('create_user'))-->
+					{{-- @if (hasPermission('create_user'))
 						<li class="sidebar-item {{ request()->is('users/create') ? 'active' : '' }}"><a class='sidebar-link' href="{{route('users.create')}}">Create user</a></li>-->
-					@endif--> --}}
+					@endif--}}
 					@if (hasPermission('role_read'))
 						<li class="sidebar-item {{ request()->is('roles*') ? 'active' : '' }}"><a class='sidebar-link' href="{{route('roles')}}">Roles </a></li>
 					@endif
-					{{-- @if (hasPermission('role_create'))-->
+					{{-- @if (hasPermission('role_create'))
 						<li class="sidebar-item {{ request()->is('roles/create') ? 'active' : '' }}"><a class='sidebar-link' href="{{route('roles.create')}}">Create Role</a></li>
 				@endif --}}
 				</ul>
@@ -920,5 +1016,10 @@ $isTdsActive = request()->is(
 			</li>
 			@endif
 		</ul>
+
+			
+
+
+
 	</div>
 </nav>

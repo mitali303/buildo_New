@@ -2,6 +2,19 @@
 
 @section('title','Daily Work Report')
 
+<style>
+    .nowrap {
+        white-space: nowrap;
+    }
+
+    .workdone-column {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+        min-width: 300px;
+    }
+</style>
+
 @section('maincontent')
 
 <main class="content">
@@ -11,6 +24,9 @@
             <h1 class="h3 d-inline align-middle">Daily Work Report</h1>
         </div>
            <div class="d-flex align-items-center mb-3">
+            <input type="date" id="fromDate" class="form-control form-control-sm me-2" style="width:170px;">
+
+<input type="date" id="toDate" class="form-control form-control-sm me-2" style="width:170px;">
 
     <select id="siteFilter" class="form-select form-select-sm" style="width:200px;">
         <option value="">Select Site</option>
@@ -33,8 +49,13 @@
 
 </div>
 
-        <div class="card">
-            <div class="card-body">
+
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+
+                    <div class="card-body">
 
                 @if(session('success'))
                     <div class="alert alert-success">
@@ -42,18 +63,20 @@
                     </div>
                 @endif
 
-                
-                <table id="daily-work-report" class="table table-striped table-bordered w-100">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date</th>
-                            <th>Site Name</th>
-                            <th>Work Done</th>
-                            <th>User</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+
+                        <table id="daily-work-report"
+                               class="table table-striped"
+                               style="width:100%">
+
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Site Name</th>
+                                    <th>Work Done</th>
+                                    <th>User</th>
+                                </tr>
+                            </thead>
 
                     <tbody>
 
@@ -70,7 +93,7 @@
 
                             <td>{{ $report->username }}</td>
 
-                            <td>
+                            <!-- <td>
                                 <form action="{{ route('dailyworkreport.destroy',$report->ID) }}"
                                       method="POST"
                                       onsubmit="return confirm('Delete this report?')">
@@ -84,7 +107,7 @@
                                     </button>
 
                                 </form>
-                            </td>
+                            </td> -->
 
                         </tr>
 
@@ -94,6 +117,10 @@
 
                 </table>
 
+                    </div>
+
+                </div>
+
             </div>
         </div>
 
@@ -102,56 +129,119 @@
 
 @endsection
 
-@push('scripts')
+
+@section('scripts')
 
 <script>
 $(document).ready(function () {
 
     var table = $('#daily-work-report').DataTable({
 
-        responsive: true,
+        responsive: false,
+
+        scrollX: true,
+
+        scrollCollapse: true,
+
+        autoWidth: false,
 
         pageLength: 25,
-
         order: [[0, 'desc']],
 
         language: {
             search: "Search:",
             lengthMenu: "Show _MENU_ Entries",
-            info: "Showing _START_ to _END_ of _TOTAL_ Entries",
-            paginate: {
-                previous: "Previous",
-                next: "Next"
-            }
+            info: "Showing _START_ to _END_ of _TOTAL_ Entries"
         }
 
     });
 
 
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
 
-    // Search Button
-    $('#siteSearchBtn').click(function () {
-
+        var from = $('#fromDate').val();
+        var to = $('#toDate').val();
         var site = $('#siteFilter').val();
 
-        table
-            .column(2)
-            .search(site)
-            .draw();
+
+        // Table मधील Date (dd-mm-yyyy)
+        var rowDateText = data[1];
+
+        if(!rowDateText){
+            return false;
+        }
+
+
+        var parts = rowDateText.split('-');
+
+        var rowDate = new Date(
+            parts[2],
+            parts[1] - 1,
+            parts[0]
+        );
+
+
+        var dateMatch = true;
+
+
+        // From Date
+        if(from){
+
+            var fromDate = new Date(from);
+
+            if(rowDate < fromDate){
+                dateMatch = false;
+            }
+
+        }
+
+
+        // To Date
+        if(to){
+
+            var toDate = new Date(to);
+
+            if(rowDate > toDate){
+                dateMatch = false;
+            }
+
+        }
+
+
+
+        // Site Match
+        var siteMatch = true;
+
+        if(site){
+
+            if(data[2].trim() != site.trim()){
+                siteMatch = false;
+            }
+
+        }
+
+
+        return dateMatch && siteMatch;
 
     });
 
 
 
-    // Clear Button
-    $('#clearSiteBtn').click(function () {
+    $('#siteSearchBtn').click(function(){
 
+        table.draw();
+
+    });
+
+
+
+    $('#clearSiteBtn').click(function(){
+
+        $('#fromDate').val('');
+        $('#toDate').val('');
         $('#siteFilter').val('');
 
-        table
-            .column(2)
-            .search('')
-            .draw();
+        table.draw();
 
     });
 
@@ -159,4 +249,4 @@ $(document).ready(function () {
 });
 </script>
 
-@endpush
+@endsection

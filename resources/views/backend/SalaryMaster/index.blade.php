@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
 
             {
-                extend: 'colvis',
+               
                 text: 'Columns',
                 columns: [1,2,3,4]
             }

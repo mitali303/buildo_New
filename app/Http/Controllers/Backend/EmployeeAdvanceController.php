@@ -16,8 +16,10 @@ class EmployeeAdvanceController extends Controller
 {
     public function index(Request $request)
 {
+    // dd(session('selected_scheme_id'));
     if ($request->ajax()) {
 
+     $clientId = session('selected_scheme_id');
         $query = EmployeeAdvance::with('user')
             ->select([
                 'id',
@@ -61,9 +63,26 @@ class EmployeeAdvanceController extends Controller
 
             ->addIndexColumn()
 
-            ->addColumn('employee_name', function ($row) {
-                return $row->user->name ?? 'N/A';
+            // ->addColumn('employee_name', function ($row) {
+            //     return $row->user->Name ?? 'N/A';
+            // })
+            ->editColumn('remaining_amount', function ($row) {
+
+            $paid = EmployeeAdvancePayment::where('parent_id', $row->id)
+                ->sum('amt_pay');
+
+            $remaining = $row->advance - $paid;
+
+            if ($remaining < 0) {
+                $remaining = 0;
+            }
+
+                return number_format($remaining, 2);
             })
+            ->addColumn('employee_name', function ($row) {
+                    return $row->user->Name ?? 'Deleted Employee (ID: ' . $row->emp_id . ')';
+                })
+                
 
             ->editColumn('date', function ($row) {
                 return $row->date
@@ -124,7 +143,11 @@ class EmployeeAdvanceController extends Controller
 }
  public function create()
     {
-         $users = User::select('id', 'name')->orderBy('name')->get();
+        $clientId = session('selected_scheme_id');
+
+        $users = User::select('ID as id', 'Name as name')
+            ->orderBy('Name')
+            ->get();
         $nextRecordNo = EmployeeAdvance::max('record_no') + 1;
         return view('backend.EmployeeAdvance.create', compact('users','nextRecordNo'));
     }
@@ -175,7 +198,11 @@ class EmployeeAdvanceController extends Controller
       public function edit(string $id)
     {
        $old = EmployeeAdvance::find($id);
-        $users = User::select('id', 'name')->orderBy('name')->get();
+        $clientId = session('selected_scheme_id');
+
+        $users = user::select('ID as id', 'Name as name')
+            ->orderBy('Name')
+            ->get();
         return view('backend.EmployeeAdvance.create', compact('old','users'));
     }
 
@@ -229,8 +256,11 @@ class EmployeeAdvanceController extends Controller
 
     public function paymentHistory($id)
 {
+    $clientId = session('selected_scheme_id');
+
     $advance = EmployeeAdvance::with('user')
-                ->findOrFail($id);
+        
+        ->findOrFail($id);
 
     $payments = EmployeeAdvancePayment::where(
                     'parent_id',
@@ -255,15 +285,15 @@ class EmployeeAdvanceController extends Controller
 }
 
 
-  public function employeeAdvancePayment($id)
+ public function employeeAdvancePayment($id)
 {
     $old = EmployeeAdvance::findOrFail($id);
 
-    $users = User::select('id', 'name')
-        ->where('id', $old->emp_id)
-        ->first(); // use first() instead of get() to get single model
+    $user = User::select('ID', 'Name')
+        ->where('ID', $old->emp_id)
+        ->first();
 
-    return view('backend.EmployeeAdvance.employee_advance_payment', compact('old','users'));
+    return view('backend.EmployeeAdvance.employee_advance_payment', compact('old','user'));
 }
 
 public function storePayment(Request $request)
@@ -273,14 +303,17 @@ public function storePayment(Request $request)
         'date'             => 'required|date',
         'payment_method'   => 'required',
         'cheque_no'        => 'required_if:payment_method,cheque',
-        'received_amount' => 'required|numeric',
+        'amt_pay' => 'required|numeric',
         'narration'        => 'required'
     ]);
+  
 
     $advance = EmployeeAdvance::findOrFail($request->id);
 
+    // $newRemaining =
+    //         $advance->remaining_amount - $request->received_amount;
     $newRemaining =
-            $advance->remaining_amount - $request->received_amount;
+        $advance->remaining_amount - $request->amt_pay;
 
         if ($newRemaining < 0) {
             $newRemaining = 0;
@@ -290,7 +323,9 @@ public function storePayment(Request $request)
     $payment = new EmployeeAdvancePayment();
     $payment->parent_id = $advance->id;
     $payment->emp_id              = $advance->emp_id;
-    $payment->advance      = $request->received_amount;
+    // $payment->advance      = $request->received_amount;
+    $payment->amt_pay = $request->amt_pay;
+    $payment->advance = $request->amt_pay;
     $payment->payment_method      = $request->payment_method;
     $payment->cheque_no           = $request->cheque_no;
     $payment->remaining_amount    = $newRemaining;

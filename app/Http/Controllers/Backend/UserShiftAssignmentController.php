@@ -71,7 +71,7 @@ class UserShiftAssignmentController extends Controller
             })
 
             ->addColumn('employee', function ($row) {
-                return $row->user->name ?? 'N/A';
+                return $row->user->Name ?? 'N/A';
             })
 
             ->addColumn('shift_name', function ($row) {

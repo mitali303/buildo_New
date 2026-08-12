@@ -17,7 +17,13 @@
 
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Enquiry List</h1>
-        </div>
+       
+        
+            <a href="{{ route('enquiries.create') }}"
+            class="btn btn-primary float-end">
+            Add Enquiry
+        </a>
+    </div>
 
         <div class="row">
             <div class="col-12">
@@ -75,25 +81,57 @@ document.addEventListener("DOMContentLoaded", function() {
         ajax: "{{ route('enquiries.index') }}",
         columns: [
 
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+    { 
+        data: 'DT_RowIndex', 
+        name: 'DT_RowIndex', 
+        orderable: false, 
+        searchable: false 
+    },
 
-            { data: 'Created', name: 'Created', className: 'nowrap' },
+    { 
+        data: 'created_at', 
+        name: 'created_at', 
+        className: 'nowrap' 
+    },
 
-            { data: 'customer_name', name: 'customer_name' },
+    { 
+        data: 'lead_name', 
+        name: 'lead_name' 
+    },
 
-            { data: 'phone_no', name: 'phone_no' },
+    { 
+        data: 'mobile_1', 
+        name: 'mobile_1' 
+    },
 
-            { data: 'email', name: 'email' },
+    { 
+        data: 'email_1', 
+        name: 'email_1' 
+    },
 
-            { data: 'address', name: 'address'},
+    { 
+        data: 'address', 
+        name: 'address'
+    },
 
-            { data: 'queries', name: 'queries' },
+    { 
+        data: 'description', 
+        name: 'description' 
+    },
 
-            { data: 'status', name: 'status'},
+    { 
+        data: 'status', 
+        name: 'status'
+    },
 
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+    { 
+        data: 'action', 
+        name: 'action', 
+        orderable: false, 
+        searchable: false 
+    }
 
-        ],
+],
 
         lengthChange: true,
 

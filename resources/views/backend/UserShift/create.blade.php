@@ -5,7 +5,7 @@ User Shift Assignment
 @endsection
 
 @section('maincontent')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <main class="content">
     <div class="container-fluid p-0">
 
@@ -41,19 +41,16 @@ User Shift Assignment
                                         Employee <small class="text-danger">*</small>
                                     </label>
 
-                                    <select name="user_id" class="form-control">
+                                    <select name="user_id" class="form-control select2">
+                                <option value="">Select Employee</option>
 
-                                        <option value="">Select Employee</option>
-
-                                        @foreach($users as $user)
-                                            <option value="{{ $user->id }}"
-                                                {{ !empty($data) && $data->user_id == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }}
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-
+                                @foreach($users as $user)
+                                    <option value="{{ $user->ID }}"
+                                        {{ old('user_id', $data->user_id ?? '') == $user->ID ? 'selected' : '' }}>
+                                        {{ $user->Name }}
+                                    </option>
+                                @endforeach
+                            </select>
                                     @error('user_id')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
@@ -160,4 +157,15 @@ User Shift Assignment
     </div>
 </main>
 
+@endsection
+@section('scripts')
+<script>
+$(document).ready(function () {
+    $('.select2').select2({
+        placeholder: "Select Employee",
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
 @endsection

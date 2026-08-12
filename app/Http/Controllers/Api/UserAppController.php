@@ -162,7 +162,7 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 ->where('ClientID', $schemeId)
                 ->sum('Qty') ?? 0),
 
-            'enquiry' => (string) (\DB::table('enquiries')
+            'enquiry' => (string) (\DB::table('leads')
                 ->where('scheme_id', $schemeId)
                 ->count() ?? 0),
         ];
@@ -1674,20 +1674,23 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 'user_id' => 'required|string',
             ]);
             
-            $enquiryId = uniqid();
+           // $enquiryId = uniqid();
             
-            DB::table('enquiries')->insert([
-                'ID' => $enquiryId,
-                'customer_name' => $request->customer_name,
-                'email' => $request->email,
-                'phone_no' => $request->phone_no,
+            DB::table('leads')->insert([
+                //'ID' => $enquiryId,
+                'company_name' => '',
+                'lead_name' => $request->customer_name,
+                'email_1' => $request->email,
+                'mobile_1' => $request->phone_no,
                 'address' => $request->address,
                 'scheme_id' => $request->scheme_id,
                 'bill_no' => $request->bill_no,
-                'queries' => $request->queries,
-                'status' => 'pending',
-                'Created' => now(),
-                'LastEdited' => now(),
+                'description' => $request->queries,
+                'status' => 1, // Active
+                'country' => '',
+                'lead_stage' =>1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
             
             return response()->json([
@@ -1711,9 +1714,9 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
             ]);
             
             
-            $enquiries = DB::table('enquiries')
+            $enquiries = DB::table('leads')
                 ->where('scheme_id', $request->scheme_id)
-                ->orderBy('Created', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->get();
             
             return response()->json([
@@ -1738,8 +1741,8 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 'scheme_id' => 'required|string|max:30',
             ]);
             
-            $deleted = DB::table('enquiries')
-                ->where('ID', $request->id)
+            $deleted = DB::table('leads')
+                ->where('id', $request->id)
                 ->where('scheme_id', $request->scheme_id)
                 ->delete();
             
@@ -1772,8 +1775,8 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
                 'scheme_id' => 'required|string',
             ]);
             
-            DB::table('enquiries')
-                ->where('ID', $request->id)
+            DB::table('leads')
+                ->where('id', $request->id)
                 ->where('scheme_id', $request->scheme_id)
                 ->update([
                     'status' => $request->status,
@@ -1789,6 +1792,345 @@ $token = $user->createToken('deliveryboy-token')->plainTextToken;
             return response()->json([
                 'status' => false,
                 'message' => 'Failed to update status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get next material request number
+    public function getNextMaterialRequestNo(Request $request)
+    {
+        try {
+            $clientId = $request->scheme_id;
+            
+            if (!$clientId) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Scheme not selected'
+                ], 400);
+            }
+            
+            // Get the max request number for this scheme
+            $maxRequestNo = DB::table('material_request')
+                ->where('ClientID', $clientId)
+                ->max('request_no');
+            
+            // Since request_no is stored as integer, simply increment
+            $nextNumber = $maxRequestNo ? $maxRequestNo + 1 : 1;
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Next request number fetched successfully',
+                'data' => [
+                    'request_no' => $nextNumber  // Returns integer like 1, 2, 3...
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to fetch next request number: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get Material Requests list
+    public function getMaterialRequests(Request $request)
+    {
+        try {
+            $request->validate([
+                'scheme_id' => 'required|string',
+                'from_date' => 'required|date',
+                'to_date' => 'required|date',
+            ]);
+            
+            $clientId = $request->scheme_id;
+            
+            if (!$clientId) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Scheme not selected'
+                ], 400);
+            }
+            
+            // Get all material requests with item count
+            $requests = DB::table('material_request as mr')
+                ->leftJoin('scheme_step1 as s', 'mr.ClientID', '=', 's.ID')
+                ->where('mr.ClientID', $clientId)
+                ->whereBetween('mr.date', [$request->from_date, $request->to_date])
+                ->select(
+                    'mr.ID',
+                    'mr.date',
+                    'mr.request_no',
+                    'mr.description',
+                    'mr.remark',
+                    'mr.Created',
+                    DB::raw('(SELECT COUNT(*) FROM material_request_items WHERE request_id = mr.ID) as items_count')
+                )
+                ->orderBy('mr.Created', 'desc')
+                ->get();
+            
+            $formattedData = [];
+            foreach ($requests as $requestItem) {
+                $formattedData[] = [
+                    'ID' => $requestItem->ID,
+                    'Date' => Carbon::parse($requestItem->date)->format('d-m-Y'),
+                    'request_no' => $requestItem->request_no,
+                    'description' => $requestItem->description ?? '',
+                    'remark' => $requestItem->remark ?? '',
+                    'items_count' => $requestItem->items_count,
+                    'Created' => $requestItem->Created,
+                ];
+            }
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Material requests fetched successfully',
+                'data' => $formattedData
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to fetch material requests: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get Material Request Details
+    public function getMaterialRequestDetails(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|string',
+                'scheme_id' => 'required|string',
+            ]);
+            
+            // Get request details
+            $requestData = DB::table('material_request')
+                ->where('ID', $request->id)
+                ->where('ClientID', $request->scheme_id)
+                ->first();
+            
+            if (!$requestData) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Material request not found'
+                ], 404);
+            }
+            
+            // Get request items with material and type details
+            $items = DB::table('material_request_items as mri')
+                ->leftJoin('material as m', 'mri.type_id', '=', 'm.ID')
+                ->where('mri.request_id', $request->id)
+                ->select(
+                    'mri.ID',
+                    //'mri.material_id',
+                    'mri.type_id',
+                    'mri.type_name',
+                    'mri.quantity',
+                    'mri.unit',
+                    'm.Name as material_name'
+                )
+                ->get();
+            
+            $formattedItems = [];
+            foreach ($items as $item) {
+                $formattedItems[] = [
+                    //'material_id' => $item->material_id,
+                    'material_name' => $item->material_name ?? '-',
+                    'type_id' => $item->type_id,
+                    'type' => $item->type_name ?? '-',
+                    'unit' => $item->unit ?? '',
+                    'quantity' => (float)($item->quantity ?? 0),
+                ];
+            }
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Material request details fetched successfully',
+                'data' => [
+                    'id' => $requestData->ID,
+                    'date' => Carbon::parse($requestData->Date)->format('d-m-Y'),
+                    'request_no' => $requestData->request_no,
+                    'description' => $requestData->description ?? '',
+                    'remark' => $requestData->remark ?? '',
+                    'items' => $formattedItems
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to fetch details: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Save Material Request
+    public function saveMaterialRequest(Request $request)
+    {
+        try {
+            $request->validate([
+                'date' => 'required|date',
+                'request_no' => 'required|string',
+                'scheme_id' => 'required|string',
+                'items' => 'required|string',
+                'user_id' => 'required|string',
+            ]);
+            
+            // Decode items JSON
+            $items = json_decode($request->items, true);
+            
+            if (empty($items)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'At least one material is required'
+                ], 422);
+            }
+            
+            $requestId = $request->id ?? uniqid();
+            $isUpdate = $request->has('id');
+            
+            // Prepare data for material_requests table
+            $requestData = [
+                'date' => $request->date,
+                'request_no' => $request->request_no,
+                'ClientID' => $request->scheme_id,
+                'description' => $request->description ?? '',
+                'remark' => $request->remark ?? '',
+                'userID' => $request->user_id,
+                'LastEdited' => now(),
+            ];
+            
+            if ($isUpdate) {
+                // Check if request exists
+                $existing = DB::table('material_request')
+                    ->where('ID', $requestId)
+                    ->where('ClientID', $request->scheme_id)
+                    ->first();
+                
+                if (!$existing) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Material request not found'
+                    ], 404);
+                }
+                
+                // Update request
+                DB::table('material_request')
+                    ->where('ID', $requestId)
+                    ->update($requestData);
+                
+                // Delete old items
+                DB::table('material_request_items')
+                    ->where('request_id', $requestId)
+                    ->delete();
+                    
+                $message = 'Material request updated successfully';
+            } else {
+                // Add created_at for new record
+                $requestData['ID'] = $requestId;
+                $requestData['Created'] = now();
+                
+                // Insert request
+                DB::table('material_request')->insert($requestData);
+                
+                $message = 'Material request saved successfully';
+            }
+            
+            // Insert items
+            foreach ($items as $item) {
+                // Get material ID if not provided
+                $materialId = $item['material_id'] ?? null;
+                if (!$materialId && isset($item['material_name'])) {
+                    // Try to find material by name
+                    $material = DB::table('material')
+                        ->where('Name', $item['material_name'])
+                        ->first();
+                    if ($material) {
+                        $materialId = $material->ID;
+                    }
+                }
+                
+                // Get type ID if needed
+                $typeId = $item['type_id'] ?? null;
+                if (!$typeId && isset($item['type_name']) && $materialId) {
+                    // Try to find type by name
+                    $type = DB::table('material')
+                        ->where('Name', $item['material_name'])
+                        ->where('Type', $item['type_name'])
+                        ->first();
+                    if ($type) {
+                        $typeId = $type->ID;
+                    }
+                }
+                
+                DB::table('material_request_items')->insert([
+                    'id' => uniqid(),
+                    'request_id' => $requestId,
+                    //'material_id' => $materialId,
+                    'material_name' => $item['material_name'] ?? '',
+                    'type_id' => $typeId,
+                    'type_name' => $item['type_name'] ?? '',
+                    'quantity' => $item['quantity'] ?? 0,
+                    'unit' => $item['unit'] ?? '',
+                    'Created' => now(),
+                    'LastEdited' => now(),
+                ]);
+            }
+            
+            return response()->json([
+                'status' => true,
+                'message' => $message,
+                'data' => ['id' => $requestId]
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error in saveMaterialRequest: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Delete Material Request
+    public function deleteMaterialRequest(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|string',
+                'scheme_id' => 'required|string',
+            ]);
+            
+            // Delete items first
+            DB::table('material_request_items')
+                ->where('request_id', $request->id)
+                ->delete();
+            
+            // Delete main request
+            $deleted = DB::table('material_request')
+                ->where('ID', $request->id)
+                ->where('ClientID', $request->scheme_id)
+                ->delete();
+            
+            if ($deleted) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Material request deleted successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Material request not found'
+                ], 404);
+            }
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete material request: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -53,52 +53,7 @@
                                     <th>Action</th>
                                 </tr>
 
-                                <tr>
-                                    <th></th>
-
-                                    <th>
-                                        <input type="text" id="search_employee"
-                                            class="form-control form-control-sm"
-                                            placeholder="Employee">
-                                    </th>
-
-                                    <th>
-                                        <input type="text" id="search_month"
-                                            class="form-control form-control-sm"
-                                            placeholder="Month">
-                                    </th>
-
-                                    <th>
-                                        <input type="text" id="search_year"
-                                            class="form-control form-control-sm"
-                                            placeholder="Year">
-                                    </th>
-
-                                    <th>
-                                        <input type="text" id="search_late_mark_count"
-                                            class="form-control form-control-sm"
-                                            placeholder="Late Mark">
-                                    </th>
-
-                                    <th>
-                                        <input type="text" id="search_total_late_time"
-                                            class="form-control form-control-sm"
-                                            placeholder="Late Time">
-                                    </th>
-
-                                    <th>
-                                        <input type="text" id="search_amount_reduce"
-                                            class="form-control form-control-sm"
-                                            placeholder="Amount">
-                                    </th>
-
-                                    <th>
-                                        <button id="resetFilters"
-                                                class="btn btn-sm btn-secondary">
-                                            Reset
-                                        </button>
-                                    </th>
-                                </tr>
+                                
                             </thead>
 
                         </table>
@@ -154,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             {
                 data: 'employee',
-                name: 'employee'
+                name: 'employee.name'
             },
 
             {
@@ -191,9 +146,9 @@ document.addEventListener("DOMContentLoaded", function () {
         ],
 
         dom:
-            "<'row'<'col-md-6'l><'col-md-6 text-end'B>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-md-5'i><'col-md-7'p>>",
+    "<'row'<'col-md-4'l><'col-md-4'B><'col-md-4 text-end'f>>" +
+    "<'row'<'col-sm-12'tr>>" +
+    "<'row'<'col-md-5'i><'col-md-7'p>>",
 
         buttons: [
 

@@ -23,7 +23,10 @@ class SChemeDetailController extends Controller
 {
     if ($request->ajax()) {
         $query = SchemeDetail::select(['ID','Name','contactperson','Location','cnumber','Created']);
-
+   //Role-based data filter
+        if (Auth::user()->Role != 1) {
+            $query->where('userID', Auth::id());
+        }
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('actions', function ($row) {

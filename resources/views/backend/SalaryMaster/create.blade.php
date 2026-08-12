@@ -100,9 +100,9 @@ Salary Master
 
                                     @foreach($users as $user)
 
-                                        <option value="{{ $user->id }}" {{ old('emp_id', $old->emp_id ?? '') == $user->id ? 'selected' : '' }}>
+                                        <option value="{{ $user->emp_id }}" {{ old('emp_id', $old->emp_id ?? '') == $user->emp_id? 'selected' : '' }}>
 
-                                            {{ $user->name }}
+                                            {{ $user->Name }}
 
                                         </option>
 
@@ -849,72 +849,99 @@ AUTO SALARY CALCULATION
 
 $('#emp_id, #month, #year').on('change', function () {
 
+    console.log('CHANGE EVENT FIRED');
+
     let empId = $('#emp_id').val();
     let month = $('#month').val();
     let year  = $('#year').val();
 
     let editId = "{{ $old->id ?? '' }}";
 
-    if(empId && month && year){
+    console.log('EMP ID:', empId);
+    console.log('MONTH:', month);
+    console.log('YEAR:', year);
+    console.log('EDIT ID:', editId);
 
-        $.ajax({
+    if (!empId || !month || !year) {
 
-            url: "{{ url('salary/get-details') }}/" 
-                    + empId + "/" 
-                    + month + "/" 
-                    + year + "/" 
-                    + editId,
+        console.log('❌ IF FALSE - value missing');
 
-            type: "GET",
+        return;
+    }
 
-            beforeSend: function(){
+    console.log('✅ IF TRUE');
+    console.log('🚀 AJAX CALL STARTING');
+
+    let ajaxUrl = "{{ url('salary/get-details') }}/"
+                + empId + "/"
+                + month + "/"
+                + year;
+
+    if (editId) {
+        ajaxUrl += "/" + editId;
+    }
+
+    console.log('AJAX URL:', ajaxUrl);
+
+    $.ajax({
+
+        url: ajaxUrl,
+
+        type: "GET",
+
+        beforeSend: function () {
+
+            console.log('AJAX beforeSend');
+
+            $('button[type="submit"]').prop('disabled', true);
+        },
+
+        success: function (res) {
+
+            console.log('✅ AJAX SUCCESS');
+            console.log(res);
+
+            if (res.status == false) {
+
+                alert(res.message);
 
                 $('button[type="submit"]').prop('disabled', true);
-            },
 
-            success: function(res){
-
-                console.log(res);
-
-                if(res.status == false){
-
-                    alert(res.message);
-
-                    $('button[type="submit"]').prop('disabled', true);
-
-                    return;
-                }
-
-                $('button[type="submit"]').prop('disabled', false);
-
-                $('#gross').val(res.gross_salary);
-                $('#pf').val(res.pf);
-                $('#esi').val(res.esi);
-                $('#advance_emi').val(res.advance_emi);
-
-                $('#basic_salary').val(res.basic_salary);
-                $('#late_deduction').val(res.late_deduction);
-                $('#overtime_amount').val(res.overtime_amount);
-                $('#net_salary').val(res.net_salary);
-
-                $('#total_present_days').val(res.total_present_days);
-                $('#total_absent_days').val(res.total_absent_days);
-                $('#paid_leaves').val(res.paid_leaves);
-                $('#working_days').val(res.working_days);
-                $('#per_day_salary').val(res.per_day_salary);
-                $('#absent_deduction').val(res.absent_deduction);
-                $('#overtime_hours').val(res.overtime_hours);
-                $('#per_hour_ot_rate').val(res.per_hour_ot_rate);
-            },
-
-            error: function(xhr){
-
-                console.log(xhr.responseText);
-
-                alert('Something went wrong');
+                return;
             }
-        });
-    }
+
+            $('button[type="submit"]').prop('disabled', false);
+
+            $('#gross').val(res.gross_salary);
+            $('#pf').val(res.pf);
+            $('#esi').val(res.esi);
+            $('#advance_emi').val(res.advance_emi);
+
+            $('#basic_salary').val(res.basic_salary);
+            $('#late_deduction').val(res.late_deduction);
+            $('#overtime_amount').val(res.overtime_amount);
+            $('#net_salary').val(res.net_salary);
+
+            $('#total_present_days').val(res.total_present_days);
+            $('#total_absent_days').val(res.total_absent_days);
+            $('#paid_leaves').val(res.paid_leaves);
+            $('#working_days').val(res.working_days);
+            $('#per_day_salary').val(res.per_day_salary);
+            $('#absent_deduction').val(res.absent_deduction);
+            $('#overtime_hours').val(res.overtime_hours);
+            $('#per_hour_ot_rate').val(res.per_hour_ot_rate);
+        },
+
+        error: function (xhr) {
+
+            console.log('❌ AJAX ERROR');
+            console.log('HTTP STATUS:', xhr.status);
+            console.log('RESPONSE:', xhr.responseText);
+
+            alert('Something went wrong');
+        }
+    });
+
 });
 
 /* =========================================================

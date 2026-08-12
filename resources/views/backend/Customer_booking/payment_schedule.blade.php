@@ -39,42 +39,42 @@
         <tbody>
             <tr>
                 <td>Plinth</td>
-                <td>{{ $slab->pilnth }}</td>
+                <td>{{ $booking->pilnth }}</td>
                 <td>{{ number_format($calc['plinth'],2) }}</td>
             </tr>
             <tr>
                 <td>Slab</td>
-                <td>{{ $slab->slab }}</td>
+                <td>{{ $booking->slab }}</td>
                 <td>{{ number_format($calc['slab'],2) }}</td>
             </tr>
             <tr>
                 <td>Bricks</td>
-                <td>{{ $slab->bricks }}</td>
+                <td>{{ $booking->bricks }}</td>
                 <td>{{ number_format($calc['bricks'],2) }}</td>
             </tr>
             <tr>
                 <td>Plaster</td>
-                <td>{{ $slab->plaster }}</td>
+                <td>{{ $booking->plaster }}</td>
                 <td>{{ number_format($calc['plaster'],2) }}</td>
             </tr>
             <tr>
                 <td>Flooring</td>
-                <td>{{ $slab->floaring }}</td>
+                <td>{{ $booking->floaring }}</td>
                 <td>{{ number_format($calc['flooring'],2) }}</td>
             </tr>
             <tr>
                 <td>Plumbing</td>
-                <td>{{ $slab->plumbing }}</td>
+                <td>{{ $booking->plumbing }}</td>
                 <td>{{ number_format($calc['plumbing'],2) }}</td>
             </tr>
             <tr>
                 <td>Project</td>
-                <td>{{ $slab->project }}</td>
+                <td>{{ $booking->project }}</td>
                 <td>{{ number_format($calc['project'],2) }}</td>
             </tr>
             <tr class="table-success">
                 <th>Total</th>
-                <th>{{ $slab->total }}</th>
+                <th>{{ $booking->slab_total }}</th>
                 <th>{{ number_format($calc['total'],2) }}</th>
             </tr>
         </tbody>

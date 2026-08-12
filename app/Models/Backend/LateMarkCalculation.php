@@ -12,6 +12,7 @@ class LateMarkCalculation extends Model
     protected $table = 'late_mark_calculation_masters';
 
     protected $fillable = [
+          'ClientID',
         'employee_id',
         'month',
         'year',

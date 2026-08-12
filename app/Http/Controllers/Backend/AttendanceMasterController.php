@@ -25,9 +25,15 @@ class AttendanceMasterController extends Controller
 {
     if ($request->ajax()) {
 
-        $data = AttendanceMaster::with(['Shift', 'user'])
+        // $clientId = session('selected_scheme_id');
+
+        // $data = AttendanceMaster::with(['Shift', 'user'])
+        //     ->where('ClientID', $clientId)
+        //     ->select('attendancemaster.*')
+        //     ->latest();
+         $data = AttendanceMaster::with(['Shift', 'user'])
             ->select('attendancemaster.*')
-            ->latest();
+            ->get();
 
         /*
         |--------------------------------------------------------------------------
@@ -92,7 +98,7 @@ class AttendanceMasterController extends Controller
 
             ->addColumn('employee_name', function ($row) {
 
-                return $row->user->name ?? 'N/A';
+                return $row->user->Name ?? 'N/A';
             })
 
             /*
@@ -158,70 +164,56 @@ class AttendanceMasterController extends Controller
         $request->validate([
             'file' => 'required|mimes:xls,xlsx'
         ]);
-
-        Excel::import(new AttendanceImport, $request->file('file'));
-
-        return redirect()->back();
+        // $clientId = session('selected_scheme_id');
+        // Excel::import(new AttendanceImport($clientId), $request->file('file'));
+        
+        Excel::import(new AttendanceImport(), $request->file('file'));
+        return redirect()->back()->with('success', 'Attendance imported successfully!');
     }
-
     /**
      * CREATE PAGE
      */
-    public function create()
-    {
-        $empshift = Shift::select(
-                            'id',
-                            'shift'
-                        )
-                        ->orderBy('shift')
-                        ->get();
+   
+        public function create()
+        {
+            // $clientId = session('selected_scheme_id');
+// dd($clientId);
+            $empshift = Shift::select('id', 'shift')
+                ->orderBy('shift')
+                ->get();
 
-        $users = User::select(
-                        'id',
-                        'name',
-                        'emp_id',
-                        'designation'
-                    )
-                    ->orderBy('name')
-                    ->get();
+            $users = User::select('id', 'name', 'emp_id', 'designation')
+                ->orderBy('name')
+                ->get();
+                // dd($users);
+                
 
-        return view(
-            'backend.AttendanceMaster.create',
-            compact('empshift','users')
-        );
-    }
-
+            return view(
+                'backend.AttendanceMaster.create',
+                compact('empshift','users')
+            );
+        }
     /**
      * STORE
      */
     public function store(Request $request)
     {
+        //  $clientId = session('selected_scheme_id');
+
         $validated = $request->validate([
 
             'date'        => 'required|date',
-
             'shift'       => 'required',
-
             'emp_id'      => 'required',
-
             'designation' => 'required',
-
             'intime'      => 'nullable',
-
             'outtime'     => 'nullable',
-
             'present'     => 'required|numeric',
-
             'absent'      => 'required|numeric',
-
             'emp_leave'   => 'required|numeric',
-
             'late_mins'   => 'nullable|numeric',
-
             'early_dep'   => 'nullable|numeric',
-
             'work_hr'     => 'nullable',
-
             'ot_hr'       => 'nullable',
         ]);
 
@@ -231,11 +223,10 @@ class AttendanceMasterController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        
         $alreadyExists = AttendanceMaster::where('date', $request->date)
-
-                            ->where('emp_id', $request->emp_id)
-
-                            ->exists();
+        ->where('emp_id', $request->emp_id)
+        ->exists();
 
         if ($alreadyExists)
         {
@@ -253,34 +244,21 @@ class AttendanceMasterController extends Controller
 
         $data = new AttendanceMaster();
 
+        // $data->ClientID = $clientId;
         $data->date        = $validated['date'];
-
         $data->shift       = $validated['shift'];
-
         $data->emp_id      = $validated['emp_id'];
-
         $data->designation = $validated['designation'];
-
         $data->present     = $validated['present'];
-
         $data->absent      = $validated['absent'];
-
         $data->emp_leave   = $validated['emp_leave'];
-
         $data->intime      = $validated['intime'] ?? null;
-
         $data->outtime     = $validated['outtime'] ?? null;
-
         $data->late_mins   = $validated['late_mins'] ?? 0;
-
         $data->early_dep   = $validated['early_dep'] ?? 0;
-
         $data->work_hr     = $validated['work_hr'] ?? null;
-
         $data->ot_hr       = $validated['ot_hr'] ?? '00:00';
-
         $data->createdby   = Auth::id();
-
         $data->save();
 
         return redirect()
@@ -293,23 +271,17 @@ class AttendanceMasterController extends Controller
      */
     public function edit($id)
     {
+        // $clientId = session('selected_scheme_id');
+
         $old = AttendanceMaster::findOrFail($id);
 
-        $empshift = Shift::select(
-                            'id',
-                            'shift'
-                        )
-                        ->orderBy('shift')
-                        ->get();
+        $empshift = Shift::select('id', 'shift')
+        ->orderBy('shift')
+        ->get();
 
-        $users = User::select(
-                        'id',
-                        'name',
-                        'emp_id',
-                        'designation'
-                    )
-                    ->orderBy('name')
-                    ->get();
+        $users = User::select('id', 'name', 'emp_id', 'designation')
+        ->orderBy('name')
+        ->get();
 
         return view(
             'backend.AttendanceMaster.create',
@@ -322,66 +294,44 @@ class AttendanceMasterController extends Controller
      */
     public function update(Request $request)
     {
+        // $clientId = session('selected_scheme_id');
+
         $validated = $request->validate([
 
             'id'          => 'required',
-
             'date'        => 'required|date',
-
             'shift'       => 'required',
-
             'emp_id'      => 'required',
-
             'designation' => 'required',
-
             'intime'      => 'nullable',
-
             'outtime'     => 'nullable',
-
             'present'     => 'required|numeric',
-
             'absent'      => 'required|numeric',
-
             'emp_leave'   => 'required|numeric',
-
             'late_mins'   => 'nullable|numeric',
-
             'early_dep'   => 'nullable|numeric',
-
             'work_hr'     => 'nullable',
-
             'ot_hr'       => 'nullable',
         ]);
 
-        $data = AttendanceMaster::findOrFail($request->id);
+         $data = AttendanceMaster::findOrFail($request->id);
 
-        $data->date        = $validated['date'];
+            // $data->ClientID = $clientId;
+            $data->date        = $validated['date'];
+            $data->shift       = $validated['shift'];
+            $data->emp_id      = $validated['emp_id'];
+            $data->designation = $validated['designation'];
+            $data->present     = $validated['present'];
+            $data->absent      = $validated['absent'];
+            $data->emp_leave   = $validated['emp_leave'];
+            $data->intime      = $validated['intime'] ?? null;
+            $data->outtime     = $validated['outtime'] ?? null;
+            $data->late_mins   = $validated['late_mins'] ?? 0;
+            $data->early_dep   = $validated['early_dep'] ?? 0;
+            $data->work_hr     = $validated['work_hr'] ?? null;
+            $data->ot_hr       = $validated['ot_hr'] ?? '00:00';
 
-        $data->shift       = $validated['shift'];
-
-        $data->emp_id      = $validated['emp_id'];
-
-        $data->designation = $validated['designation'];
-
-        $data->present     = $validated['present'];
-
-        $data->absent      = $validated['absent'];
-
-        $data->emp_leave   = $validated['emp_leave'];
-
-        $data->intime      = $validated['intime'] ?? null;
-
-        $data->outtime     = $validated['outtime'] ?? null;
-
-        $data->late_mins   = $validated['late_mins'] ?? 0;
-
-        $data->early_dep   = $validated['early_dep'] ?? 0;
-
-        $data->work_hr     = $validated['work_hr'] ?? null;
-
-        $data->ot_hr       = $validated['ot_hr'] ?? '00:00';
-
-        $data->save();
+                $data->save();
 
         return redirect()
             ->route('AttendanceMaster')
@@ -393,6 +343,8 @@ class AttendanceMasterController extends Controller
      */
     public function destroy($id)
     {
+        // $clientId = session('selected_scheme_id');
+
         $data = AttendanceMaster::findOrFail($id);
 
         $data->delete();

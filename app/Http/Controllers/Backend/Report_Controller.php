@@ -604,7 +604,7 @@ public function dailyDiary(Request $request)
             )
             ->from('daily_trans')
             ->where('ClientID',$clientId)
-            ->whereDate('Date',$date)
+            // ->whereDate('Date',$date)
 
             ->unionAll(
                 DB::table('partners_loan')
@@ -613,7 +613,7 @@ public function dailyDiary(Request $request)
                     DB::raw("'partners_loan' as source")
                 )
                 ->where('ClientID',$clientId)
-                ->whereDate('Date',$date)
+                // ->whereDate('Date',$date)
             )
 
             ->unionAll(
@@ -623,7 +623,7 @@ public function dailyDiary(Request $request)
                     DB::raw("'loan' as source")
                 )
                 ->where('ClientID',$clientId)
-                ->whereDate('Date',$date)
+                // ->whereDate('Date',$date)
             )
 
             ->unionAll(
@@ -633,7 +633,7 @@ public function dailyDiary(Request $request)
                     DB::raw("'workorder_payment' as source")
                 )
                 ->where('ClientID',$clientId)
-                ->whereDate('Date',$date)
+                // ->whereDate('Date',$date)
             )
 
             ->unionAll(
@@ -643,7 +643,7 @@ public function dailyDiary(Request $request)
                     DB::raw("'site_expences' as source")
                 )
                 ->where('ClientID',$clientId)
-                ->whereDate('Date',$date)
+                // ->whereDate('Date',$date)
             );
 
         }, 't');
@@ -2427,7 +2427,16 @@ fputcsv($handle, [
                 'b.reg_date',
                 'b.agreementAmt',
                 'b.ID as booking_id',
-                DB::raw('SUM(p.amt_pay) as total_received')
+                DB::raw('SUM(p.amt_pay) as total_received'),
+                DB::raw("
+                        SUM(
+                            CASE 
+                                WHEN DATE(p.Date) BETWEEN '$fromDate' AND '$toDate'
+                                THEN p.amt_pay
+                                ELSE 0
+                            END
+                        ) as received_this_qtr
+                    ")
             )
             ->groupBy(
                 'f.FlatType',

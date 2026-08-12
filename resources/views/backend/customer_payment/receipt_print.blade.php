@@ -18,7 +18,7 @@
         {{-- Receipt Header --}}
         <table style="width:100%; font-size:18px; font-weight:bold;">
             <tr>
-                <td style="width:50%;">Receipt No: {{ $payment->ReceiptNo }}</td>
+                <td style="width:50%;">Receipt No: {{ $payment->receipt_no }}</td>
                 <td style="width:50%; text-align:right;">Date: {{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
             </tr>
         </table>

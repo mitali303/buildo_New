@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use App\Models\Backend\ActivityLog;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Backend\Booking_Payment;
+use App\Models\Backend\CustomerPayment;
 
 
 // Activity Logs store
@@ -47,6 +49,7 @@ if (!function_exists('activity_log')) {
 //         return false;
 //     }
 // }
+
 if(!function_exists('hasPermission')){
     function hasPermission($permission = null){
         $user_id = Auth::id();
@@ -432,3 +435,37 @@ if (!function_exists('checkRecordUsage')) {
         return false;
     }
 }
+if (!function_exists('generateOrderNo')) {
+
+    function generateOrderNo($existingOrderNo = null)
+    {
+        // If editing, keep the same number
+        if (!empty($existingOrderNo)) {
+            return $existingOrderNo;
+        }
+
+        return Booking_Payment::lockForUpdate()
+            ->select('receipt_no')
+            ->orderByDesc('receipt_no')
+            ->value('receipt_no')
+            ? ((int) Booking_Payment::orderByDesc('receipt_no')->value('receipt_no') + 1)
+            : 1;
+    }
+    
+}
+if (!function_exists('generateCustomerOrderNo')) {
+    function generateCustomerOrderNo($existingOrderNo = null)
+    {
+        if (!empty($existingOrderNo)) {
+            return $existingOrderNo;
+        }
+
+        $last = customerpayment::lockForUpdate()
+            ->orderByDesc('receipt_no')
+            ->value('receipt_no');
+
+        return $last ? ((int)$last + 1) : 1;
+    }
+}
+
+

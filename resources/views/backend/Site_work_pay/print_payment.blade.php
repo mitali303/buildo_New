@@ -78,10 +78,23 @@
             </tr>
         </table>
 
+        {{-- Narration --}}
+            @if(!empty($data->narration))
+            {{-- Narration --}}
+            <table style="width:100%; font-size:16px; margin-top:15px;">
+                <tr>
+                    <td style="width:25%;">Narration :</td>
+
+                    <td style="width:75%; border-bottom:1px solid black; text-align:center;">
+                        {{ $data->narration }}
+                    </td>
+                </tr>
+            </table>
+            @endif
         {{-- Amount Box --}}
         <div class="d-flex justify-content-between align-items-center mt-4">
             <div class="head1 text-center p-3 border" style="width:200px;">
-                <h3 style="margin:0;">RS. {{ $data->amt_pay }}</h3>
+                <h3 style="margin:0;">RS. {{ number_format($data->amt_pay,0) }}/-</h3>
             </div>
 
             <div style="flex:1;"></div>

@@ -8,7 +8,7 @@
     <div class="container-fluid p-0">
 
         <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Create Employee Advance</h1>
+            <h1 class="h3 d-inline align-middle">{{ !empty($old) ? 'Edit Employee Advance' : 'Create Employee Advance' }}</h1>
         </div>
 
         <div class="row">
@@ -53,122 +53,115 @@
 
                                 <!-- Employee -->
                                <!-- Employee -->
-@php
-    $selecteduser = old('emp_id', !empty($old->emp_id) ? $old->emp_id : '');
-@endphp
+                            @php
+                                $selecteduser = old('emp_id', !empty($old->emp_id) ? $old->emp_id : '');
+                            @endphp
 
-<div class="mb-3 col-md-4">
-    <label class="form-label">Employee <small class="text-danger">*</small></label>
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label">Employee <small class="text-danger">*</small></label>
 
-    <select name="emp_id" class="form-control" required>
-        <option value="" disabled selected>-- Select Employee --</option>
+                                <select name="emp_id" class="form-control select2" required>
+                                    <option value="" disabled selected>-- Select Employee --</option>
 
-        @foreach($users as $user)
-            <option value="{{ $user->id }}"
-                {{ (string)$user->id === (string)$selecteduser ? 'selected' : '' }}>
-                {{ $user->name }}
-            </option>
-        @endforeach
-    </select>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->id }}"
+                                            {{ (string)$user->id === (string)$selecteduser ? 'selected' : '' }}>
+                                            {{ $user->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
 
-    @error('emp_id')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
+                                @error('emp_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label" for="advance">Advance<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('advance') is-invalid @enderror"
-            value="{{ old('advance', $old->advance ?? '') }}" name="advance" id="advance"
-            placeholder="Advance" >
-        @error('advance')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" for="advance">Advance<small class="text-danger">*</small></label>
+                                    <input type="number" class="form-control @error('advance') is-invalid @enderror"
+                                        value="{{ old('advance', $old->advance ?? '') }}" name="advance" id="advance"
+                                        placeholder="Advance" >
+                                    @error('advance')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label" for="emi_amount">EMI Amount<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('emi_amount') is-invalid @enderror"
-            value="{{ old('emi_amount', $old->emi_amount ?? '') }}" name="emi_amount" id="emi_amount"
-            placeholder="EMI Amount" >
-        @error('emi_amount')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" for="emi_amount">EMI Amount<small class="text-danger">*</small></label>
+                                    <input type="number" class="form-control @error('emi_amount') is-invalid @enderror"
+                                        value="{{ old('emi_amount', $old->emi_amount ?? '') }}" name="emi_amount" id="emi_amount"
+                                        placeholder="EMI Amount" >
+                                    @error('emi_amount')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label" for="total_installments">Total Installments<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('total_installments') is-invalid @enderror"
-            value="{{ old('total_installments', $old->total_installments ?? '') }}" name="total_installments" id="total_installments"
-            placeholder="Total Installments" >
-        @error('total_installments')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" for="total_installments">Total Installments<small class="text-danger">*</small></label>
+                                    <input type="number" class="form-control @error('total_installments') is-invalid @enderror"
+                                        value="{{ old('total_installments', $old->total_installments ?? '') }}" name="total_installments" id="total_installments"
+                                        placeholder="Total Installments" >
+                                    @error('total_installments')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label" for="remaining_amount">Remaining Amount<small class="text-danger">*</small></label>
-        <input type="number" class="form-control @error('remaining_amount') is-invalid @enderror"
-            value="{{ old('remaining_amount', $old->remaining_amount ?? '') }}" name="remaining_amount" id="remaining_amount"
-            placeholder="Remaining Amount" >
-        @error('remaining_amount')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" for="remaining_amount">Remaining Amount<small class="text-danger">*</small></label>
+                                    <input type="number" class="form-control @error('remaining_amount') is-invalid @enderror"
+                                        value="{{ old('remaining_amount', $old->remaining_amount ?? '') }}" name="remaining_amount" id="remaining_amount"
+                                        placeholder="Remaining Amount" >
+                                    @error('remaining_amount')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
 
-    <div class="mb-3 col-md-4">
-        <label class="form-label" for="narration">Narration<small class="text-danger">*</small></label>
-        <input type="text" class="form-control @error('narration') is-invalid @enderror"
-            value="{{ old('narration', $old->narration ?? '') }}" name="narration" id="narration"
-            placeholder="Narration" >
-        @error('narration')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
-    <!-- 👉 Payment Details येथे Add करा -->
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" for="narration">Narration<small class="text-danger">*</small></label>
+                                    <input type="text" class="form-control @error('narration') is-invalid @enderror"
+                                        value="{{ old('narration', $old->narration ?? '') }}" name="narration" id="narration"
+                                        placeholder="Narration" >
+                                    @error('narration')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <!-- 👉 Payment Details येथे Add करा -->
 
-<hr>
-<h5>Payment Details</h5>
+                            <hr>
+                            <h5>Payment Details</h5>
 
-<div class="row">
+                            <div class="row">
 
-    <div class="mb-3 col-md-3">
-        <label class="form-label">Payment Method</label>
-        <select id="Pay_type" name="Pay_type" class="form-control">
-            <option value="">SELECT</option>
-            <option value="cash">Cash</option>
-            <option value="cheque">Cheque</option>
-            <option value="e-Payment">E-Payment</option>
-        </select>
-    </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select id="Pay_type" name="Pay_type" class="form-control">
+                                        <option value="">SELECT</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="cheque">Cheque</option>
+                                        <option value="e-Payment">E-Payment</option>
+                                    </select>
+                                </div>
 
-    <div class="mb-3 col-md-4" id="cheque_no_div" style="display:none;">
-        <label class="form-label">Cheque No</label>
-        <input type="number"
-               class="form-control"
-               name="cheque_no"
-               id="cheque_no">
-    </div>
+                                <div class="mb-3 col-md-4" id="cheque_no_div" style="display:none;">
+                                    <label class="form-label">Cheque No</label>
+                                    <input type="number" class="form-control" name="cheque_no"id="cheque_no">
+                                </div>
 
-    <div class="mb-3 col-md-3">
-        <label class="form-label">Account No</label>
-        <div id="Ac">
-            <select id="account_no" name="account_no" class="form-control">
-                <option value="">Select</option>
-            </select>
-        </div>
-    </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="form-label">Account No</label>
+                                    <div id="Ac">
+                                        <select id="account_no" name="account_no" class="form-control">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-    <div class="mb-3 col-md-2">
-        <label class="form-label">Balance</label>
-        <input type="text"
-               class="form-control"
-               id="balanceamt"
-               name="balanceamt"
-               readonly>
-    </div>
+                                <div class="mb-3 col-md-2">
+                                    <label class="form-label">Balance</label>
+                                    <input type="text" class="form-control" id="balanceamt" name="balanceamt" readonly>
+                                </div>
 
-</div>
+                            </div>
 
 
                             </div>
@@ -295,4 +288,12 @@ function validateAdvance() {
         $("#advance").val(balance);
     }
 }
+$(document).ready(function () {
+    $('.select2').select2({
+        placeholder: "-- Select Employee --",
+        allowClear: true,
+        width: '100%'
+    });
+});
 </script>
+

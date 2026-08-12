@@ -27,7 +27,7 @@
                 @endif
             </div>
         </div>
-        <div class="row mb-3">
+        <!-- <div class="row mb-3">
 
             <div class="col-md-3">
                 <label>From Date</label>
@@ -44,7 +44,7 @@
                 <button id="resetBtn" class="btn btn-secondary">Reset</button>
             </div>
 
-        </div>
+        </div> -->
         <div class="card">
             <div class="card-body">
                 <div class="dishes-scroll">
@@ -99,22 +99,22 @@
 <script>
 $(function () {
 
-    let today = new Date();
-    let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    // let today = new Date();
+    // let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    function formatDate(date) {
-        let m = '' + (date.getMonth() + 1);
-        let d = '' + date.getDate();
-        let y = date.getFullYear();
+    // function formatDate(date) {
+    //     let m = '' + (date.getMonth() + 1);
+    //     let d = '' + date.getDate();
+    //     let y = date.getFullYear();
 
-        if (m.length < 2) m = '0' + m;
-        if (d.length < 2) d = '0' + d;
+    //     if (m.length < 2) m = '0' + m;
+    //     if (d.length < 2) d = '0' + d;
 
-        return [y, m, d].join('-');
-    }
+    //     return [y, m, d].join('-');
+    // }
 
-    $('#from_date').val(formatDate(firstDay));
-    $('#to_date').val(formatDate(today));
+    // $('#from_date').val(formatDate(firstDay));
+    // $('#to_date').val(formatDate(today));
 
     let table = $('#customer-payment-table').DataTable({
         processing: true,
@@ -122,10 +122,10 @@ $(function () {
 
         ajax: {
             url: "{{ route('customer_payment') }}",
-            data: function (d) {
-                d.from_date = $('#from_date').val();
-                d.to_date   = $('#to_date').val();
-            }
+            // data: function (d) {
+            //     d.from_date = $('#from_date').val();
+            //     d.to_date   = $('#to_date').val();
+            // }
         },
 
         order: [[0, 'asc']],

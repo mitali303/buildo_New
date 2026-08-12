@@ -419,7 +419,7 @@ body{
                 <tr>
 
                     <td class="info-label">Employee Name</td>
-                    <td>{{ $salary->user->name ?? '' }}</td>
+                    <td>{{ $salary->user->Name ?? '' }}</td>
 
                     <td class="info-label">Salary No</td>
                     <td>{{ $salary->salary_no ?? '' }}</td>

@@ -59,6 +59,16 @@ use App\Http\Controllers\Backend\LateMarkCalculationController;
 // use App\Http\Controllers\Backend\SalaryMasterController;
 use App\Http\Controllers\Backend\DailyWorkReportController;
 use App\Http\Controllers\Backend\EnquiryController;
+use App\Http\Controllers\Backend\LeadController;
+use App\Http\Controllers\Backend\CallOutcomeController;
+use App\Http\Controllers\Backend\CallStatusController;
+use App\Http\Controllers\Backend\CallPurposeController;
+use App\Http\Controllers\Backend\LeadCallController;
+use App\Http\Controllers\Backend\CreateLeadController;
+use App\Http\Controllers\Backend\LeadSourceController;
+use App\Http\Controllers\Backend\LeadMeetingController;
+use App\Http\Controllers\Backend\QuotationController;
+use App\Http\Controllers\Backend\DailyWorkController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -310,33 +320,15 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         //Partner Investor Payment
-        Route::prefix('payments/{type}')
-            ->whereIn('type', ['partner', 'investor'])
-            ->group(function () {
-
-                Route::get('/', [Partner_payController::class, 'index'])
-                    ->name('Partner_pay');
-
-                Route::get('/mainpay/{partner}', [Partner_payController::class, 'mainpay'])
-                    ->name('Partner_pay.mainpay');
-
-                Route::get('/create', [Partner_payController::class, 'create'])
-                    ->name('Partner_pay.create');
-
-                Route::post('/store', [Partner_payController::class, 'store'])
-                    ->name('Partner_pay.store');
-
-                Route::get('/edit/{id}', [Partner_payController::class, 'edit'])
-                    ->name('Partner_pay.edit');
-
-                Route::put('/update/{id}', [Partner_payController::class, 'update'])
-                    ->name('Partner_pay.update');
-
-                Route::delete('/delete/{id}', [Partner_payController::class, 'destroy'])
-                    ->name('Partner_pay.delete');
-
-                Route::get('/make-payment/{id}', [Partner_payController::class, 'makePayment'])
-                    ->name('Partner_pay.makePayment');
+        Route::prefix('payments/{type}')->whereIn('type', ['partner', 'investor'])->group(function () {
+        Route::get('/', [Partner_payController::class, 'index'])->name('Partner_pay');
+        Route::get('/mainpay/{partner}', [Partner_payController::class, 'mainpay'])->name('Partner_pay.mainpay');
+        Route::get('/create', [Partner_payController::class, 'create'])->name('Partner_pay.create');
+        Route::post('/store', [Partner_payController::class, 'store'])->name('Partner_pay.store');
+        Route::get('/edit/{id}', [Partner_payController::class, 'edit'])->name('Partner_pay.edit');
+        Route::put('/update/{id}', [Partner_payController::class, 'update'])->name('Partner_pay.update');
+        Route::delete('/delete/{id}', [Partner_payController::class, 'destroy'])->name('Partner_pay.delete');
+        Route::get('/make-payment/{id}', [Partner_payController::class, 'makePayment'])->name('Partner_pay.makePayment');
             });
 
         //Site Exp Pay
@@ -716,10 +708,11 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('ajax.get.booking.pending');
 
         Route::get('/customer-payment/{id}', [CustomerPaymentController::class, 'show'])->name('customer_payment.show');
-        Route::get('/customer_payment/print/{id}', [CustomerPaymentController::class, 'print'])
-            ->name('customer_payment.print');
+        Route::get('/customer_payment/print/{id}', [CustomerPaymentController::class, 'receipt'])
+    ->name('customer_payment.print');
 
-        Route::get('/customer_payment/{id}', [CustomerPaymentController::class, 'receipt'])->name('customer_payment.receipt');
+    //    Route::get('/customer_payment/{id}', [CustomerPaymentController::class, 'receipt'])
+    // ->name('customer_payment.receipt');
 
 
         // Post Dated Cheque
@@ -910,11 +903,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/enquiries/edit/{id}',[EnquiryController::class,'edit'])
             ->name('enquiries.edit');
 
-        Route::post('/enquiries/update/{id}',[EnquiryController::class,'update'])
+        Route::put('/enquiries/update/{id}',[EnquiryController::class,'update'])
             ->name('enquiries.update');
 
         Route::delete('/enquiries/delete/{id}',[EnquiryController::class,'destroy'])
             ->name('enquiries.destroy');
+
+        Route::get('enquiries/create',[EnquiryController::class,'create'])->name('enquiries.create');
+
+        Route::post('enquiries',[EnquiryController::class,'store'])->name('enquiries.store');
 
             //EmployeeAdvanceController
      Route::get('/EmployeeAdvance', [EmployeeAdvanceController::class, 'index'])
@@ -945,10 +942,11 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/EmployeeAdvancePayment/save', [EmployeeAdvanceController::class, 'storePayment'])
             ->name('EmployeeAdvancePayment.store');
+        //     Route::post('/employee-advance-payment/store',
+        //     [EmployeeAdvanceController::class, 'storePayment']
+        //  )->name('EmployeeAdvance.storePayment');
 
-        Route::get(
-            '/EmployeeAdvance/history/{id}',
-            [EmployeeAdvanceController::class,'paymentHistory']
+        Route::get( '/EmployeeAdvance/history/{id}', [EmployeeAdvanceController::class,'paymentHistory']
         )->name('EmployeeAdvance.history');    
 
         Route::get('/salary/generate',
@@ -982,6 +980,8 @@ Route::group(['middleware' => 'auth'], function () {
                 '/salary/generated-month-list',
                 [SalaryMasterController::class,'generatedMonthList']
             )->name('salary.generated.month.list');
+
+            
 
      // Shift Controller
         Route::get('/Shift', [ShiftController::class, 'index'])->name('Shift')->middleware('hasPermission:Shift_read');
@@ -1058,5 +1058,117 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/LateMarkCalculation/delete/{id}', [LateMarkCalculationController::class, 'destroy'])
         ->name('LateMarkCalculation.delete')
         ->middleware('hasPermission:delete_LateMarkCalculation');
-    });
+
+        //lead
+        Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
+        Route::get('/leads/create', [LeadController::class, 'create'])->name('leads.create');
+        Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
+        Route::get('/leads/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
+        Route::put('/leads/{id}', [LeadController::class, 'update'])->name('leads.update');
+        Route::delete('/leads/{id}', [LeadController::class, 'destroy'])->name('leads.destroy');
+
+         // CallOutcome Controller
+        Route::get('/CallOutcome', [CallOutcomeController::class, 'index'])->name('CallOutcome')->middleware('hasPermission:CallOutcome_read');
+        Route::get('/CallOutcome/create', [CallOutcomeController::class, 'create'])->name('CallOutcome.create')->middleware('hasPermission:create_CallOutcome');
+        Route::post('/CallOutcome/save', [CallOutcomeController::class, 'store'])->name('CallOutcome.store');
+        Route::get('/CallOutcome/edit/{id}', [CallOutcomeController::class, 'edit'])->name('CallOutcome.edit')->middleware('hasPermission:edit_CallOutcome');
+        Route::put('/CallOutcome/update', [CallOutcomeController::class, 'update'])->name('CallOutcome.update');
+        Route::delete('/CallOutcome/delete/{id}', [CallOutcomeController::class, 'destroy'])->name('CallOutcome.delete')->middleware('hasPermission:delete_CallOutcome');
+    
+         // CallStatus Controller
+        Route::get('/CallStatus', [CallStatusController::class, 'index'])->name('CallStatus')->middleware('hasPermission:CallStatus_read');
+        Route::get('/CallStatus/create', [CallStatusController::class, 'create'])->name('CallStatus.create')->middleware('hasPermission:create_CallStatus');
+        Route::post('/CallStatus/save', [CallStatusController::class, 'store'])->name('CallStatus.store');
+        Route::get('/CallStatus/edit/{id}', [CallStatusController::class, 'edit'])->name('CallStatus.edit')->middleware('hasPermission:edit_CallStatus');
+        Route::put('/CallStatus/update', [CallStatusController::class, 'update'])->name('CallStatus.update');
+        Route::delete('/CallStatus/delete/{id}', [CallStatusController::class, 'destroy'])->name('CallStatus.delete')->middleware('hasPermission:delete_CallStatus');
+    
+        // CallPurpose Controller
+        Route::get('/CallPurpose', [CallPurposeController::class, 'index'])->name('CallPurpose')->middleware('hasPermission:CallPurpose_read');
+        Route::get('/CallPurpose/create', [CallPurposeController::class, 'create'])->name('CallPurpose.create')->middleware('hasPermission:create_CallPurpose');
+        Route::post('/CallPurpose/save', [CallPurposeController::class, 'store'])->name('CallPurpose.store');
+        Route::get('/CallPurpose/edit/{id}', [CallPurposeController::class, 'edit'])->name('CallPurpose.edit')->middleware('hasPermission:edit_CallPurpose');
+        Route::put('/CallPurpose/update', [CallPurposeController::class, 'update'])->name('CallPurpose.update');
+        Route::delete('/CallPurpose/delete/{id}', [CallPurposeController::class, 'destroy'])->name('CallPurpose.delete')->middleware('hasPermission:delete_CallPurpose');
+
+
+        // ============================================
+            // LEAD CALL (the "Add Call" provision on the Lead detail page)
+            // ============================================
+            Route::post('/LeadCall/store', [LeadCallController::class, 'store'])->name('LeadCall.store');
+            Route::delete('/LeadCall/delete/{id}', [LeadCallController::class, 'destroy'])->name('LeadCall.delete');
+            Route::patch('/CreateLead/stage/{lead}', [CreateLeadController::class, 'updateStage'])->name('CreateLead.stage');
+            Route::put('/LeadCall/update/{id}', [LeadCallController::class, 'update'])->name('LeadCall.update');
+            Route::patch('/LeadCall/toggle-complete/{id}', [LeadCallController::class, 'toggleComplete'])->name('LeadCall.toggleComplete');
+
+            //CreateLead
+            Route::get('/CreateLead', [CreateLeadController::class, 'index'])->name('CreateLead')->middleware('hasPermission:CreateLead_read');
+            Route::get('/CreateLead/create', [CreateLeadController::class, 'create'])->name('CreateLead.create')->middleware('hasPermission:create_CreateLead');
+            Route::post('/CreateLead/store', [CreateLeadController::class, 'store'])->name('CreateLead.store');
+            Route::get('/CreateLead/edit/{id}', [CreateLeadController::class, 'edit'])->name('CreateLead.edit')->middleware('hasPermission:edit_CreateLead');
+            Route::put('/CreateLead/update', [CreateLeadController::class, 'update'])->name('CreateLead.update');
+            Route::get('/CreateLead/show/{id}', [CreateLeadController::class, 'show'])->name('CreateLead.show');
+            Route::delete('/CreateLead/delete/{id}', [CreateLeadController::class, 'destroy'])->name('CreateLead.delete')->middleware('hasPermission:delete_CreateLead');
+            Route::delete('/CreateLead/bulk-delete', [CreateLeadController::class, 'bulkDestroy'])->name('CreateLead.bulkDelete')->middleware('hasPermission:delete_CreateLead');
+       
+            //LeadSource
+
+            Route::get('/LeadSource',[LeadSourceController::class,'index'])->name('LeadSource')->middleware('hasPermission:LeadSource_read');
+            Route::get('/LeadSource/create',[LeadSourceController::class,'create'])->name('LeadSource.create')->middleware('hasPermission:create_LeadSource');
+            Route::post('/LeadSource/save',[LeadSourceController::class,'store'])->name('LeadSource.store');
+            Route::get('/LeadSource/edit/{id}',[LeadSourceController::class,'edit'])->name('LeadSource.edit')->middleware('hasPermission:edit_LeadSource');
+            Route::put('/LeadSource/update',[LeadSourceController::class,'update'])->name('LeadSource.update');
+            Route::delete('/LeadSource/delete/{id}',[LeadSourceController::class,'destroy'])->name('LeadSource.delete')->middleware('hasPermission:delete_LeadSource');
+       
+            // ============================================
+            // LEAD MEETING (the "Add Meeting" provision on the Lead detail page)
+            // ============================================
+            Route::post('/LeadMeeting/store', [LeadMeetingController::class, 'store'])->name('LeadMeeting.store');
+            Route::put('/LeadMeeting/update/{id}', [LeadMeetingController::class, 'update'])->name('LeadMeeting.update');
+            Route::delete('/LeadMeeting/delete/{id}', [LeadMeetingController::class, 'destroy'])->name('LeadMeeting.delete');
+
+            //Quotation
+            Route::get('/Quotation', [QuotationController::class, 'index'])
+                ->name('Quotation')
+                ->middleware('hasPermission:Quotation_read');
+
+            Route::get('/Quotation/create', [QuotationController::class, 'create'])
+                ->name('Quotation.create')
+                ->middleware('hasPermission:create_Quotation');
+
+            Route::get('/Quotation/estimate-details/{id}', [QuotationController::class, 'getEstimateDetails'])
+                ->name('Quotation.estimateDetails');
+
+            Route::post('/Quotation/store', [QuotationController::class, 'store'])
+                ->name('Quotation.store');
+
+            Route::get('/Quotation/edit/{id}', [QuotationController::class, 'edit'])
+                ->name('Quotation.edit')
+                ->middleware('hasPermission:edit_Quotation');
+
+            Route::get('/Quotation/show/{id}', [QuotationController::class, 'show'])
+                ->name('Quotation.show');
+
+            Route::put('/Quotation/update', [QuotationController::class, 'update'])
+                ->name('Quotation.update');
+
+            Route::delete('/Quotation/delete/{id}', [QuotationController::class, 'destroy'])
+                ->name('Quotation.delete')
+                ->middleware('hasPermission:delete_Quotation');
+
+                //MaterialRequestController
+                Route::get('/material-request-list',[MaterialRequestController::class,'materialRequestList'])->name('material_request.list');
+    
+//daily-work
+
+    Route::prefix('daily-work')->group(function(){
+    Route::get('/',  [DailyWorkController::class,'index'])->name('DailyWork');
+    Route::get('/create',[DailyWorkController::class,'create'] )->name('DailyWork.create');
+    Route::post('/store',[DailyWorkController::class,'store'])->name('DailyWork.store');
+    Route::get('/edit/{id}',[DailyWorkController::class,'edit'] )->name('DailyWork.edit');
+    Route::post('/update',[DailyWorkController::class,'update'])->name('DailyWork.update');
+    Route::delete('/delete/{id}',[DailyWorkController::class,'destroy'])->name('DailyWork.delete');
+});
+
+            });
 });

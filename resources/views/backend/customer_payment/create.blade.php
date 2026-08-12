@@ -191,7 +191,7 @@
 
                       </td>
                       <td>
-                        <input type="text" style=""   name="receipt_no" id="receipt_no"  value="{{ old('receipt_no', $customerpayment->receipt_no ?? '') }}" class=" form-control required"/>
+                        <input type="text" style=""   readonly name="receipt_no" id="receipt_no"  value="{{ old('receipt_no', $customerpayment->receipt_no ?? ($orderNo ?? '')) }}" class=" form-control required"/>
                       </td>
                       <td>
                         <div id="Ac" style="">

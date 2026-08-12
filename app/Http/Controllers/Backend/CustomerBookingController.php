@@ -31,7 +31,7 @@ class CustomerBookingController extends Controller
                     'Scheme',
                     'Contact',
                     'FlatNo',
-                    'TotalFlatAmt',
+                    'TotalFlatAmt'
                     
 
                 )
@@ -106,7 +106,7 @@ class CustomerBookingController extends Controller
     {
         $booking = CustomerBooking::findOrFail($id);
 
-        return view('backend.customer_booking.customerbooking_reminder', compact('booking'));
+        return view('backend.Customer_booking.customerbooking_reminder', compact('booking'));
     }
 
    
@@ -170,9 +170,11 @@ class CustomerBookingController extends Controller
 
         //$booking_cust = Booking_Customer::where('ClientID', $clientId)->get();
        $banks = Bank_Acc::where('ClientID', $clientId)->get();
-        $slabs = DB::table('slabs')
-        ->where('ClientID', $clientId)
-        ->first();
+        // $slabs = DB::table('slabs')
+        // ->where('ClientID', $clientId)
+        // ->first();
+        
+        $slabs = DB::table('slabs')->first();
 
         if (!$slabs) {
             $slabs = (object)[
@@ -212,9 +214,8 @@ class CustomerBookingController extends Controller
             ->where('scheme_ID', $clientId)
             ->whereNotIn('ID', $bookingFlatIDs)
             ->get();
-     
-        
-        return view('backend.Customer_booking.create', compact('schemes','flatsDetails','slabs','banks','clientId'));
+      $orderNo = generateOrderNo();
+        return view('backend.Customer_booking.create', compact('schemes','flatsDetails','slabs','banks','clientId' ,'orderNo'));
     }
     public function getFlatsNo(Request $request)
     {
@@ -365,6 +366,11 @@ class CustomerBookingController extends Controller
 
         $files = implode(',', $filesArr);
         $bookingId = uniqid();
+         // ✅ इथे टाका — validate() च्या आधी
+    $request->merge([
+        'TotalFlatAmt' => is_numeric($request->TotalFlatAmt) ? $request->TotalFlatAmt : 0,
+        'cost'         => is_numeric($request->cost) ? $request->cost : 0,
+    ]);
 
         $account = $request->validate([
             'name'      => 'required|string',
@@ -377,7 +383,7 @@ class CustomerBookingController extends Controller
             'email'  => 'nullable|string',
             'scheme'  => 'required|string',
             'idproof'  => 'required|string',
-            'typesrch'  => 'required|string',
+            'typesrch'  => 'nullable|string',
             'agreement_complete'   => 'nullable|numeric',
             
             'agreement_no'  => 'nullable|string',
@@ -413,6 +419,7 @@ class CustomerBookingController extends Controller
             'floaring'   => 'nullable|numeric',
             'plumbing'   => 'nullable|numeric',
             'project'   => 'nullable|numeric',
+            'slab_total' => 'nullable|numeric',
             'Pay_type'   => 'required|string',
             'receipt_no'   => 'nullable|string',
             'account_no'   => 'nullable|string',
@@ -469,6 +476,7 @@ class CustomerBookingController extends Controller
             'floaring'          => $request->floaring,
             'plumbing'          => $request->plumbing,
             'project'           => $request->project,
+            'slab_total'        => $request->slab_total,
             'cancel_flag'           => 0,
             'stamp_amt' => $request->filled('stamp_amt') ? $request->stamp_amt : null,
 
@@ -484,12 +492,13 @@ class CustomerBookingController extends Controller
         // =========================
         // Insert booking_payment
         // =========================
+         $orderNo = generateOrderNo();
         CustomerPayment::create([
             'ID'             => uniqid(),
             'ClientID'       => session('selected_scheme_id'),
             'Date'           => date('Y-m-d', strtotime($request->bdate)),
             'amt_pay'        => $request->amount_pay,
-            'receipt_no'     => $request->receipt_no,
+            'receipt_no'     => $orderNo,
             'payment_method' => $request->Pay_type,
             'cheque_no'      => $request->cheque_no,
             'account_no'     => $request->account_no,
@@ -520,10 +529,13 @@ class CustomerBookingController extends Controller
         ->where('Booking_ID', $postdated['ID'])
         ->where('type', 'Downpayment')
         ->first();
+
+        $orderNo = generateOrderNo($booking_pay->receipt_no);
        //dd($booking_pay);
-        $slabs = DB::table('slabs')
-            ->where('ClientID', $clientId)
-            ->first();
+        // $slabs = DB::table('slabs')
+        //     ->where('ClientID', $clientId)
+        //     ->first();
+        $slabs = DB::table('slabs')->first();
 
        $bookcancelFlatIDs = DB::table('booking_cancel')
             ->where('SchemID', $postdated['Scheme'])
@@ -560,11 +572,16 @@ class CustomerBookingController extends Controller
             ->get();
 
         return view('backend.Customer_booking.create', compact(
-            'schemes','postdated','flatsDetails','slabs','banks','flat_detail','booking_pay'
+            'schemes','postdated','flatsDetails','slabs','banks','flat_detail','booking_pay' ,'orderNo'
         ));
     }
     public function update(Request $request)
     {
+         // ✅ इथे टाका — validate() च्या आधी
+    $request->merge([
+        'TotalFlatAmt' => is_numeric($request->TotalFlatAmt) ? $request->TotalFlatAmt : 0,
+        'cost'         => is_numeric($request->cost) ? $request->cost : 0,
+    ]);
         // Validate request
         $request->validate([
             'name'      => 'required|string',
@@ -577,7 +594,7 @@ class CustomerBookingController extends Controller
             'email'  => 'nullable|string',
             'scheme'  => 'required|string',
             'idproof'  => 'required|string',
-            'typesrch'  => 'required|string',
+            'typesrch'  => 'nullable|string',
             'agreement_complete'   => 'nullable|numeric',
             'agreement_no'  => 'nullable|string',
             'fno'  => 'required|string',
@@ -612,6 +629,7 @@ class CustomerBookingController extends Controller
             'floaring'   => 'nullable|numeric',
             'plumbing'   => 'nullable|numeric',
             'project'   => 'nullable|numeric',
+            'slab_total' => 'nullable|numeric',
             'Pay_type'   => 'required|string',
             'receipt_no'   => 'nullable|string',
             'account_no'   => 'nullable|string',
@@ -691,7 +709,8 @@ class CustomerBookingController extends Controller
             'floaring'          => $request->floaring,
             'plumbing'          => $request->plumbing,
             'project'           => $request->project,
-            'userID'            => session('userID'),
+            'slab_total'        => $request->slab_total,
+            // 'userID'            => session('userID'),
             'stamp_amt'      => $request->filled('stamp_amt') ? (float)$request->stamp_amt : null,
             'Ptype'             => $request->rateamt,
             'loan_sanction_amt' => $request->loan_sanction_amt,
@@ -737,32 +756,56 @@ class CustomerBookingController extends Controller
             ->route('customer_booking')
             ->with('success', 'Record has been deleted successfully!');
     }
+    // public function paymentSchedule($id)
+    // {
+    //     $booking = CustomerBooking::with('flatsdetail')->findOrFail($id);
+
+    //     // slabs table (assuming one row config like old code)
+    //     $slab = DB::table('slabs')->first();
+
+    //     $total = $booking->TotalFlatAmt;
+
+    //     // calculate slab amounts
+    //     $calc = [
+    //         'plinth'   => $total * $slab->pilnth / 100,
+    //         'slab'     => $total * $slab->slab / 100,
+    //         'bricks'   => $total * $slab->bricks / 100,
+    //         'plaster'  => $total * $slab->plaster / 100,
+    //         'flooring' => $total * $slab->floaring / 100,
+    //         'plumbing' => $total * $slab->plumbing / 100,
+    //         'project'  => $total * $slab->project / 100,
+    //         'total'    => $total * $slab->total / 100,
+    //     ];
+
+    //     return view(
+    //         'backend.Customer_booking.payment_schedule',
+    //         compact('booking', 'slab', 'calc')
+    //     );
+    // }
     public function paymentSchedule($id)
-    {
-        $booking = CustomerBooking::with('flatsdetail')->findOrFail($id);
+{
+    $booking = CustomerBooking::with('flatsdetail')->findOrFail($id);
 
-        // slabs table (assuming one row config like old code)
-        $slab = DB::table('slabs')->first();
+    $total = $booking->TotalFlatAmt;
 
-        $total = $booking->TotalFlatAmt;
+    // ✅ booking cha swतःचा saved slab % vapara, global 'slabs' table nahi
+    $calc = [
+        'plinth'   => $total * ($booking->pilnth ?? 0) / 100,
+        'slab'     => $total * ($booking->slab ?? 0) / 100,
+        'bricks'   => $total * ($booking->bricks ?? 0) / 100,
+        'plaster'  => $total * ($booking->plaster ?? 0) / 100,
+        'flooring' => $total * ($booking->floaring ?? 0) / 100,
+        'plumbing' => $total * ($booking->plumbing ?? 0) / 100,
+        'project'  => $total * ($booking->project ?? 0) / 100,
+        // 'total'    => $total * ($booking->slab_total ?? 0) / 100,
+    ];
+    $calc['total'] = array_sum($calc);
 
-        // calculate slab amounts
-        $calc = [
-            'plinth'   => $total * $slab->pilnth / 100,
-            'slab'     => $total * $slab->slab / 100,
-            'bricks'   => $total * $slab->bricks / 100,
-            'plaster'  => $total * $slab->plaster / 100,
-            'flooring' => $total * $slab->floaring / 100,
-            'plumbing' => $total * $slab->plumbing / 100,
-            'project'  => $total * $slab->project / 100,
-            'total'    => $total * $slab->total / 100,
-        ];
-
-        return view(
-            'backend.Customer_booking.payment_schedule',
-            compact('booking', 'slab', 'calc')
-        );
-    }
+    return view(
+        'backend.Customer_booking.payment_schedule',
+        compact('booking', 'calc')   // $slab yeथun kadhla, ata garaj nahi
+    );
+}
 
 
 

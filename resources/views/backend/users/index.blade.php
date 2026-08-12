@@ -46,20 +46,20 @@
                                                   <i data-feather="edit-2"></i>
                                               </a>
                                               @endif
-                                            @if (hasPermission('delete_user'))
-                                              <a href="{{ route('users.delete', $user->ID) }}"
-                                                 class="text-danger"
-                                                 onclick="event.preventDefault();
-                                                    document.getElementById('delete-{{ $user->ID }}').submit();">
-                                                  <i data-feather="trash"></i>
-                                              </a>
-                                            @endif
-                                              <form id="delete-{{ $user->ID }}"
-                                                    action="{{ route('users.delete', $user->ID) }}"
-                                                    method="POST" class="d-none">
-                                                  @csrf
-                                                  @method('DELETE')
-                                              </form>
+                                           @if (hasPermission('delete_user'))
+                                            <a href="javascript:void(0);"
+                                            class="text-danger"
+                                            onclick="confirmDelete('{{ $user->ID }}')">
+                                                <i data-feather="trash"></i>
+                                            </a>
+                                        @endif
+                                                                                    <form id="delete-{{ $user->ID }}"
+                                            action="{{ route('users.delete', $user->ID) }}"
+                                            method="POST"
+                                            class="d-none">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
                                       </td>
                                   </tr>
                               @endforeach
@@ -86,5 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
       .container()
       .appendTo('#datatables-buttons_wrapper .col-md-6:eq(0)');
 });
+</script>
+<script>
+function confirmDelete(id) {
+
+    if (confirm('Are you sure you want to delete this user?')) {
+        document.getElementById('delete-' + id).submit();
+    }
+
+}
 </script>
 @endpush

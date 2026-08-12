@@ -5,7 +5,7 @@ Attendance Master
 @endsection
 
 @section('maincontent')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <main class="content">
 
     <div class="container-fluid p-0">
@@ -69,7 +69,7 @@ Attendance Master
 
                                     <select name="emp_id"
                                             id="emp_id"
-                                            class="form-control @error('emp_id') is-invalid @enderror"
+                                            class="form-control select2 @error('emp_id') is-invalid @enderror"
                                             required>
 
                                         <option value="">
@@ -325,14 +325,21 @@ Attendance Master
 
 </main>
 
-@endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
 
-    // AUTO DESIGNATION SET
+    $('#emp_id').select2({
+        placeholder: "-- Select Employee --",
+        allowClear: true,
+        width: '100%'
+    });
+
 
     const users = @json($users);
 
@@ -356,3 +363,5 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+
+@endsection

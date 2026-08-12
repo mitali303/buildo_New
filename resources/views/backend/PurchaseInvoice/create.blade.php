@@ -1,6 +1,6 @@
 @extends('backend.partials.master')
 
-@section('title', !empty($invoice) ? 'Edit Purchase Invoice' : 'Create Purchase Invoice')
+@section('title', !empty($invoice) ? 'Edit Material Inward' : 'Create Material Inward')
 <style>
     .choices__list--dropdown .choices__item {
     min-width: 400px;           /* increase option width */
@@ -12,7 +12,7 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        <h1 class="h3 mb-3">{{ !empty($invoice) ? 'Edit Purchase Invoice' : '' }}</h1>
+        <h1 class="h3 mb-3">{{ !empty($invoice) ? 'Edit Material Inward' : '' }}</h1>
 
         <div class="card">
             <div class="card-body">

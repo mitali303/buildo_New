@@ -71,8 +71,12 @@ class SalaryMaster extends Model
        EMPLOYEE RELATION
     ===================================== */
 
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'emp_id');
+    // }
     public function user()
-    {
-        return $this->belongsTo(User::class, 'emp_id');
-    }
+{
+    return $this->belongsTo(User::class, 'emp_id', 'ID');
+}
 }

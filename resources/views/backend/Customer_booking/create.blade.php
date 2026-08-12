@@ -29,7 +29,7 @@
 
         @endphp
           <div class="card-body">
-            <form action="@if(!empty($postdated)){{ route('customer_booking.update') }}@else{{ route('customer_booking.store') }}@endif"
+          <form action="@if(!empty($postdated)){{ route('customer_booking.update') }}@else{{ route('customer_booking.store') }}@endif"
                   method="POST" enctype="multipart/form-data">
                   
               @csrf
@@ -280,32 +280,24 @@
                 </table>
               </div><br>
 
-            <div class="row">
-
-            <div class="mb-3 col-md-3 d-flex align-items-center">
-                <label class="me-2 mb-0">Rate Per Sq/ft:</label>
-
-                <input name="rateamt" value="1" type="radio" onclick="show_ratesqft(this.value);"
-                    {{ old('rateamt', $postdated->Ptype ?? '') == '1' ? 'checked' : '' }} style="margin-top:0;" >
-            </div>
-
-            <div class="mb-3 col-md-3 d-flex align-items-center">
-                <label class="me-2 mb-0">Lump Sum Amount:</label>
-
-                <input name="rateamt" value="0" type="radio" onclick="show_ratesqft(this.value);"
-                    {{ old('rateamt', $postdated->Ptype ?? '') == '0' ? 'checked' : '' }}
-                    style="margin-top:0;" >
-            </div>
-
-            <div class="mb-3 col-md-3 d-flex align-items-center">
-                <label class="me-2 mb-0">Land Owner:</label>
-
-                <input name="rateamt" value="2" type="radio" onclick="show_ratesqft(this.value);"
-                    {{ old('rateamt', $postdated->Ptype ?? '') == '2' ? 'checked' : '' }}
-                    style="margin-top:0;" >
-            </div>
-
-        </div>
+              <div class="row" >
+                <div class="mb-3 col-md-3">
+				 
+				          <label>Rate Per Sq/ft:</label>
+                              
+			            <input name="rateamt" id="rateamt" value="1" {{ old('rateamt', $postdated->Ptype ?? '') == '1' ? 'checked' : '' }} type="radio"  onclick="show_ratesqft(this.value);" onblur=""/>
+				        </div>
+				        <div class="mb-3 col-md-3">
+                  <label> Lump Sum Amount: </label>
+               
+					        <input name="rateamt" id="rateamt" type="radio"  onclick="show_ratesqft(this.value);" value="0" {{ old('rateamt', $postdated->Ptype ?? '') == '0' ? 'checked' : '' }} />
+				        </div>
+				        <div class="mb-3 col-md-3">
+                  <label> Land Owner:</label>
+               
+					        <input name="rateamt" id="rateamt" type="radio"  onclick="show_ratesqft(this.value);" value="2" {{ old('rateamt', $postdated->Ptype ?? '') == '2' ? 'checked' : '' }} />
+				        </div>
+				      </div>
                <br>
                <?php 
                if(!empty($postdated))
@@ -411,15 +403,17 @@
 				            <div class="col-md-3 row ">
 				                <div class="col-md-12 input-group" id="totalSqFt">
 				  
-				                  <input name="servicetax_per" id="servicetax_per" style="width: 50px;"  type="text" class="form-control number " value="{{ old('servicetax_per', $postdated->servicetaxPer ?? '') }}" />&nbsp;
+				                  <input name="servicetax_per" id="servicetax_per" style="width:50px;" type="text"class="form-control number"
+                              value="{{ old('servicetax_per', $postdated->servicetaxPer ?? '') }}" onkeyup="totalTaxAmt();"onblur="totalTaxAmt();" />&nbsp;
 				                  <span class="" style=""><b>%</b></span>
 					
-					                <input name="servicetax" id="servicetax"  type="text" class="form-control number" style="margin-left:42px;width: 90px;" value="{{ old('servicetax', $postdated->servicetax ?? '') }}" onkeyup="totalTaxAmt();" onblur="totalTaxAmt();"/>&nbsp; 
+					                <input name="servicetax" id="servicetax"  type="text" class="form-control number" style="margin-left:42px;width: 90px;" value="{{ old('servicetax', $postdated->servicetax ?? '') }}" />&nbsp; 
 					                <span class="" style="margin-left:2px;"><b> &#8377; </b></span>
 					              </div>
 					          </div>
 
                 </div><br>
+
 
                 <div class="row">
                   <div class="col-md-2 " style="">Registration:</div>
@@ -479,14 +473,17 @@
                   @if(!empty($slabs) && $slabs->pilnth != '')
                       <div class="col-md-2 ">pilnth :</div>
                       <div class="col-md-3">
-                      <input type="text" class="form-control input-sm number" readonly  id="pilnth"   name="pilnth" value="{{ old('pilnth', $slabs->pilnth ?? '') }}" >
+                      <!--<input type="text" class="form-control input-sm number"   id="pilnth"   name="pilnth" value="{{ old('pilnth', $slabs->pilnth ?? '') }}" onkeyup="calcSlabTotal()" >-->
+                      <input type="text" class="form-control input-sm number"   id="pilnth"   name="pilnth" value="{{ old('pilnth', !empty($postdated) ? $postdated->pilnth : ($slabs->pilnth ?? '')) }}" onkeyup="calcSlabTotal()" >
+                      
                       </div>
                    @endif
                   
                 @if(!empty($slabs) && $slabs->slab != '')
                 <div class="col-md-2 ">slab : </div>
                       <div class="col-md-3">
-                      <input type="text" class="form-control input-sm number" readonly  id="slab"  name="slab" value="{{ old('slab', $slabs->slab ?? '') }}" >
+                      <!--<input type="text" class="form-control input-sm number"  id="slab"  name="slab" value="{{ old('slab', $slabs->slab ?? '') }}" onkeyup="calcSlabTotal()" >-->
+                       <input type="text" class="form-control input-sm number"  id="slab"  name="slab" value="{{ old('slab', !empty($postdated) ? $postdated->slab : ($slabs->slab ?? '')) }}" onkeyup="calcSlabTotal()" >
                       </div>
                  @endif
               </div><br>
@@ -495,14 +492,18 @@
                 @if(!empty($slabs) && $slabs->bricks != '')		 
                   <div class="col-md-2 ">bricks :</div>
                   <div class="col-md-3">
-                    <input type="text" readonly class="form-control input-sm number"  id="bricks"  name="bricks" value="{{ old('slab', $slabs->bricks ?? '') }}" >
+                    <!--<input type="text"  class="form-control input-sm number"  id="bricks"  name="bricks" value="{{ old('slab', $slabs->bricks ?? '') }}"  onkeyup="calcSlabTotal()">-->
+                        <input type="text"  class="form-control input-sm number"  id="bricks"  name="bricks" value="{{ old('bricks', !empty($postdated) ? $postdated->bricks : ($slabs->bricks ?? '')) }}"  onkeyup="calcSlabTotal()">
+
                   </div>
 		             @endif
 
                 @if(!empty($slabs) && $slabs->plaster != '')	 
 			            <div class="col-md-2 ">plaster :</div>
                   <div class="col-md-3">
-                    <input type="text" readonly class="form-control input-sm number " id="plaster"  name="plaster" value="{{ old('slab', $slabs->plaster ?? '') }}" >
+                    <!--<input type="text"  class="form-control input-sm number " id="plaster"  name="plaster" value="{{ old('slab', $slabs->plaster ?? '') }}" onkeyup="calcSlabTotal()" >-->
+                        <input type="text"  class="form-control input-sm number " id="plaster"  name="plaster" value="{{ old('plaster', !empty($postdated) ? $postdated->plaster : ($slabs->plaster ?? '')) }}" onkeyup="calcSlabTotal()" >
+
                   </div>
 		           @endif
 			
@@ -513,13 +514,17 @@
                 @if(!empty($slabs) && $slabs->floaring != '')	 			 
                   <div class="col-md-2 ">floaring :</div>
                   <div class="col-md-3">
-                      <input type="text" readonly class="form-control input-sm number" id="floaring"  name="floaring" value="{{ old('slab', $slabs->floaring ?? '') }}" >
+                      <!--<input type="text"  class="form-control input-sm number" id="floaring"  name="floaring" value="{{ old('slab', $slabs->floaring ?? '') }}" onkeyup="calcSlabTotal()" >-->
+                          <input type="text"  class="form-control input-sm number" id="floaring"  name="floaring" value="{{ old('floaring', !empty($postdated) ? $postdated->floaring : ($slabs->floaring ?? '')) }}" onkeyup="calcSlabTotal()" >
+
                   </div>
 		             @endif
 		            @if(!empty($slabs) && $slabs->plumbing != '')			 
                   <div class="col-md-2 ">plumbing :</div>
                   <div class="col-md-3">
-                    <input type="text" readonly class="form-control input-sm number " id="plumbing"  name="plumbing" value="{{ old('slab', $slabs->plumbing ?? '') }}" >
+                    <!--<input type="text"  class="form-control input-sm number " id="plumbing"  name="plumbing" value="{{ old('slab', $slabs->plumbing ?? '') }}" onkeyup="calcSlabTotal()" >-->
+                        <input type="text"  class="form-control input-sm number " id="plumbing"  name="plumbing" value="{{ old('plumbing', !empty($postdated) ? $postdated->plumbing : ($slabs->plumbing ?? '')) }}" onkeyup="calcSlabTotal()" >
+
                   </div>
 		            @endif
 			        </div><br>
@@ -528,12 +533,26 @@
                 
                   <div class="col-md-2 goright">project :</div>
                   <div class="col-md-3">
-                    <input type="text" readonly class="form-control input-sm number " id="project"  name="project" value="{{ old('slab', $slabs->project ?? '') }}" >
+                    <!--<input type="text"  class="form-control input-sm number " id="project"  name="project" value="{{ old('slab', $slabs->project ?? '') }}" onkeyup="calcSlabTotal()" >-->
+                       <input type="text"  class="form-control input-sm number " id="project"  name="project" value="{{ old('project', !empty($postdated) ? $postdated->project : ($slabs->project ?? '')) }}" onkeyup="calcSlabTotal()" >
+
                   </div>
 
                  @endif
             
-              </div><br><hr>
+              </div><br>
+                  <div class="row">
+                    <div class="col-md-2">
+                        <label><b>Total :</b></label>
+                    </div>
+                
+                    <div class="col-md-3">
+                        <input type="text"  class="form-control"  id="slab_total" name="slab_total" value="{{ old('slab_total', $slabs->total ?? 0) }}"  readonly>
+                         <small id="slab_error" class="text-danger"></small>
+                    </div>
+                </div>
+            
+            <br><hr>
 
               <div class="row">
                 <table class="table" id="mytable">
@@ -566,11 +585,11 @@
                         @enderror
 
                       </td>
-                      <td>
-                        <input type="text" style=""   name="receipt_no" id="receipt_no"  value="{{ old('receipt_no', $booking_pay->receipt_no ?? '') }}" class=" form-control required"/>
+                       <td>                                                        
+                        <input type="text" style="width:90px;"  readonly name="receipt_no" id="receipt_no"  value="{{ old('receipt_no', $booking_pay->receipt_no ?? ($orderNo ?? '')) }}" class=" form-control required"/>
                       </td>
                       <td>
-                        <div id="Ac" style="">
+                        <div id="Ac" style="width:200px;">
                         <select name="account_no" id="account_no" class="form-control" >
                           <option value="">Select Account</option>
                           @foreach($banks as $bank)
@@ -844,12 +863,23 @@ function totalTaxAmt() {
 		
 		$("#vat").val(vatAmt.toFixed(2));
 
-	   servicetax = $("#servicetax").val();
+	    servicetax = $("#servicetax").val();
 	   
 	   if (servicetax=='') { servicetax=0;}
-		if (vatAmt=='') { vatAmt=0;}
-		if (Bsp=='') { Bsp==0;}
-	
+             // GST Calculation
+        var gstAmt = 0;
+        
+        if(floatRegex.test(s_amt) && floatRegex.test(servicetax_per))
+        {
+            gstAmt = parseFloat(s_amt) * parseFloat(servicetax_per) / 100;
+        }
+        
+        $("#servicetax").val(gstAmt.toFixed(2));
+        
+        servicetax = gstAmt;
+        		if (vatAmt=='') { vatAmt=0;}
+        		if (Bsp=='') { Bsp==0;}
+        	
 		if (RergiCharg=='') { RergiCharg=0;}
 	   
 	   
@@ -925,6 +955,36 @@ function diffrence(){
   $('#diff').val(total);
   $("#stamp_amt").val(agreementAmt);
 }
+
+function calcSlabTotal() {
+
+    let pilnth   = parseFloat($('#pilnth').val()) || 0;
+    let slab     = parseFloat($('#slab').val()) || 0;
+    let bricks   = parseFloat($('#bricks').val()) || 0;
+    let plaster  = parseFloat($('#plaster').val()) || 0;
+    let floaring = parseFloat($('#floaring').val()) || 0;
+    let plumbing = parseFloat($('#plumbing').val()) || 0;
+    let project  = parseFloat($('#project').val()) || 0;
+
+    let total = pilnth + slab + bricks + plaster + floaring + plumbing + project;
+
+    if(total > 100) {
+
+        $('#slab_error').html("Total slab percentage cannot be greater than 100.");
+
+        $('#slab_total').val(total);
+
+        return false;
+    }
+
+    $('#slab_error').html('');
+
+    $('#slab_total').val(total);
+}
+
+$(document).ready(function(){
+    calcSlabTotal();
+});
 </script>
 
 <script>

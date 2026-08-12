@@ -44,7 +44,7 @@
             <h1 class="h3 d-inline align-middle">Daily Diary Report</h1>
         </div>
 {{-- Date Filter --}}
-        <div class="row mb-3">
+        <!-- <div class="row mb-3">
             <div class="col-md-3">
                 <label>Date</label>
                 <input type="date" id="date" class="form-control"
@@ -56,7 +56,7 @@
                 <button class="btn btn-primary" onclick="printReport()">Print</button>
 
             </div>
-        </div>
+        </div> -->
         
 
         

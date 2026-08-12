@@ -178,10 +178,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         }
-    },
-    {
-        extend: 'colvis',
-        text: 'Columns'
     }
 ],
 

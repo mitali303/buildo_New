@@ -80,7 +80,7 @@ class SalaryMasterController extends Controller
 
             ->addColumn('employee_name', function ($row) {
 
-                return $row->user->name ?? 'N/A';
+                return $row->user->Name ?? 'N/A';
             })
 
             ->addColumn('salary_month', function ($row) {
@@ -174,7 +174,7 @@ class SalaryMasterController extends Controller
     public function create()
     {
         $users = User::orderBy('name')
-                    ->select('id', 'name')
+                    ->select('ID', 'Name')
                     ->get();
 
         $prefix = 'SAL-' . date('Ym') . '-';
@@ -213,7 +213,8 @@ class SalaryMasterController extends Controller
     ========================================================= */
 
     public function store(Request $request)
-    {
+    { 
+       
         $validated = $request->validate([
 
             'date'                 => 'required|date',
@@ -222,7 +223,7 @@ class SalaryMasterController extends Controller
 
             'salary_no'            => 'required',
 
-            'emp_id'               => 'required|exists:users,id',
+            'emp_id'               => 'required|exists:user,ID',
 
             'basic_salary'         => 'required|numeric',
             'gross'                => 'required|numeric',
@@ -392,7 +393,7 @@ if (($validated['advance_emi'] ?? 0) > 0) {
         $old = SalaryMaster::findOrFail($id);
 
         $users = User::orderBy('name')
-                    ->select('id', 'name')
+                    ->select('ID', 'Name')
                     ->get();
 
         $salaryNo = $old->salary_no;
@@ -672,6 +673,8 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
     public function getSalaryDetails($empId, $month, $year, $id = null)
     {
+        dd($empId, $month, $year, $id);
+
         $user = User::findOrFail($empId);
 
         $monthNumber = date('m', strtotime($month));
@@ -1247,7 +1250,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
             'salary_no' => $salaryNo,
 
-            'emp_id' => $user->id,
+            'emp_id' => $user->ID,
 
             'month' => $month,
             'year' => $year,
@@ -1507,7 +1510,7 @@ public function salaryReportData(Request $request)
         ->addIndexColumn()
 
         ->addColumn('employee_name', function ($row) {
-            return $row->user->name ?? '';
+            return $row->user->Name ?? '';
         })
 
         ->addColumn('salary_month', function ($row) {
@@ -1521,6 +1524,10 @@ public function salaryReportData(Request $request)
 
         ->addColumn('gross', function ($row) {
             return number_format($row->gross,2);
+        })
+
+         ->editColumn('advance_emi', function ($row) {          // ✅ add kela
+            return number_format($row->advance_emi,2);
         })
 
         ->addColumn('net_salary', function ($row) {

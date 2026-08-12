@@ -53,7 +53,10 @@ class CustomerPayment extends Model
     {
         return $this->belongsTo(Booking_Customer::class, 'Booking_ID', 'ID');
     }
-
+    public function flat()
+    {
+        return $this->belongsTo(Flat_details::class, 'FlatID', 'ID');
+    }
 
 
 }

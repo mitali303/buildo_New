@@ -25,20 +25,21 @@ class User extends Authenticatable
         'access_type',
         'scheme', // JSON
          'total_salary',
-    'perhour_salary',
-    'overtime_salary_perhour',
-    'designation',
-    'account_no',
-    'IFSC',
-    'bank_name',
-    'PF',
-    'PF_No',
-    'ESI',
-    'ESI_No',
-    'allowance_amount',
-    'pf_amount',
-    'hra_allowance_amount',
-    'emp_id',
+        'perhour_salary',
+        'overtime_salary_perhour',
+        'designation',
+        'account_no',
+        'IFSC',
+        'bank_name',
+        'PF',
+        'PF_No',
+        'ESI',
+        'ESI_No',
+        'allowance_amount',
+        'pf_amount',
+        'hra_allowance_amount',
+        'emp_id',
+        'status',
     ];
 
     protected $hidden = [
@@ -60,4 +61,12 @@ class User extends Authenticatable
     {
         return json_decode($value, true) ?? [];
     }
+    public function isAdmin(): bool
+    {
+        return $this->Role == 1;
+    }
+    public function isSupervisor(): bool
+{
+    return $this->Role == 2;
+}
 }

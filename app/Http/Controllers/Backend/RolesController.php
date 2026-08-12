@@ -140,6 +140,9 @@ class RolesController extends Controller
             return redirect()->route('roles')->with('error', 'Admin can not be deleted');
         }
         
+        if($user->id == 2){
+        return redirect()->route('roles')->with('error', 'Supervisor role can not be deleted');
+    }
         $user->delete();
         // Toastr::success('User Deleted successfully!', 'Success');
         return redirect()->route('roles')->with('success', 'Role deleted successfully!');

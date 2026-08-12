@@ -6,10 +6,10 @@
 <main class="content">
     <div class="container-fluid p-0">
         @if (hasPermission('create_purchase_invoice'))
-        <a href="{{route('PurchaseInvoice.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Purchase Invoice</a>
+        <a href="{{route('PurchaseInvoice.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Material Inward</a>
         @endif
         <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Purchase Invoice</h1> 
+            <h1 class="h3 d-inline align-middle">Material Inward</h1> 
         </div>
 
         <div class="row">

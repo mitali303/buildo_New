@@ -21,6 +21,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Flat No</th>
                                     <th>Scheme</th>
                                     <th>Type</th>
                                     <th>Total Amount</th>
@@ -47,6 +49,8 @@
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'Date', name: 'Date' },
+                 { data: 'CustomerName', name: 'CustomerName' },
+                { data: 'FlatNo', name: 'FlatNo' },
                 { data: 'scheme_name', name: 'scheme.Name' },
                 { data: 'type', name: 'Type' },
                 { data: 'Amount', name: 'Total Amount' },

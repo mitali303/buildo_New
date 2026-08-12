@@ -2,6 +2,14 @@
 @section('title')
     Dashboard
 @endsection
+@php
+    use Illuminate\Support\Facades\DB;
+
+    
+$enquiryCount = DB::table('leads')->count();
+
+@endphp
+
 @section('maincontent')
 <!-- main content -->
  <main class="content">
@@ -205,30 +213,147 @@ body {
     </div>
 </form>
     <div class="row g-4">
+         {{-- Enquiry --}}
+                    @if(hasPermission('enquirylist_read'))
+                        <div class="col-lg-2 col-md-4 col-sm-6 d-flex">
+                                <div class="dashboard-card w-100">
+                                     <a href="{{ route('enquiries.index') }}">
+                                    <div class="card-header-custom">
+                                        📋 Enquiry
+                                    </div>
+                                    <div class="card-body-custom">
+                                        <div class="row-line d-flex justify-content-center">
+                                            <span class="value fs-1 fw-bold">
+                                                {{ $enquiryCount }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </a>
+                                </div>
+                        </div>
+                    @endif
 
-        <!-- Payment Detail -->
-         @if (hasPermission('Payment_Detail_read'))
-        <div class="col-lg-6 col-md-12 d-flex">
+                {{-- Labour Work --}}
+                    @if(hasPermission('labourwork_read'))
+                        <div class="col-lg-2 col-md-4 col-sm-6 d-flex">
+                            <div class="dashboard-card w-100">
+                                <a href="{{ route('Labour_Work') }}">
+                                <div class="card-header-custom">
+                                        👷 Labour Work
+                                    </div>
+                                        <div class="card-body-custom">
+                                            <div class="row-line d-flex justify-content-center">
+                                                <span class="value fs-1 fw-bold">
+                                                    {{ $labourWorkCount }}
+                                                </span>
+                                        
+                                        </div>  
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    @endif
+                    @if(hasPermission('materialinward_read'))
+                        <div class="col-lg-2 col-md-4 col-sm-6 d-flex">
+                            <div class="dashboard-card w-100">
+                                <a href="{{ route('PurchaseInvoice') }}">
+                                <div class="card-header-custom">
+                                    📦 Material Inward
+                                </div>
+                                    <div class="card-body-custom">
+                                        <div class="row-line d-flex justify-content-center">
+                                            <span class="value fs-1 fw-bold">
+                                                {{ $materialInwardCount }}
+                                            </span>
+                                        </div>
+                                    </div>
+                            </a>
+                                </div>
+                            </div>
+                            @endif
+                    {{-- Material Transfer --}}
+                    @if(hasPermission('materialtransfer_read'))
+                        <div class="col-lg-2 col-md-4 col-sm-6 d-flex">
+                                <div class="dashboard-card w-100">
+                                    <a href="{{ route('Transfer_Material') }}">
+                                    <div class="card-header-custom">
+                                        🚚Material Transfer
+                                    </div>
+                                        <div class="card-body-custom">
+                                            <div class="row-line d-flex justify-content-center">
+                                                <span class="value fs-1 fw-bold">
+                                                     {{ $materialTransferCount }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
 
-            <div class="dashboard-card w-100">
-                   <a href="{{ route('report.income_expense') }}"
-   style="color:#212529; text-decoration:none; font-weight:600;">
-                <div class="card-header-custom">💳 Payment Detail</div>
-                <div class="card-body-custom">
-                    <div class="row-line">
-                        <span>Total Income</span>
-                        <span class="value">{{ number_format($totreceive) }} Rs</span>
-                    </div>
-                    <div class="row-line">
-                        <span>Total Expenses</span>
-                        <span class="value">{{ number_format($totPaid) }} Rs</span>
-                    </div>
-                </div>
-                </a>
-            </div>
+                {{-- Material Consumption --}}
+                    @if(hasPermission('materialconsumption_read'))
+                        <div class="col-lg-2 col-md-4 col-sm-6 d-flex">
+                            <div class="dashboard-card w-110">
+                                <a href="{{ route('Material_Consumption') }}">
+                                <div class="card-header-custom text-nowrap ps-0">
+                                     🏗️Material Consumption
+                                </div>
+                                    <div class="card-body-custom">
+                                        <div class="row-line d-flex justify-content-center">
+                                            <span class="value fs-1 fw-bold">
+                                                    {{ $materialConsumptionCount }}
+                                            </span>
+                                        </div>
+                                    </div>
+                            </a>
+                            </div>
+                        </div>
+                    @endif
+                    {{-- Daily Work --}}
+                        @if(hasPermission('dailywork_read'))
+                        <div class="col-lg-2 col-md-4 col-sm-6 d-flex">
+                            <div class="dashboard-card w-100">
+                                <a href="{{ route('DailyWork') }}">
+                                <div class="card-header-custom">
+                                    📋Daily Work Entry
+                                </div>
+                                    <div class="card-body-custom">
+                                        <div class="row-line d-flex justify-content-center">
+                                            <span class="value fs-1 fw-bold">
+                                                    {{ $dailyWorkCount }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        @endif
+
+                     
+                    <!-- Payment Detail -->
+                     @if (hasPermission('Payment_Detail_read'))
+                    <div class="col-lg-6 col-md-12 d-flex">
             
-        </div>
-    @endif
+                        <div class="dashboard-card w-100">
+                               <a href="{{ route('report.income_expense') }}"
+               style="color:#212529; text-decoration:none; font-weight:600;">
+                            <div class="card-header-custom">💳 Payment Detail</div>
+                            <div class="card-body-custom">
+                                <div class="row-line">
+                                    <span>Total Income</span>
+                                    <span class="value">{{ number_format($totreceive) }} Rs</span>
+                                </div>
+                                <div class="row-line">
+                                    <span>Total Expenses</span>
+                                    <span class="value">{{ number_format($totPaid) }} Rs</span>
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        
+                    </div>
+                @endif
         <!-- Balance -->
          @if (hasPermission('Balance_read'))
         <div class="col-lg-6 col-md-12 d-flex">

@@ -18,6 +18,7 @@ class Enquiry extends Model
     const UPDATED_AT = 'LastEdited';
 
     protected $fillable = [
+         'ID',
         'customer_name',
         'email',
         'phone_no',
@@ -25,6 +26,7 @@ class Enquiry extends Model
         'scheme_id',
         'bill_no',
         'queries',
-        'status'
+        'status',
+         'userID',
     ];
 }

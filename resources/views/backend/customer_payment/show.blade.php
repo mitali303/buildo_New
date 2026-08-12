@@ -34,7 +34,9 @@
                 {{ $payment->schemes->Name ?? '' }}
             </div>
             <div class="col-md-4"><strong>Flat No:</strong>
-                {{ $booking->flat->FlatNo ?? '' }}
+                <!-- {{ $booking->flat->FlatNo ?? '' }} -->
+                  {{ $payment->flat->FlatNo ?? '' }}
+
             </div>
         </div>
 
@@ -129,10 +131,11 @@
                         <i class="fa fa-pencil"></i>
                     </a>
 
-                    <a href="{{ route('customer_payment.receipt', $pay['id']) }}"
-                       class="btn btn-sm btn-secondary" target="_blank">
-                        <i class="fa fa-print"></i>
-                    </a>
+                    <a href="{{ route('customer_payment.print', $pay['id']) }}"
+                        class="btn btn-sm btn-secondary"
+                        target="_blank">
+                            <i class="fa fa-print"></i>
+                        </a>
 
                     <form method="POST"
                           action="{{ route('customer_payment.delete', $pay['id']) }}"

@@ -427,10 +427,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadSchemes(); // always load schemes
 
-    @if(!session('selected_scheme_id'))
+   @php
+    $isSuperAdmin = Auth::user()->UserID == 'superadmin';
+    $hasScheme = DB::table('scheme_step1')->exists();
+@endphp
+
+@if(!session('selected_scheme_id'))
+
+    @if($isSuperAdmin && !$hasScheme)
+
+        {{-- SuperAdmin आहे आणि scheme नाही त्यामुळे popup नाही --}}
+
+    @else
+
         const modal = new bootstrap.Modal('#defaultModalSuccess');
         modal.show();
+
     @endif
+
+@endif
 
 });
 </script>
@@ -440,10 +455,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadSchemes();   // always load
 
-    @if(!session('selected_scheme_id'))
+    @php
+    $isSuperAdmin = Auth::user()->UserID == 'superadmin';
+    $hasScheme = DB::table('scheme_step1')->exists();
+@endphp
+
+@if(!session('selected_scheme_id'))
+
+    @if($isSuperAdmin && !$hasScheme)
+
+        {{-- SuperAdmin आहे आणि scheme नाही त्यामुळे popup नाही --}}
+
+    @else
+
         const modal = new bootstrap.Modal('#defaultModalSuccess');
         modal.show();
+
     @endif
+
+@endif
 
 });
 </script>
@@ -458,6 +488,48 @@ document.addEventListener("input", function(e) {
     ) {
         e.target.value = e.target.value.toUpperCase();
     }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let currentUrl = window.location.pathname;
+
+    document.querySelectorAll(".sidebar-link").forEach(function (link) {
+
+        let href = link.getAttribute("href");
+
+        if (href && href !== "#" && currentUrl.includes(new URL(href).pathname)) {
+
+            // active child menu
+            let parentLi = link.closest(".sidebar-item");
+            if (parentLi) {
+                parentLi.classList.add("active");
+            }
+
+
+            // parent dropdown open
+            let dropdown = link.closest(".sidebar-dropdown");
+
+            if (dropdown) {
+                dropdown.classList.add("show");
+
+                let parentMenu = dropdown.closest(".sidebar-item");
+
+                if (parentMenu) {
+                    parentMenu.classList.add("active");
+
+                    let parentLink = parentMenu.querySelector(".sidebar-link");
+
+                    if (parentLink) {
+                        parentLink.classList.remove("collapsed");
+                    }
+                }
+            }
+        }
+
+    });
+
 });
 </script>
 </body>

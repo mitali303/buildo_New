@@ -100,5 +100,15 @@ Route::post('/deleteLaborWork', [UserAppController::class, 'deleteLaborWork']);
 
     Route::post('/updateEnquiryStatus', [UserAppController::class, 'updateEnquiryStatus']);
 
+    Route::post('getNextMaterialRequestNo', [UserAppController::class, 'getNextMaterialRequestNo']);
+
+    Route::post('getMaterialRequests', [UserAppController::class, 'getMaterialRequests']);
+
+    Route::post('getMaterialRequestDetails', [UserAppController::class, 'getMaterialRequestDetails']);
+
+    Route::post('saveMaterialRequest', [UserAppController::class, 'saveMaterialRequest']);
+    
+    Route::post('deleteMaterialRequest', [UserAppController::class, 'deleteMaterialRequest']);
+
 
      

@@ -65,7 +65,7 @@
              "<'row'<'col-md-5'i><'col-md-7'p>>",
             buttons: ['copy', 'excel', 'pdf', 'print',
                 {
-                    extend: 'colvis',   // #xdc48; Column visibility button
+                    // extend: 'colvis',   // #xdc48; Column visibility button
                     text: 'Columns'
                 }
             ],

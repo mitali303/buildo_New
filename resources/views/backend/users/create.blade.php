@@ -1,13 +1,13 @@
 @extends('backend.partials.master')
 @section('title')
-    User Create
+    {{ !empty($user) ? 'Edit User' : 'Create User' }}
 @endsection
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
 
         <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Create User</h1>
+            <h1 class="h3 d-inline align-middle"> {{ !empty($user) ? 'Edit User' : 'Create User' }}</h1>
         </div>
 
         <div class="row">
@@ -47,6 +47,28 @@
                                     </label>
                                     <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password">
                                     @error('password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <div class="mb-3 col-md-4">
+                                    <label class="form-label" for="password_confirmation">
+                                        Confirm Password
+                                        @if(empty($user))
+                                            <small class="text-danger">*</small>
+                                        @endif
+                                    </label>
+
+                                    <input type="password"
+                                        class="form-control @error('password_confirmation') is-invalid @enderror"
+                                        id="password_confirmation"
+                                        name="password_confirmation"
+                                        placeholder="Confirm Password">
+
+                                    <small id="password-match-error" class="text-danger" style="display:none;">
+                                        Passwords do not match.
+                                    </small>
+
+                                    @error('password_confirmation')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -150,7 +172,7 @@
                            <small class="text-danger">{{ $message }}</small>
                            @enderror
                         </div>
-                       <div class="form-group col-md-4">
+                       <!-- <div class="form-group col-md-4">
                     <label>Designation <span class="required text-danger">*</span></label>
 
                     @php
@@ -190,8 +212,52 @@
                             @error('designation')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
-                        </div>
+                        </div>-->
+                        <div class="form-group col-md-4">
+    <label>Designation <span class="required text-danger">*</span></label>
 
+    <select id="designation" name="designation" class="form-control choices-single" onchange="menuhideDesignation();" required>
+        <option value="" selected disabled>Select Designation</option>
+
+        @if(empty($old))
+            <option value="Addnew">Add New</option>
+        @endif
+
+        @php
+            $designations = DB::table('user')->select('designation')->distinct()->get();
+        @endphp
+
+        @foreach ($designations as $desig)
+            <option value="{{ $desig->designation }}"
+                @if(isset($user) && $user->designation == $desig->designation) selected @endif>
+                {{ $desig->designation }}
+            </option>
+        @endforeach
+    </select>
+
+    <div id="designation_input_container" style="margin-top:5px;"></div>
+
+    @error('designation')
+        <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
+<script>
+function menuhideDesignation() {
+    var value = $("#designation").val();
+
+    if (value === 'Addnew') {
+        $("#designation_input_container").html(`
+            <input type="text" name="designation" id="designation_input" class="form-control required" placeholder="Enter Designation">
+        `);
+        $("#designation_input").focus();
+        $("#designation").hide();
+    } else {
+        $("#designation_input_container").html('');
+        $("#designation").show();
+    }
+}
+</script>
 
                         <div class="mb-3 col-md-4">
                            <label class="form-label" for="account_no">Account Number<small class="text-danger">*</small></label>
@@ -327,6 +393,27 @@
                               <small class="text-danger">{{ $message }}</small>
                            @enderror
                         </div>
+                        <div class="mb-3 col-md-4">
+    <label class="form-label">
+        Status <small class="text-danger">*</small>
+    </label>
+
+    <select name="status" class="form-control choices-single">
+        <option value="1"
+            {{ old('status', $user->status ?? 1) == 1 ? 'selected' : '' }}>
+            Active
+        </option>
+
+        <option value="0"
+            {{ old('status', $user->status ?? 1) == 0 ? 'selected' : '' }}>
+            Inactive
+        </option>
+    </select>
+
+    @error('status')
+        <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
                         </div>
                             <button type="submit" class="btn btn-primary">{{ !empty($user) ? 'Update' : 'Create' }}</button>
                             <a href="{{ route('users') }}" class="btn btn-secondary">Cancel</a>
@@ -338,7 +425,38 @@
     </div>
 </main>
 @endsection
+@push('scripts')
+<script>
 
+$(document).ready(function () {
+
+    function calculatePerHourSalary() {
+
+        let totalSalary = parseFloat($('#total_salary').val()) || 0;
+
+        let perDaySalary = totalSalary / 30;
+
+        let perHourSalary = perDaySalary / 8;
+
+        $('#perhour_salary').val(perHourSalary.toFixed(2));
+
+        $('#overtime_salary_perhour').val(
+            (perHourSalary * 1.5).toFixed(2)
+        );
+    }
+
+    $('#total_salary').on('keyup input change', function () {
+
+        calculatePerHourSalary();
+
+    });
+
+    calculatePerHourSalary();
+
+});
+
+</script>
+@endpush
 
 <!-- searchable dropdown script start-->
 <script>
@@ -355,7 +473,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
-<script>
+<!-- <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const totalSalary = document.getElementById("total_salary");
@@ -377,7 +495,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     calculatePerHour();
 });
-</script>
+</script> -->
 <script>
 function togglePFNo() {
     const pf = document.getElementById('PF').value;
@@ -394,5 +512,40 @@ document.addEventListener('DOMContentLoaded', function () {
     togglePFNo();
 
     document.getElementById('PF').addEventListener('change', togglePFNo);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("password_confirmation");
+    const error = document.getElementById("password-match-error");
+
+    function checkPassword() {
+
+        if (confirmPassword.value === "") {
+            error.style.display = "none";
+            return;
+        }
+
+        if (password.value !== confirmPassword.value) {
+            error.style.display = "block";
+        } else {
+            error.style.display = "none";
+        }
+    }
+
+    password.addEventListener("input", checkPassword);
+    confirmPassword.addEventListener("input", checkPassword);
+
+    document.querySelector("form").addEventListener("submit", function(e){
+
+        if(password.value !== "" && password.value !== confirmPassword.value){
+            e.preventDefault();
+            alert("Password and Confirm Password do not match.");
+        }
+
+    });
+
 });
 </script>
