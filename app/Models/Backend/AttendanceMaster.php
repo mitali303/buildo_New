@@ -45,10 +45,15 @@ class AttendanceMaster extends Model
 }
 
 
-  public function user()
+// public function user()
+// {
+//     return $this->belongsTo(User::class, 'emp_id', 'ID');
+// }
+public function user()
 {
     return $this->belongsTo(User::class, 'emp_id', 'emp_id');
 }
+
 
 // public function user()
 // {

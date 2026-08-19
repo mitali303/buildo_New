@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Backend\DailyWorkEntry;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Backend\SchemeDetail;
+
 
 
 class DailyWorkController extends Controller
@@ -39,6 +41,7 @@ class DailyWorkController extends Controller
             'daily_work_entry.date',
             'scheme_step1.Name as sitename',
             'daily_work_entry.workdone',
+            'daily_work_entry.img',
             'daily_work_entry.Created'
         ]);
 
@@ -55,6 +58,22 @@ class DailyWorkController extends Controller
 
             return DataTables::of($query)
             ->addIndexColumn()
+             ->addColumn('img', function ($row) {
+
+                if (!empty($row->img)) {
+
+                    $imageUrl = asset($row->img);
+
+                    return '
+                        <a href="' . $imageUrl . '" target="_blank">
+                            <img src="' . $imageUrl . '"
+                                style="width:70px;height:50px;object-fit:cover;border-radius:5px;border:1px solid #ddd;">
+                        </a>
+                    ';
+                }
+
+                return '<span class="text-muted">No Image</span>';
+            })
             ->addColumn('actions',function($row){
 
         $editUrl = route('DailyWork.edit', $row->ID);
@@ -90,7 +109,7 @@ class DailyWorkController extends Controller
     })
 
 
-            ->rawColumns(['actions'])
+            ->rawColumns(['img', 'actions'])
             ->make(true);
 
         }
@@ -164,6 +183,15 @@ public function store(Request $request)
         'ClientID' => 'required|string',
         'sitename' => 'required|string|max:225',
         'workdone' => 'required|string',
+        // Image validation
+        'img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
+
+      ], [
+
+        'img.required' => 'Please upload work image.',
+        'img.image' => 'The uploaded file must be an image.',
+        'img.mimes' => 'Only JPG, JPEG, PNG and WEBP images are allowed.',
+        'img.max' => 'Image size must be less than 1 MB.',
 
     ]);
 
@@ -178,6 +206,22 @@ public function store(Request $request)
     $daily->UserID     = Auth::id();
     $daily->Created    = now();
     $daily->LastEdited = now();
+     // Upload Image
+    if ($request->hasFile('img')) {
+
+    $image = $request->file('img');
+
+    $imageName = time() . '_' . uniqid() . '.' .
+                 $image->getClientOriginalExtension();
+
+    $image->move(
+        public_path('uploads/daily_work'),
+        $imageName
+    );
+
+    $daily->img = 'uploads/daily_work/' . $imageName;
+}
+
     $daily->save();
 
 
@@ -259,8 +303,17 @@ public function update(Request $request)
         'ClientID' => 'required|string',
         'sitename' => 'required|string|max:225',
         'workdone' => 'required|string',
+        // Edit time image optional
+        'img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
+
+    ], [
+
+        'img.image' => 'The uploaded file must be an image.',
+        'img.mimes' => 'Only JPG, JPEG, PNG and WEBP images are allowed.',
+        'img.max' => 'Image size must be less than 1 MB.',
 
     ]);
+
 
 
 
@@ -274,6 +327,32 @@ public function update(Request $request)
     $daily->sitename = $validated['sitename'];
     $daily->workdone = $validated['workdone'];
     $daily->LastEdited = now();
+    // New image uploaded
+    // Image update
+    if ($request->hasFile('img')) {
+
+        $image = $request->file('img');
+
+        $imageName = time() . '_' . uniqid() . '.' .
+                     $image->getClientOriginalExtension();
+
+        $image->move(
+            public_path('uploads/daily_work'),
+            $imageName
+        );
+
+        // जुनी image delete करायची असल्यास
+        if (!empty($daily->img)) {
+
+            $oldImage = public_path($daily->img);
+
+            if (file_exists($oldImage)) {
+                unlink($oldImage);
+            }
+        }
+
+        $daily->img = 'uploads/daily_work/' . $imageName;
+    }
     $daily->save();
 
 
@@ -291,6 +370,14 @@ public function destroy($id)
 
 
     $daily = DailyWorkEntry::findOrFail($id);
+    // Delete image from storage
+    if (!empty($daily->img)) {
+
+        Storage::disk('public')->delete(
+            $daily->img
+        );
+    }
+
     $daily->delete();
 
     return redirect()

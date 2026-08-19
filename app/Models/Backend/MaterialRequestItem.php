@@ -1,28 +1,23 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Backend;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MaterialRequestItem extends Model
 {
+    use HasFactory;
+
     protected $table = 'material_request_items';
-
-    protected $primaryKey = 'ID';
-
+    protected $primaryKey = 'id';
     public $incrementing = false;
-
     protected $keyType = 'string';
-
     public $timestamps = false;
+    protected $guarded = [];
 
-    protected $fillable = [
-        'ID',
-        'request_id',
-        'material_name',
-        'type_id',
-        'type_name',
-        'quantity',
-        'unit'
-    ];
+    public function materialRequest()
+    {
+        return $this->belongsTo(MaterialRequest::class, 'request_id', 'ID');
+    }
 }

@@ -100,9 +100,14 @@ Salary Master
 
                                     @foreach($users as $user)
 
-                                        <option value="{{ $user->emp_id }}" {{ old('emp_id', $old->emp_id ?? '') == $user->emp_id? 'selected' : '' }}>
+                                        <!-- <option value="{{ $user->emp_id }}" {{ old('emp_id', $old->emp_id ?? '') == $user->emp_id? 'selected' : '' }}>
 
                                             {{ $user->Name }}
+
+                                        </option> -->
+                                        <option value="{{ $user->ID }}" {{ old('emp_id', $old->emp_id ?? '') == $user->ID ? 'selected' : '' }}>
+
+                                                        {{ $user->Name }}
 
                                         </option>
 
@@ -618,10 +623,7 @@ OT RATE PER HOUR
 
                                 </label>
 
-                                <input type="number"
-                                       id="late_deduction"
-                                       class="form-control"
-                                       value="{{ old('late_deduction', $old->late_deduction ?? 0) }}"
+                                <input type="number" id="late_deduction" name="late_deduction"  class="form-control" value="{{ old('late_deduction', $old->late_deduction ?? 0) }}"
                                        readonly>
 
                             </div>
@@ -637,9 +639,7 @@ OT RATE PER HOUR
 
                                 </label>
 
-                                <input type="number"
-                                       id="overtime_amount"
-                                       class="form-control"
+                                <input type="number"   id="overtime_amount" name="overtime_amount"   class="form-control"
                                        value="{{ old('overtime_amount', $old->overtime_amount ?? 0) }}"
                                        readonly>
 

@@ -80,9 +80,7 @@ Attendance Master
 
                                             <option value="{{ $user->emp_id }}"
                                                 {{ old('emp_id', $old->emp_id ?? '') == $user->emp_id ? 'selected' : '' }}>
-
-                                                {{ $user->name }} ({{ $user->emp_id }})
-
+                                                {{ $user->Name }} 
                                             </option>
 
                                         @endforeach

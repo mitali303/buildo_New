@@ -28,7 +28,7 @@
                                     <th>Total Installments</th>
                                     <th>Action</th>
                                 </tr>
-                                 <tr>
+                                 <!-- <tr>
                                 <th></th>
 
                                 <th>
@@ -56,7 +56,7 @@
                                 </th>
 
                                 <th></th>
-                            </tr>
+                            </tr> -->
                             </thead>
                         </table>
                     </div>
@@ -89,47 +89,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         columns: [
             {
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: 'date',
-                name: 'date'
-            },
-            {
-                data: 'employee_name',
-                name: 'employee_name'
-            },
-            {
-                data: 'advance',
-                name: 'advance'
-            },
-            {
-                data: 'emi_amount',
-                name: 'emi_amount'
-            },
-            {
-                data: 'remaining_amount',
-                name: 'remaining_amount'
-            },
-            {
-                data: 'total_installments',
-                name: 'total_installments'
-            },
-            {
-                data: 'actions',
-                name: 'actions',
-                orderable: false,
-                searchable: false
-            }
+                data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'date', name: 'date' },
+            { data: 'employee_name', name: 'employee_name' },
+            { data: 'advance', name: 'advance' },
+            {  data: 'emi_amount', name: 'emi_amount' },
+            { data: 'remaining_amount', name: 'remaining_amount' },
+            { data: 'total_installments', name: 'total_installments'},
+            { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
 
-        dom:
-            "<'row'<'col-md-6'l><'col-md-6 text-end'B>>" +
+         dom:
+            "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
+            "<'row mb-2'<'col-md-12'B>>" +
             "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-md-5'i><'col-md-7'p>>",
+            "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
 
         buttons: [
             {

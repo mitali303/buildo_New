@@ -20,6 +20,21 @@ class ShiftController extends Controller
 
         return DataTables::of($query)
             ->addIndexColumn()
+            ->filter(function ($query) use ($request) {
+
+                $search = $request->input('search.value');
+
+                if (!empty($search)) {
+                    $query->where(function ($q) use ($search) {
+
+                        $q->where('shift', 'like', '%' . $search . '%')
+                          ->orWhere('shift_intime', 'like', '%' . $search . '%')
+                          ->orWhere('shift_outtime', 'like', '%' . $search . '%');
+
+                    });
+                }
+
+            })
             ->editColumn('status', function ($row) {
                 return $row->status == 1
                     ? '<span class="badge bg-success">Active</span>'

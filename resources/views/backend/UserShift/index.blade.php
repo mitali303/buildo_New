@@ -51,7 +51,7 @@ User Shift Assignment
                                 </tr>
 
                                 <!-- FILTER ROW -->
-                                <tr>
+                                <!-- <tr>
                                     <th></th>
 
                                     <th>
@@ -79,7 +79,7 @@ User Shift Assignment
                                     </th>
 
                                     <th></th>
-                                </tr>
+                                </tr> -->
 
                             </thead>
 
@@ -108,23 +108,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-
             { data: 'employee', name: 'employee' },
-
             { data: 'shift_name', name: 'shift_name' },
-
             { data: 'from_date', name: 'from_date' },
-
             { data: 'to_date', name: 'to_date' },
-
             { data: 'status', name: 'status' },
-
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
 
-        dom: "<'row'<'col-md-6'l><'col-md-6 text-end'B>>" +
-             "<'row'<'col-sm-12'tr>>" +
-             "<'row'<'col-md-5'i><'col-md-7'p>>",
+        dom:
+    "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
+    "<'row mb-2'<'col-md-12'B>>" +
+    "<'row'<'col-sm-12'tr>>" +
+    "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
 
         buttons: [
     {

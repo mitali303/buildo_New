@@ -7,7 +7,7 @@
     <div class="container-fluid p-0">
 
         <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Create Shift</h1>
+            <h1 class="h3 d-inline align-middle"> {{ !empty($old) ? 'Edit Shift' : 'Create Shift' }}</h1>
         </div>
 
         <div class="row">

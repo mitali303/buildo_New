@@ -23,27 +23,16 @@ class SalaryMaster extends Model
     protected $fillable = [
 
         'salary_no',
-
         'date',
-
         'month',
-
         'year',
-
         'emp_id',
-
         'gross',
-
         'basic_salary',
-
         'pf',
-
         'esi',
-
         'advance_emi',
-
         'late_deduction',
-
         'overtime_amount',
         'total_present_days',
         'total_absent_days',
@@ -53,17 +42,11 @@ class SalaryMaster extends Model
         'absent_deduction',
         'overtime_hours',
         'per_hour_ot_rate',
-
         'net_salary',
-
         'payment_method',
-
         'cheque_no',
-
         'amount',
-
         'narration',
-
         'createdby',
     ];
 

@@ -33,7 +33,8 @@ class AttendanceMasterController extends Controller
         //     ->latest();
          $data = AttendanceMaster::with(['Shift', 'user'])
             ->select('attendancemaster.*')
-            ->get();
+            ->latest();
+            
 
         /*
         |--------------------------------------------------------------------------
@@ -182,8 +183,8 @@ class AttendanceMasterController extends Controller
                 ->orderBy('shift')
                 ->get();
 
-            $users = User::select('id', 'name', 'emp_id', 'designation')
-                ->orderBy('name')
+            $users = User::select('ID', 'Name', 'emp_id', 'designation')
+                ->orderBy('Name')
                 ->get();
                 // dd($users);
                 
@@ -279,8 +280,8 @@ class AttendanceMasterController extends Controller
         ->orderBy('shift')
         ->get();
 
-        $users = User::select('id', 'name', 'emp_id', 'designation')
-        ->orderBy('name')
+        $users = User::select('ID', 'Name', 'emp_id', 'designation')
+        ->orderBy('Name')
         ->get();
 
         return view(

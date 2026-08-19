@@ -33,35 +33,60 @@ class EmployeeAdvanceController extends Controller
             ->orderByDesc('id');
 
         // Custom Search Filters
-        if ($request->filled('date')) {
-            $query->whereDate('date', $request->date);
-        }
+        // if ($request->filled('date')) {
+        //     $query->whereDate('date', $request->date);
+        // }
 
-        if ($request->filled('employee_name')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->employee_name . '%');
-            });
-        }
+        // if ($request->filled('employee_name')) {
+        //     $query->whereHas('user', function ($q) use ($request) {
+        //         $q->where('name', 'like', '%' . $request->employee_name . '%');
+        //     });
+        // }
 
-        if ($request->filled('advance')) {
-            $query->where('advance', 'like', '%' . $request->advance . '%');
-        }
+        // if ($request->filled('advance')) {
+        //     $query->where('advance', 'like', '%' . $request->advance . '%');
+        // }
 
-        if ($request->filled('emi_amount')) {
-            $query->where('emi_amount', 'like', '%' . $request->emi_amount . '%');
-        }
+        // if ($request->filled('emi_amount')) {
+        //     $query->where('emi_amount', 'like', '%' . $request->emi_amount . '%');
+        // }
 
-        if ($request->filled('remaining_amount')) {
-            $query->where('remaining_amount', 'like', '%' . $request->remaining_amount . '%');
-        }
+        // if ($request->filled('remaining_amount')) {
+        //     $query->where('remaining_amount', 'like', '%' . $request->remaining_amount . '%');
+        // }
 
-        if ($request->filled('total_installments')) {
-            $query->where('total_installments', 'like', '%' . $request->total_installments . '%');
-        }
+        // if ($request->filled('total_installments')) {
+        //     $query->where('total_installments', 'like', '%' . $request->total_installments . '%');
+        // }
 
         return DataTables::of($query)
 
             ->addIndexColumn()
+            ->filterColumn('employee_name', function ($query, $keyword) {
+                    $query->whereHas('user', function ($q) use ($keyword) {
+                        $q->where('name', 'like', '%' . $keyword . '%');
+                    });
+                })
+
+                ->filterColumn('date', function ($query, $keyword) {
+                    $query->whereDate('date', $keyword);
+                })
+
+                ->filterColumn('advance', function ($query, $keyword) {
+                    $query->where('advance', 'like', '%' . $keyword . '%');
+                })
+
+                ->filterColumn('emi_amount', function ($query, $keyword) {
+                    $query->where('emi_amount', 'like', '%' . $keyword . '%');
+                })
+
+                ->filterColumn('remaining_amount', function ($query, $keyword) {
+                    $query->where('remaining_amount', 'like', '%' . $keyword . '%');
+                })
+
+                ->filterColumn('total_installments', function ($query, $keyword) {
+                    $query->where('total_installments', 'like', '%' . $keyword . '%');
+                })
 
             // ->addColumn('employee_name', function ($row) {
             //     return $row->user->Name ?? 'N/A';

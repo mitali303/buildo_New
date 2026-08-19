@@ -69,6 +69,8 @@ use App\Http\Controllers\Backend\LeadSourceController;
 use App\Http\Controllers\Backend\LeadMeetingController;
 use App\Http\Controllers\Backend\QuotationController;
 use App\Http\Controllers\Backend\DailyWorkController;
+use App\Http\Controllers\Backend\MaterialRequestController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -489,6 +491,14 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('Material_Consumption.getStock');
 
         Route::post('/material-consumptions/add-row', [Material_ConsumptionController::class, 'addRow'])->name('Material_Consumption.addRow');
+
+        // Material Request
+        Route::get('/material-requests', [MaterialRequestController::class, 'index'])->name('material_request.list');
+        Route::get('/material-requests/create', [MaterialRequestController::class, 'create'])->name('material_request.create');
+        Route::post('/material-requests/store', [MaterialRequestController::class, 'store'])->name('material_request.store');
+        Route::get('/material-requests/edit/{id}', [MaterialRequestController::class, 'edit'])->name('material_request.edit');
+        Route::put('/material-requests/update/{id}', [MaterialRequestController::class, 'update'])->name('material_request.update');
+        Route::delete('/material-requests/delete/{id}', [MaterialRequestController::class, 'destroy'])->name('material_request.destroy');
 
         //Report
         Route::get('/reports/site-labour-payment-report', [Report_Controller::class, 'site_lbr_pay'])->name('report.Site_lbr_pay');
@@ -1156,8 +1166,7 @@ Route::group(['middleware' => 'auth'], function () {
                 ->name('Quotation.delete')
                 ->middleware('hasPermission:delete_Quotation');
 
-                //MaterialRequestController
-                Route::get('/material-request-list',[MaterialRequestController::class,'materialRequestList'])->name('material_request.list');
+               
     
 //daily-work
 

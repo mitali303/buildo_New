@@ -29,11 +29,7 @@ class SalaryMasterController extends Controller
             ->select('salarymaster.*')
             ->latest();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filters
-        |--------------------------------------------------------------------------
-        */
+        /* Filters */
 
         if ($request->filled('employee_name')) {
 
@@ -167,9 +163,7 @@ class SalaryMasterController extends Controller
 }
 
 
-    /* =========================================================
-        CREATE
-    ========================================================= */
+    /* CREATE */
 
     public function create()
     {
@@ -190,7 +184,6 @@ class SalaryMasterController extends Controller
         if ($lastSalary) {
 
             $lastNumber = (int) substr($lastSalary->salary_no, -3);
-
             $newNumber = $lastNumber + 1;
 
         } else {
@@ -208,9 +201,7 @@ class SalaryMasterController extends Controller
     }
 
 
-    /* =========================================================
-        STORE
-    ========================================================= */
+    /* STORE */
 
     public function store(Request $request)
     { 
@@ -220,46 +211,31 @@ class SalaryMasterController extends Controller
             'date'                 => 'required|date',
             'month'                => 'required',
             'year'                 => 'required',
-
             'salary_no'            => 'required',
-
             'emp_id'               => 'required|exists:user,ID',
-
             'basic_salary'         => 'required|numeric',
             'gross'                => 'required|numeric',
-
             'pf'                   => 'nullable|numeric',
             'esi'                  => 'nullable|numeric',
-
             'advance_emi'          => 'nullable|numeric',
             'late_deduction'       => 'nullable|numeric',
-
             'overtime_hours'       => 'nullable|numeric',
             'overtime_amount'      => 'nullable|numeric',
-
             'total_present_days'   => 'nullable|numeric',
             'total_absent_days'    => 'nullable|numeric',
             'paid_leaves'          => 'nullable|numeric',
             'working_days'         => 'nullable|numeric',
-
             'per_day_salary'       => 'nullable|numeric',
             'absent_deduction'     => 'nullable|numeric',
-
             'per_hour_ot_rate'     => 'nullable|numeric',
-
             'net_salary'           => 'required|numeric',
-
             'payment_method'       => 'required',
-
             'cheque_no'            => 'nullable',
-
             'narration'            => 'nullable',
         ]);
 
 
-        /* =========================================================
-            DUPLICATE CHECK
-        ========================================================= */
+        /* DUPLICATE CHECK */
 
         $exists = SalaryMaster::where('emp_id', $request->emp_id)
                     ->where('month', $request->month)
@@ -278,55 +254,38 @@ class SalaryMasterController extends Controller
         }
 
 
-        /* =========================================================
-            STORE
-        ========================================================= */
+        /* STORE */
 
         SalaryMaster::create([
 
             'date'                 => $validated['date'],
             'month'                => $validated['month'],
             'year'                 => $validated['year'],
-
             'salary_no'            => $validated['salary_no'],
-
             'emp_id'               => $validated['emp_id'],
-
             'basic_salary'         => $validated['basic_salary'],
             'gross'                => $validated['gross'],
-
             'pf'                   => $validated['pf'] ?? 0,
             'esi'                  => $validated['esi'] ?? 0,
-
             'advance_emi'          => $validated['advance_emi'] ?? 0,
             'late_deduction'       => $validated['late_deduction'] ?? 0,
-
             'overtime_hours'       => $validated['overtime_hours'] ?? 0,
             'overtime_amount'      => $validated['overtime_amount'] ?? 0,
-
             'total_present_days'   => $validated['total_present_days'] ?? 0,
             'total_absent_days'    => $validated['total_absent_days'] ?? 0,
             'paid_leaves'          => $validated['paid_leaves'] ?? 0,
             'working_days'         => $validated['working_days'] ?? 0,
-
             'per_day_salary'       => $validated['per_day_salary'] ?? 0,
             'absent_deduction'     => $validated['absent_deduction'] ?? 0,
-
             'per_hour_ot_rate'     => $validated['per_hour_ot_rate'] ?? 0,
-
             'net_salary'           => $validated['net_salary'],
-
             'payment_method'       => $validated['payment_method'],
             'cheque_no'            => $validated['cheque_no'],
-
             'narration'            => $validated['narration'],
-
             'createdby'            => Auth::id(),
         ]);
 
-        /* =========================================================
-    ADVANCE EMI PAYMENT ENTRY
-========================================================= */
+        /* ADVANCE EMI PAYMENT ENTRY */
 
 if (($validated['advance_emi'] ?? 0) > 0) {
 
@@ -352,15 +311,10 @@ if (($validated['advance_emi'] ?? 0) > 0) {
         'parent_id' => $advance['id'],
 
             'emp_id'            => $validated['emp_id'],
-
             'advance'           => $validated['advance_emi'],
-
             'payment_method'    => $validated['payment_method'],
-
             'cheque_no'         => $validated['cheque_no'] ?? null,
-
             'remaining_amount'  => $newRemaining,
-
             'narration'         =>
                 'Advance EMI deducted from Salary - '
                 . $validated['month']
@@ -384,9 +338,7 @@ if (($validated['advance_emi'] ?? 0) > 0) {
     }
 
 
-    /* =========================================================
-        EDIT
-    ========================================================= */
+    /*  EDIT */
 
     public function edit($id)
     {
@@ -405,9 +357,7 @@ if (($validated['advance_emi'] ?? 0) > 0) {
     }
 
 
-    /* =========================================================
-        UPDATE
-    ========================================================= */
+    /* UPDATE */
 
     public function update(Request $request)
     {
@@ -419,46 +369,31 @@ if (($validated['advance_emi'] ?? 0) > 0) {
             'date'                 => 'required|date',
             'month'                => 'required',
             'year'                 => 'required',
-
             'salary_no'            => 'required',
-
-            'emp_id'               => 'required|exists:users,id',
-
+            'emp_id'               => 'required|exists:user,ID',
             'basic_salary'         => 'required|numeric',
             'gross'                => 'required|numeric',
-
             'pf'                   => 'nullable|numeric',
             'esi'                  => 'nullable|numeric',
-
             'advance_emi'          => 'nullable|numeric',
             'late_deduction'       => 'nullable|numeric',
-
             'overtime_hours'       => 'nullable|numeric',
             'overtime_amount'      => 'nullable|numeric',
-
             'total_present_days'   => 'nullable|numeric',
             'total_absent_days'    => 'nullable|numeric',
             'paid_leaves'          => 'nullable|numeric',
             'working_days'         => 'nullable|numeric',
-
             'per_day_salary'       => 'nullable|numeric',
             'absent_deduction'     => 'nullable|numeric',
-
             'per_hour_ot_rate'     => 'nullable|numeric',
-
             'net_salary'           => 'required|numeric',
-
             'payment_method'       => 'required',
-
             'cheque_no'            => 'nullable',
-
             'narration'            => 'nullable',
         ]);
 
 
-        /* =========================================================
-            DUPLICATE CHECK
-        ========================================================= */
+        /* DUPLICATE CHECK */
 
         $exists = SalaryMaster::where('emp_id', $request->emp_id)
                     ->where('month', $request->month)
@@ -478,54 +413,38 @@ if (($validated['advance_emi'] ?? 0) > 0) {
         }
 
 
-        /* =========================================================
-            UPDATE
-        ========================================================= */
+        /* UPDATE */
 
         $data->update([
 
             'date'                 => $validated['date'],
             'month'                => $validated['month'],
             'year'                 => $validated['year'],
-
             'salary_no'            => $validated['salary_no'],
-
             'emp_id'               => $validated['emp_id'],
-
             'basic_salary'         => $validated['basic_salary'],
             'gross'                => $validated['gross'],
-
             'pf'                   => $validated['pf'] ?? 0,
             'esi'                  => $validated['esi'] ?? 0,
-
             'advance_emi'          => $validated['advance_emi'] ?? 0,
             'late_deduction'       => $validated['late_deduction'] ?? 0,
-
             'overtime_hours'       => $validated['overtime_hours'] ?? 0,
             'overtime_amount'      => $validated['overtime_amount'] ?? 0,
-
             'total_present_days'   => $validated['total_present_days'] ?? 0,
             'total_absent_days'    => $validated['total_absent_days'] ?? 0,
             'paid_leaves'          => $validated['paid_leaves'] ?? 0,
             'working_days'         => $validated['working_days'] ?? 0,
-
             'per_day_salary'       => $validated['per_day_salary'] ?? 0,
             'absent_deduction'     => $validated['absent_deduction'] ?? 0,
-
             'per_hour_ot_rate'     => $validated['per_hour_ot_rate'] ?? 0,
-
             'net_salary'           => $validated['net_salary'],
-
             'payment_method'       => $validated['payment_method'],
             'cheque_no'            => $validated['cheque_no'],
-
             'narration'            => $validated['narration'],
         ]);
 
 
-        /* =========================================================
-    ADVANCE EMI PAYMENT UPDATE ENTRY
-========================================================= */
+        /* ADVANCE EMI PAYMENT UPDATE ENTRY */
 
 $newAdvanceEmi = $validated['advance_emi'] ?? 0;
 
@@ -556,15 +475,10 @@ if ($oldAdvanceEmi == 0 && $newAdvanceEmi > 0) {
         EmployeeAdvancePayment::create([
 
             'emp_id'           => $validated['emp_id'],
-
             'advance'          => $newAdvanceEmi,
-
             'payment_method'   => $validated['payment_method'],
-
             'cheque_no'        => $validated['cheque_no'] ?? null,
-
             'remaining_amount' => $newRemaining,
-
             'narration'        =>
                 'Advance EMI deducted from Salary Update - '
                 . $validated['month']
@@ -582,10 +496,8 @@ if ($oldAdvanceEmi == 0 && $newAdvanceEmi > 0) {
 }
 
 /*
-|--------------------------------------------------------------------------
-| CASE 2:
+CASE 2:
 | OLD EMI != NEW EMI
-|--------------------------------------------------------------------------
 */
 
 elseif ($oldAdvanceEmi != $newAdvanceEmi) {
@@ -597,18 +509,14 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
     if ($advance) {
 
         /*
-        |--------------------------------------------------------------------------
-        | RETURN OLD EMI
-        |--------------------------------------------------------------------------
+        RETURN OLD EMI
         */
 
         $remaining =
             $advance->remaining_amount + $oldAdvanceEmi;
 
         /*
-        |--------------------------------------------------------------------------
-        | DEDUCT NEW EMI
-        |--------------------------------------------------------------------------
+        DEDUCT NEW EMI
         */
 
         $remaining =
@@ -619,9 +527,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | UPDATE ADVANCE TABLE
-        |--------------------------------------------------------------------------
+        UPDATE ADVANCE TABLE
         */
 
         $advance->update([
@@ -630,23 +536,16 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         ]);
 
         /*
-        |--------------------------------------------------------------------------
-        | UPDATE PAYMENT ENTRY
-        |--------------------------------------------------------------------------
+        UPDATE PAYMENT ENTRY
         */
 
         EmployeeAdvancePayment::create([
 
             'emp_id'           => $validated['emp_id'],
-
             'advance'          => $newAdvanceEmi,
-
             'payment_method'   => $validated['payment_method'],
-
             'cheque_no'        => $validated['cheque_no'] ?? null,
-
             'remaining_amount' => $remaining,
-
             'narration'        =>
                 'Advance EMI updated from Salary - '
                 . $validated['month']
@@ -667,24 +566,23 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
     }
 
 
-    /* =========================================================
-        AJAX SALARY CALCULATION
-    ========================================================= */
+    /* AJAX SALARY CALCULATION */
 
     public function getSalaryDetails($empId, $month, $year, $id = null)
     {
-        dd($empId, $month, $year, $id);
+        // dd($empId, $month, $year, $id);
 
         $user = User::findOrFail($empId);
+
+        // Actual Employee ID
+        $employeeId = $user->emp_id;
 
         $monthNumber = date('m', strtotime($month));
 
 
-        /* =========================================================
-            ATTENDANCE CHECK
-        ========================================================= */
+        /* ATTENDANCE CHECK */
 
-        $attendanceExists = AttendanceMaster::where('emp_id', $empId)
+        $attendanceExists = AttendanceMaster::where('emp_id', $user->emp_id)
                                 ->whereMonth('date', $monthNumber)
                                 ->whereYear('date', $year)
                                 ->exists();
@@ -701,9 +599,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         }
 
 
-        /* =========================================================
-            SALARY EXISTS
-        ========================================================= */
+        /* SALARY EXISTS */
 
         $salaryExists = SalaryMaster::where('emp_id', $empId)
                     ->where('month', $month)
@@ -729,11 +625,9 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         }
 
 
-        /* =========================================================
-            ATTENDANCE DATA
-        ========================================================= */
+        /* ATTENDANCE DATA */
 
-        $attendance = AttendanceMaster::where('emp_id', $empId)
+        $attendance = AttendanceMaster::where('emp_id',  $user->emp_id)
                             ->whereMonth('date', $monthNumber)
                             ->whereYear('date', $year)
                             ->get();
@@ -741,9 +635,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
         
 
-        /* =========================================================
-            PRESENT / ABSENT / LEAVE
-        ========================================================= */
+        /*  PRESENT / ABSENT / LEAVE */
 
         $presentDays = $attendance->where('present', 1)->count();
 
@@ -752,9 +644,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         $paidLeaves = $attendance->where('emp_leave', 1)->count();
 
 
-        /* =========================================================
-            DAYS IN MONTH
-        ========================================================= */
+        /*  DAYS IN MONTH */
 
         $daysInMonth = cal_days_in_month(
             CAL_GREGORIAN,
@@ -763,16 +653,12 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         );
 
 
-        /* =========================================================
-            TOTAL IMPORTED DAYS
-        ========================================================= */
+        /* TOTAL IMPORTED DAYS */
 
         $totalImportedDays = $attendance->count();
 
 
-        /* =========================================================
-            MISSING DAYS
-        ========================================================= */
+        /* MISSING DAYS */
 
         $missingDays =
             $daysInMonth - $totalImportedDays;
@@ -783,25 +669,19 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         }
 
 
-        /* =========================================================
-            FINAL ABSENT DAYS
-        ========================================================= */
+        /* FINAL ABSENT DAYS */
 
         $absentDays =
             $actualAbsentDays + $missingDays;
 
 
-        /* =========================================================
-            WORKING DAYS
-        ========================================================= */
+        /* WORKING DAYS */
 
         $workingDays =
             $presentDays + $paidLeaves;
 
 
-        /* =========================================================
-            DAYS IN MONTH
-        ========================================================= */
+        /* DAYS IN MONTH */
 
         $daysInMonth = cal_days_in_month(
             CAL_GREGORIAN,
@@ -810,17 +690,13 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         );
 
 
-        /* =========================================================
-            PER DAY SALARY
-        ========================================================= */
+        /* PER DAY SALARY */
 
         $perDaySalary =
             ($user->total_salary ?? 0) / $daysInMonth;
 
 
-        /* =========================================================
-            ABSENT DEDUCTION
-        ========================================================= */
+        /* ABSENT DEDUCTION */
 
         $absentDeduction =
             $perDaySalary * $absentDays;
@@ -924,9 +800,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         }
 
 
-        /* =========================================================
-            NET SALARY
-        ========================================================= */
+        /* OVERTIME */
 
         $net =
             $gross
@@ -943,45 +817,27 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         return response()->json([
 
             'status' => true,
-
             'basic_salary'       => round($user->total_salary ?? 0, 2),
-
             'gross_salary'       => round($gross, 2),
-
             'pf'                 => round($pf, 2),
-
-            'esi'                => round($esi, 2),
-            
+            'esi'                => round($esi, 2),            
             'advance_emi' => round($advanceEmi, 2),
-
             'late_deduction'     => round($lateDeduction, 2),
-
             'net_salary'         => round($net, 2),
-
             'overtime_hours'     => round($overtimeHours, 2),
-
             'overtime_amount'    => round($overtimeAmount, 2),
-
             'total_present_days' => $presentDays,
-
             'total_absent_days'  => $absentDays,
-
             'paid_leaves'        => $paidLeaves,
-
             'working_days'       => $workingDays,
-
             'per_day_salary'     => round($perDaySalary, 2),
-
             'absent_deduction'   => round($absentDeduction, 2),
-
             'per_hour_ot_rate'   => round($perHourOtRate, 2),
         ]);
     }
 
 
-    /* =========================================================
-        SALARY SLIP
-    ========================================================= */
+    /* SALARY SLIP */
 
     public function salarySlip($id)
     {
@@ -1036,13 +892,11 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
     foreach ($users as $user) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Salary Already Generated
-        |--------------------------------------------------------------------------
-        */
+    $employeeId = $user->emp_id;
 
-        $salaryExists = SalaryMaster::where('emp_id', $user->id)
+        /*Salary Already Generated */
+
+        $salaryExists = SalaryMaster::where('emp_id', $user->ID)
                             ->where('month', $month)
                             ->where('year', $year)
                             ->exists();
@@ -1053,13 +907,10 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
             continue;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Attendance Check
-        |--------------------------------------------------------------------------
-        */
+        /*Attendance Check */
 
-        $attendance = AttendanceMaster::where('emp_id', $user->emp_id)
+        // $attendance = AttendanceMaster::where('emp_id', $user->emp_id)
+        $attendance = AttendanceMaster::where('emp_id', $employeeId)
                         ->whereMonth('date', $monthNumber)
                         ->whereYear('date', $year)
                         ->get();
@@ -1072,11 +923,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
         
 
-        /*
-        |--------------------------------------------------------------------------
-        | Present Days
-        |--------------------------------------------------------------------------
-        */
+        /* Present Days */
 
         $presentDays = $attendance->where('present', 1)->count();
 
@@ -1090,11 +937,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
         $actualAbsent = $attendance->where('absent', 1)->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Month Days
-        |--------------------------------------------------------------------------
-        */
+        /* Month Days */
 
         $daysInMonth = cal_days_in_month(
             CAL_GREGORIAN,
@@ -1112,11 +955,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
         $workingDays = $presentDays + $paidLeaves;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Salary Calculation
-        |--------------------------------------------------------------------------
-        */
+        /* Salary Calculation */
 
         $basicSalary = $user->total_salary ?? 0;
 
@@ -1124,11 +963,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
         $absentDeduction = $perDaySalary * $absentDays;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Overtime
-        |--------------------------------------------------------------------------
-        */
+        /* Overtime */
 
         $totalOtMinutes = 0;
 
@@ -1151,24 +986,16 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
         $overtimeAmount = $overtimeHours * $perHourOtRate;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Late Deduction
-        |--------------------------------------------------------------------------
-        */
+        /* Late Deduction */
 
-        $late = LateMarkCalculation::where('employee_id', $user->id)
+        $late = LateMarkCalculation::where('employee_id', $user->ID)
                     ->where('month', $month)
                     ->where('year', $year)
                     ->first();
 
         $lateDeduction = $late->amount_reduce ?? 0;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Gross Salary
-        |--------------------------------------------------------------------------
-        */
+        /* Gross Salary */
 
         $gross =
             ($user->total_salary ?? 0)
@@ -1181,11 +1008,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
             -
             $absentDeduction;
 
-        /*
-        |--------------------------------------------------------------------------
-        | PF & ESI
-        |--------------------------------------------------------------------------
-        */
+        /* PF & ESI */
 
         $pf = $user->pf_amount ?? 0;
 
@@ -1196,24 +1019,16 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
             $esi = $gross * 0.0075;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Advance EMI
-        |--------------------------------------------------------------------------
-        */
+        /* Advance EMI */
 
-        $advance = EmployeeAdvance::where('emp_id', $user->id)
+        $advance = EmployeeAdvance::where('emp_id', $user->ID)
                     ->where('remaining_amount', '>', 0)
                     ->latest()
                     ->first();
 
         $advanceEmi = $advance->emi_amount ?? 0;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Net Salary
-        |--------------------------------------------------------------------------
-        */
+        /* Net Salary */
 
         $netSalary =
             $gross
@@ -1226,11 +1041,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
             -
             $lateDeduction;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Salary Number
-        |--------------------------------------------------------------------------
-        */
+        /* Salary Number */
 
         $salaryNo =
             'SAL-'
@@ -1238,57 +1049,32 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
             . '-'
             . rand(1000,9999);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Save Salary
-        |--------------------------------------------------------------------------
-        */
+        /* Save Salary */
 
         SalaryMaster::create([
 
             'date' => now(),
-
             'salary_no' => $salaryNo,
-
             'emp_id' => $user->ID,
-
             'month' => $month,
             'year' => $year,
-
             'basic_salary' => $basicSalary,
-
             'gross' => round($gross,2),
-
             'pf' => round($pf,2),
-
             'esi' => round($esi,2),
-
             'advance_emi' => round($advanceEmi,2),
-
             'late_deduction' => round($lateDeduction,2),
-
             'overtime_hours' => round($overtimeHours,2),
-
             'overtime_amount' => round($overtimeAmount,2),
-
             'total_present_days' => $presentDays,
-
             'total_absent_days' => $absentDays,
-
             'paid_leaves' => $paidLeaves,
-
             'working_days' => $workingDays,
-
             'per_day_salary' => round($perDaySalary,2),
-
             'absent_deduction' => round($absentDeduction,2),
-
             'per_hour_ot_rate' => round($perHourOtRate,2),
-
             'net_salary' => round($netSalary,2),
-
             'payment_method' => 'cash',
-
             'createdby' => Auth::id()
         ]);
 
@@ -1304,16 +1090,11 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
 
     EmployeeAdvancePayment::create([
 
-        'parent_id'        => $advance->id,
-
-        'emp_id'           => $user->id,
-
+        'parent_id'        => $advance->ID,
+        'emp_id'           => $user->ID,
         'advance'          => $advanceEmi,
-
         'payment_method'   => 'cash',
-
         'remaining_amount' => $remainingAmount,
-
         'narration'        =>
             'Advance EMI deducted from Salary - '
             .$month.' '.$year,
@@ -1332,11 +1113,7 @@ elseif ($oldAdvanceEmi != $newAdvanceEmi) {
         $generatedCount++;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Final Response
-    |--------------------------------------------------------------------------
-    */
+    /* Final Response */
 
     if ($generatedCount == 0) {
 
@@ -1373,12 +1150,18 @@ public function generatedMonthList()
 
         ->addIndexColumn()
 
+        // ->addColumn('generated_on', function($row){
+
+        //     return date(
+        //         'd-m-Y H:i',
+        //         strtotime($row->generated_on)
+        //     );
+        // })
         ->addColumn('generated_on', function($row){
 
-            return date(
-                'd-m-Y H:i',
-                strtotime($row->generated_on)
-            );
+            return Carbon::parse($row->generated_on)
+                ->timezone('Asia/Kolkata')
+                ->format('d-m-Y h:i A');
         })
 
         ->addColumn('total_salary', function($row){
@@ -1434,11 +1217,8 @@ public function getSalarySummary(Request $request)
     return response()->json([
 
         'total_employees' => $totalEmployees,
-
         'generated' => $generated,
-
         'pending' => ($totalEmployees - $generated),
-
         'already_generated' => ($generated > 0)
     ]);
 }
@@ -1536,19 +1316,13 @@ public function salaryReportData(Request $request)
 
         ->make(true);
 }
-    /* =========================================================
-            DELETE
-        ========================================================= */
+    /* DELETE */
 
         public function destroy($id)
         {
             $salary = SalaryMaster::findOrFail($id);
 
-            /*
-            |--------------------------------------------------------------------------
-            | ADVANCE EMI RETURN
-            |--------------------------------------------------------------------------
-            */
+            /* ADVANCE EMI RETURN */
 
             if (($salary->advance_emi ?? 0) > 0) {
 
@@ -1559,11 +1333,7 @@ public function salaryReportData(Request $request)
 
                 if ($advance) {
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | RETURN EMI AMOUNT
-                    |--------------------------------------------------------------------------
-                    */
+                    /* RETURN EMI AMOUNT */
 
                     $advance->update([
 
@@ -1572,11 +1342,8 @@ public function salaryReportData(Request $request)
                     ]);
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | DELETE ADVANCE PAYMENT ENTRY
-                |--------------------------------------------------------------------------
-                */
+                /* DELETE ADVANCE PAYMENT ENTRY */  
+                
 
                 EmployeeAdvancePayment::where('emp_id', $salary->emp_id)
 
@@ -1589,11 +1356,7 @@ public function salaryReportData(Request $request)
 
             
 
-            /*
-            |--------------------------------------------------------------------------
-            | DELETE SALARY
-            |--------------------------------------------------------------------------
-            */
+            /* DELETE SALARY */
 
             $salary->delete();
 

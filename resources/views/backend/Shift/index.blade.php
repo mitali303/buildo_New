@@ -25,7 +25,7 @@
                                     <th>Out Time</th>
                                     <th>Action</th>
                                 </tr>
-                                 <tr>
+                                 <!-- <tr>
                                     <th></th>
 
                                     <th><input type="text" placeholder="Search Shift" class="form-control"/></th>
@@ -34,7 +34,7 @@
 
 
                                     <th></th>
-                                </tr>
+                                </tr> -->
                             </thead>
                         </table>
                     </div>
@@ -60,9 +60,11 @@
                 { data: 'shift_outtime', name: 'shift_outtime' },
                 { data: 'actions', name: 'actions' }
             ],
-           dom: "<'row'<'col-md-6'l><'col-md-6 text-end'B>>" +
-             "<'row'<'col-sm-12'tr>>" +
-             "<'row'<'col-md-5'i><'col-md-7'p>>",
+            dom:
+        "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
+        "<'row mb-2'<'col-md-12'B>>" +
+        "<'row'<'col-sm-12'tr>>" +
+        "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
             buttons: ['copy', 'excel', 'pdf', 'print',
                 {
                     // extend: 'colvis',   // #xdc48; Column visibility button

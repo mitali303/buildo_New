@@ -239,17 +239,17 @@ document.addEventListener("DOMContentLoaded", function () {
     |--------------------------------------------------------------------------
     */
 
-    $(document).on('click', '.delete-confirm', function (e) {
+    //$(document).on('click', '.delete-confirm', function (e) {
 
-        e.preventDefault();
+       // e.preventDefault();
 
-        let formId = $(this).data('id');
+        //let formId = $(this).data('id');
 
-        if (confirm('Are you sure you want to delete this record?')) {
+        //if (confirm('Are you sure you want to delete this record?')) {
 
-            $('#' + formId).submit();
-        }
-    });
+            //$('#' + formId).submit();
+       // }
+    //});
 
 });
 
