@@ -80,7 +80,8 @@
                         </div>
                     </div>
 
-                    <table id="pmttble" class="table table-bordered table-hover" style="width:95%;">
+                    <div class="table-responsive mt-4">
+                    <table id="pmttble" class="table table-bordered table-hover" style="width:100%;">
                     <thead>
                         <tr>
                             <th style="width: 15%;">Payment Method</th>
@@ -193,6 +194,7 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
 
                     <br>
 

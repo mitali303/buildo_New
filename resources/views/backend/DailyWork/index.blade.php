@@ -14,6 +14,43 @@
     overflow-wrap: anywhere !important;
     min-width: 300px;
 }
+  /* Mobile / Small screen */
+    @media (max-width: 768px) {
+
+        .dataTables_wrapper .dataTables_length {
+            width: 100% !important;
+            display: block !important;
+            float: none !important;
+            text-align: left !important;
+
+            /* Show entries खाली space */
+            margin-bottom: 18px !important;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            width: 100% !important;
+            display: block !important;
+            float: none !important;
+            text-align: left !important;
+
+            /* Search च्या खाली space */
+            margin-top: 0 !important;
+            margin-bottom: 15px !important;
+        }
+
+        /* Show entries select */
+        .dataTables_wrapper .dataTables_length select {
+            margin-left: 5px !important;
+            margin-right: 5px !important;
+        }
+
+        /* Search input */
+        .dataTables_wrapper .dataTables_filter input {
+            width: 200px !important;
+            max-width: calc(100% - 70px) !important;
+            margin-left: 5px !important;
+        }
+    }
 </style>
 
 @section('maincontent')
@@ -54,49 +91,51 @@
 document.addEventListener("DOMContentLoaded", function(){
 
 
-var datatablesButtons = $("#datatables-buttons").DataTable({
+            var datatablesButtons = $("#datatables-buttons").DataTable({
 
-responsive:false,
-scrollX:true,
-scrollCollapse:true,
-autoWidth:false,
-processing:true,
-serverSide:true,
+            responsive:false,
+            scrollX:true,
+            scrollCollapse:true,
+            autoWidth:false,
+            processing:true,
+            serverSide:true,
 
-ajax:"{{ route('DailyWork') }}",
-
-
-
-columns:[
-            { data:'DT_RowIndex', name:'DT_RowIndex', orderable:false, searchable:false },
-            { data:'date', name:'date', className:'nowrap' },
-            { data:'sitename', name:'sitename' },
-            { data:'workdone', name:'workdone' },
-            { data: 'img', name: 'img', orderable: false, searchable: false },
-            { data:'actions', name:'actions', orderable:false, searchable:false }
-        ],
+            ajax:"{{ route('DailyWork') }}",
 
 
 
-lengthChange:true,
-buttons:[ 'copy', 'print' ],
+            columns:[
+                        { data:'DT_RowIndex', name:'DT_RowIndex', orderable:false, searchable:false },
+                        { data:'date', name:'date', className:'nowrap' },
+                        { data:'sitename', name:'sitename' },
+                        { data:'workdone', name:'workdone' },
+                        { data: 'img', name: 'img', orderable: false, searchable: false },
+                        { data:'actions', name:'actions', orderable:false, searchable:false }
+                    ],
+
+            dom: '<"row mb-3"<"col-md-6"l><"col-md-6"f>>' +
+                            'rt' +
+                            '<"row mt-3"<"col-md-6"i><"col-md-6"p>>',
+
+            lengthChange:true,
+            buttons:[ 'copy', 'print' ],
 
 
-        drawCallback:function(){
-            feather.replace();
-         }
+                    drawCallback:function(){
+                        feather.replace();
+                    }
 
-});
+            });
 
 
-datatablesButtons
-.buttons()
-.container()
-.appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+            datatablesButtons
+            .buttons()
+            .container()
+            .appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
 
-});
+            });
 
-</script>
+    </script>
 
 
 @endsection

@@ -432,15 +432,30 @@ document.addEventListener('DOMContentLoaded', function () {
     $hasScheme = DB::table('scheme_step1')->exists();
 @endphp
 
-@if(!session('selected_scheme_id'))
+// @if(!session('selected_scheme_id'))
+
+//     @if($isSuperAdmin && !$hasScheme)
+
+//         {{-- SuperAdmin आहे आणि scheme नाही त्यामुळे popup नाही --}}
+
+//     @else
+
+//         const modal = new bootstrap.Modal('#defaultModalSuccess');
+//         modal.show();
+
+//     @endif
+
+// @endif
+@if(
+    !session('selected_scheme_id')
+    && request()->route()->getName() != 'Scheme.create'
+)
 
     @if($isSuperAdmin && !$hasScheme)
 
-        {{-- SuperAdmin आहे आणि scheme नाही त्यामुळे popup नाही --}}
-
     @else
 
-        const modal = new bootstrap.Modal('#defaultModalSuccess');
+        const modal = new bootstrap.Modal(document.getElementById('defaultModalSuccess'));
         modal.show();
 
     @endif
@@ -460,20 +475,36 @@ document.addEventListener('DOMContentLoaded', function () {
     $hasScheme = DB::table('scheme_step1')->exists();
 @endphp
 
-@if(!session('selected_scheme_id'))
+// @if(!session('selected_scheme_id'))
+
+//     @if($isSuperAdmin && !$hasScheme)
+
+//         {{-- SuperAdmin आहे आणि scheme नाही त्यामुळे popup नाही --}}
+
+//     @else
+
+//         const modal = new bootstrap.Modal('#defaultModalSuccess');
+//         modal.show();
+
+//     @endif
+
+// @endif
+@if(
+    !session('selected_scheme_id')
+    && request()->route()->getName() != 'Scheme.create'
+)
 
     @if($isSuperAdmin && !$hasScheme)
 
-        {{-- SuperAdmin आहे आणि scheme नाही त्यामुळे popup नाही --}}
-
     @else
 
-        const modal = new bootstrap.Modal('#defaultModalSuccess');
+        const modal = new bootstrap.Modal(document.getElementById('defaultModalSuccess'));
         modal.show();
 
     @endif
 
 @endif
+
 
 });
 </script>

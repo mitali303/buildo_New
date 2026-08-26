@@ -35,6 +35,24 @@
         display: none !important;
     }
 }
+#datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <main class="content">
@@ -44,19 +62,19 @@
 
         {{-- Filters --}} 
         <div class="row mb-3">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <label>From Date</label>
                 <input type="date" id="fdate" class="form-control"
                        value="{{ now()->startOfMonth()->format('Y-m-d') }}">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <label>To Date</label>
                 <input type="date" id="tdate" class="form-control"
                        value="{{ now()->format('Y-m-d') }}">
             </div>
 
-            <div class="col-md-3 align-self-end">
+            <div class="col-md-6 align-self-end mt-2">
                 <button class="btn btn-primary" id="filter">Show Report</button>
                 <button class="btn btn-primary" onclick="printReport()">Print</button>
                 
@@ -102,7 +120,8 @@ $(document).ready(function () {
         serverSide: false,
         ordering: false,
         paging: false,
-        searching: false,
+        responsive   : false,
+            scrollX: true,
         dom: 'Bfrtip', 
         buttons: [
             {

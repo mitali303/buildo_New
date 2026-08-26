@@ -39,7 +39,33 @@
     .dt-buttons {
         display: none !important;
     }
-} </style>
+} 
+@media (max-width: 575.98px) {
+
+    .dataTables_length,
+    .dataTables_filter,
+    .dt-buttons {
+        width: 100% !important;
+        display: block !important;
+        margin-bottom: 8px !important;
+        text-align: left !important;
+    }
+
+    .dataTables_filter input {
+        width: 120px !important;
+    }
+
+    .dt-buttons {
+        display: flex !important;
+        gap: 5px;
+    }
+
+    .dt-buttons .btn {
+        font-size: 10px !important;
+        padding: 3px 6px !important;
+    }
+}
+</style>
     <div class="container-fluid p-0">
 
         <div class="row mb-3">
@@ -127,10 +153,10 @@ $(function () {
         ],
         // DOM layout: length menu (l), buttons (B), filter (f), table (t), info (i), pagination (p)
         dom:
-            "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
-            "<'row mb-2'<'col-md-12'B>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
+    "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
+    "<'row mb-2'<'col-md-12'B>>" +
+    "<'row'<'col-sm-12'tr>>" +
+    "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
        buttons: [
     {
         extend: 'excelHtml5',

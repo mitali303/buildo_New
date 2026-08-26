@@ -2,6 +2,26 @@
 @section('title')
     Material Received
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -12,19 +32,19 @@
 
         <div class="row mb-3">
 
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <label>From Date</label>
                 <input type="date" id="from_date" class="form-control"
                     value="{{ \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <label>To Date</label>
                 <input type="date" id="to_date" class="form-control"
                     value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
             </div>
 
-            <div class="col-md-6 align-self-end">
+            <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
                 <button id="filter" class="btn btn-primary">Search</button>
                 <button id="reset" class="btn btn-secondary">Reset</button>
             </div>
@@ -58,7 +78,8 @@
     document.addEventListener("DOMContentLoaded", function() {
 
     let table = $("#datatables-buttons").DataTable({
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: {

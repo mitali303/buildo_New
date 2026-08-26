@@ -2,7 +2,18 @@
 @section('title')
   Stamp & Other Expenses Report
 @endsection
+<style>
+    @media (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
+    #myTable {
+        min-width: 800px;
+    }
+}
+</style>
 @section('maincontent')
 
 
@@ -20,19 +31,19 @@
            <form id="filterForm" class="row g-2 mb-3" method="GET"
       action="{{ route('reports.stamp_other_expense_report') }}">
 
-    <div class="col-md-2">
+    <div class="col-4 col-md-2">
         <label class="form-label">From Date</label>
         <input type="date" name="from_date" class="form-control"
                value="{{ request('from_date', now()->startOfMonth()->format('Y-m-d')) }}">
     </div>
 
-    <div class="col-md-2">
+    <div class="col-4 col-md-2">
         <label class="form-label">To Date</label>
         <input type="date" name="to_date" class="form-control"
                value="{{ request('to_date', now()->format('Y-m-d')) }}">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-4 col-md-2">
         <label class="form-label">Expense Type</label>
         <select name="typesrch" class="form-control">
             <option value="">Select Type</option>
@@ -49,7 +60,7 @@
         </select>
     </div>
 
-    <div class="col-md-2 align-self-end">
+    <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
         <button type="submit" class="btn btn-primary">
             Search
         </button>
@@ -60,6 +71,7 @@
           <div class="col-12">
            <div class="card">
             <div class="card-body">
+        <div class="table-responsive">
             <table id="datatables-buttons" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
@@ -102,6 +114,7 @@
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
         </div>
        </div>

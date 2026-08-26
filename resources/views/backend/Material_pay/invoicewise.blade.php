@@ -1,7 +1,32 @@
 @extends('backend.partials.master')
 
 @section('title', 'Invoice-wise Payments')
+<style>
+@media (max-width: 768px) {
 
+    /* DataTable Show आणि Search एकाखाली एक */
+    #invoicewise-table_wrapper .dataTables_length,
+    #invoicewise-table_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px !important;
+    }
+
+    #invoicewise-table_wrapper .dataTables_filter {
+        margin-top: 5px !important;
+    }
+
+    /* Mobile horizontal scroll */
+    #invoicewise-table_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+
+    #invoicewise-table {
+        min-width: 900px !important;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -37,6 +62,7 @@
 $(function () {
     $('#invoicewise-table').DataTable({
         processing: true,
+         scrollX: true,
         serverSide: true,
         ajax: "{{ url()->current() }}",
        columns: [

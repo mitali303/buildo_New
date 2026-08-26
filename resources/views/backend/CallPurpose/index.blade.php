@@ -2,6 +2,22 @@
 @section('title')
    Call Purpose
 @endsection
+<style>
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -27,7 +43,7 @@
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th></th>
 
                                     <th>
@@ -47,7 +63,7 @@
                                     </th>
 
                                     <th></th>
-                                </tr>
+                                </tr> -->
                             </thead>
                         </table>
                     </div>
@@ -63,7 +79,8 @@
 
     var table = $("#datatables-buttons").DataTable({
 
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         orderCellsTop: true,
@@ -80,7 +97,9 @@
         ],
 
         dom:
-            "<'row'<'col-md-6'l><'col-md-6 text-end'B>>" +
+            "<'row'<'col-12'l>>" +
+            "<'row'<'col-12'f>>" +
+            "<'row'<'col-12'B>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-md-5'i><'col-md-7'p>>",
 

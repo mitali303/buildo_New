@@ -1,7 +1,27 @@
 @extends('backend.partials.master')
 
 @section('title', 'Users')
+<style>
+    @media (max-width: 768px) {
 
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px !important;
+    }
+
+    #datatables-buttons_wrapper .dataTables_filter {
+        margin-top: 5px !important;
+    }
+
+    #datatables-buttons_wrapper .dataTables_filter input {
+        width: auto !important;
+        max-width: 100% !important;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
   <div class="container-fluid p-0">
@@ -78,7 +98,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     $('#datatables-buttons').DataTable({
         // pure client‑side: NO ajax, NO serverSide
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         lengthChange: true,
         buttons: ['copy', 'print'],
         drawCallback: () => feather.replace()

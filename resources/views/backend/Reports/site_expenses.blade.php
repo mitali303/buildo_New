@@ -42,25 +42,25 @@
     <div class="container-fluid p-0">
 
       <div class="row mb-2 mb-xl-3">
-            <div class="col-auto d-none d-sm-block">
+            <div class="col-auto">
                 <h3><strong>Site Expenses Report</strong></h3>
             </div>
             <div class="col-auto ms-auto text-end mt-n1">
-                <button class="btn btn-success" onclick="printReport()">Print</button>
+                <button class="btn btn-sm btn-success" onclick="printReport()">Print</button>
 
-                  <button type="button" class="btn btn-info" onclick="exportExcel()">Export to Excel</button>
+                  <button type="button" class="btn btn-sm btn-info" onclick="exportExcel()">Export to Excel</button>
             </div>
         </div>
           <form action="{{ route('reports.site_expenses_report') }}" method="GET" class="row g-3 mb-3">
-                    <div class="col-md-2">
+                    <div class="col-4 col-md-2">
                         <label>From:</label>
                         <input type="date" name="FromDate" class="form-control "  value="{{ $fromDate }}">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-4 col-md-2">
                         <label>To:</label>
                         <input type="date" name="ToDate" class="form-control "  value="{{ $toDate }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-4 col-md-2">
                         <label>Type:</label>
                         <select name="typesrch" class="form-control chosen-select">
                             <option value="">Select Type</option>
@@ -70,7 +70,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2 align-self-end">
+                     <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </form>
@@ -78,7 +78,7 @@
         <div class="card">
             <div class="card-body">
               
-               
+                <div class="table-responsive">
                 <table class="table table-striped table-hover">
                     <thead >
                         <tr>
@@ -118,6 +118,7 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
                 </div>
             </div>
         </div>

@@ -34,6 +34,9 @@
         display: none !important;
     }
 }
+.table-responsive > table {
+    min-width: 650px;
+}
 </style>
 
 <main class="content">
@@ -42,21 +45,22 @@
 <h3>Abstract Report</h3>
 
 <div class="row mb-3">
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <input type="date" id="fdate" class="form-control"
                value="{{ now()->startOfMonth()->format('Y-m-d') }}">
     </div>
-    <div class="col-md-3">
+   <div class="col-6 col-md-3">
         <input type="date" id="tdate" class="form-control"
                value="{{ now()->format('Y-m-d') }}">
     </div>
-    <div class="col-md-3">
+     <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
         <button id="filter" class="btn btn-primary">Show</button>
         <button class="btn btn-primary" onclick="printReport()">Print</button>
     </div>
 </div>
 <div id="print-area">
 <h4>Loan Abstract</h4>
+<div class="table-responsive">
 <table class="table table-striped" id="loan-table">
 <thead>
 <tr>
@@ -69,8 +73,10 @@
 </thead>
 <tbody></tbody>
 </table>
+</div>
 
 <h4>Partners Abstract</h4>
+<div class="table-responsive">
 <table class="table table-striped" id="partner-table">
 <thead>
 <tr>
@@ -83,8 +89,10 @@
 </thead>
 <tbody></tbody>
 </table>
+</div>
 
 <h4>Expenses Abstract</h4>
+<div class="table-responsive">
 <table class="table table-striped" id="expense-table">
 <thead>
 <tr>

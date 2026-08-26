@@ -3,7 +3,27 @@
 @section('title')
 Attendance Master
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
 
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+
+</style>
 @section('maincontent')
 
 <main class="content">
@@ -16,11 +36,11 @@ Attendance Master
                 Attendance Master Table
             </h1>
 
-            <div>
+            <div class="d-flex gap-2 flex-wrap">
 
                 @if (hasPermission('create_AttendanceMaster') == true)
                     <a href="{{ route('AttendanceMaster.create') }}"
-                       class="btn btn-primary">
+                       class="btn btn-primary px-2 px-md-3 py-1 py-md-2">
 
                         <i class="fas fa-plus"></i>
                         Attendance Master
@@ -28,7 +48,7 @@ Attendance Master
                 @endif
 
                 <!-- IMPORT BUTTON -->
-                <button class="btn btn-success"
+                <button class="btn btn-success px-2 px-md-3 py-1 py-md-2"
                         data-bs-toggle="modal"
                         data-bs-target="#importModal">
 
@@ -162,7 +182,7 @@ Attendance Master
         <th>Action</th>
     </tr>
 
-    <tr>
+    <!-- <tr>
         <th></th>
 
         <th>
@@ -213,7 +233,7 @@ Attendance Master
         </th>
 
         <th></th>
-    </tr>
+    </tr> -->
 </thead>
 
                         </table>
@@ -314,7 +334,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var datatablesButtons = $("#datatables-buttons").DataTable({
 
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
 

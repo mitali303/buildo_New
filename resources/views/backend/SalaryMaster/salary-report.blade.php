@@ -3,7 +3,29 @@
 @section('title')
 Salary Report
 @endsection
+<style>
+@media (max-width: 768px) {
 
+    #salaryReportTable_wrapper .dataTables_length,
+    #salaryReportTable_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+    #salaryReportTable_wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    #salaryReportTable {
+        min-width: 700px !important;
+    }
+
+}
+
+</style>
 @section('maincontent')
 
 <main class="content">
@@ -31,7 +53,7 @@ Salary Report
 
 <div class="row mb-3">
 
-<div class="col-md-3">
+<div class="col-6 col-md-3">
 
 <select id="month" class="form-control">
 
@@ -55,7 +77,7 @@ Salary Report
 
 </div>
 
-<div class="col-md-3">
+<div class="col-6 col-md-3">
 
 <select id="year" class="form-control">
 
@@ -75,7 +97,7 @@ Salary Report
 
 </div>
 
-<div class="col-md-2">
+<div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
 
 <button class="btn btn-primary"
 id="searchBtn">

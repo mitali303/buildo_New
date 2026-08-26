@@ -34,6 +34,24 @@
         display: none !important;
     }
 }
+   #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 
 
@@ -44,19 +62,19 @@
             <h1 class="h3 d-inline align-middle">{{ ucfirst($type) }} Payment</h1> 
         </div>
         
-        <div class="row mb-3">
-                        <div class="col-md-3">
+        <div class="row mb-3 ">
+                        <div class="col-6 col-md-3">
                             <label>From Date</label>
                             <input type="date" id="from_date" class="form-control">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-6 col-md-3">
                             <label>To Date</label>
                             <input type="date" id="to_date" class="form-control">
                         </div>
 
-                        <div class="col-md-6 align-self-end">
-                            <button id="filter" class="btn btn-primary">Search</button>
+                        <div class="col-md-6 align-self-end mt-2">
+                            <button id="filter" class="btn btn-primary ">Search</button>
                             <button id="reset" class="btn btn-secondary">Reset</button>
                             <button class="btn btn-primary" onclick="printReport()">Print</button>
 
@@ -120,7 +138,8 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#to_date').val(formatDate(today));
 
     table = $("#datatables-buttons").DataTable({
-        responsive: true,
+         responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: {

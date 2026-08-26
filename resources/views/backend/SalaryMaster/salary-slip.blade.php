@@ -323,6 +323,20 @@ body{
         margin:4mm;
     }
 }
+.salary-slip-scroll {
+    width: 100%;
+}
+
+@media (max-width: 767.98px) {
+    .salary-slip-scroll {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    #printArea {
+        min-width: 210mm;
+    }
+}
 
 </style>
 
@@ -343,6 +357,7 @@ body{
 
     {{-- PRINT AREA --}}
 
+<div class="salary-slip-scroll">
     <div id="printArea">
 
         {{-- HEADER --}}
@@ -722,6 +737,7 @@ body{
 
         </div>
 
+    </div>
     </div>
 
 </div>

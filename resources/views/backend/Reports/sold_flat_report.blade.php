@@ -8,13 +8,43 @@ Sold Flat Report
 <main class="content">
     <style>
         div.dataTables_wrapper div.dataTables_length select {
-   
-            width: 45%;
-        }
+    width: auto !important;
+    min-width: 65px;
+    padding: 4px 25px 4px 8px;
+    appearance: auto;
+}
+
+
         .dataTables_wrapper .dataTables_paginate .paginate_button {
            
             padding: 0px;
-        }   
+        } 
+        
+        @media (max-width: 767px) {
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        justify-content: flex-start;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        width: 120px;
+        margin-left: 5px;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        width: auto !important;
+        margin-left: 5px;
+    }
+}
     </style>
 <div class="container-fluid p-0">
 
@@ -26,26 +56,28 @@ Sold Flat Report
 
     {{-- Filter --}}
     <form method="GET" action="{{ route('reports.rera_report') }}" class="row mb-3">
-       
-            <div class="col-md-3 d-flex align-items-center">
-                        <label class="me-3 mb-0">From </label>
-                <input type="date" name="from_date" value="{{ $fromDate }}" class="form-control">
-            </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="col-md-3 d-flex align-items-center">
-                <label class="me-3 mb-0">To </label>&nbsp;
-                <input type="date" name="to_date" value="{{ $toDate }}" class="form-control">
-            </div>&nbsp;&nbsp;
-            <div class="col-md-3">
-                <button class="btn btn-primary">Search</button>
-            </div>
-        
-    </form>
+
+    <div class="col-6 col-md-3 d-flex align-items-center">
+        <label class="me-2 mb-0">From</label>
+        <input type="date" name="from_date" value="{{ $fromDate }}" class="form-control">
+    </div>
+
+    <div class="col-6 col-md-3 d-flex align-items-center">
+        <label class="me-2 mb-0">To</label>
+        <input type="date" name="to_date" value="{{ $toDate }}" class="form-control">
+    </div>
+
+    <div class="col-12 col-md-3 text-center mt-2">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+
+</form>
 
     {{-- SOLD FLATS --}}
     <div class="card mb-4">
         <div class="card-body">
             <h4>Sold Flats Details</h4>
-
+        <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
@@ -100,6 +132,7 @@ Sold Flat Report
                     </tr>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 
@@ -179,7 +212,8 @@ $(document).ready(function () {
         searching: true,
         paging: true,
         info: true,
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
 
         order: [[1, 'asc']],
 

@@ -43,7 +43,8 @@ class DailyWorkController extends Controller
             'daily_work_entry.workdone',
             'daily_work_entry.img',
             'daily_work_entry.Created'
-        ]);
+        ])
+        ->orderBy('daily_work_entry.Created', 'desc');
 
 
             // Normal user only own data

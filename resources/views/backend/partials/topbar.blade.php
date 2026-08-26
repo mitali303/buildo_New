@@ -1,3 +1,87 @@
+<style>
+	/* =========================
+   TOPBAR RESPONSIVE
+========================= */
+
+.navbar-bg .navbar-collapse {
+    width: 100%;
+}
+
+.navbar-bg .navbar-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 3px;
+}
+
+.navbar-bg .navbar-nav .nav-item {
+    flex-shrink: 1;
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .navbar-bg {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+
+    .navbar-bg .navbar-nav {
+        gap: 2px;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    /* Select Scheme */
+    #openSchemeModalBtn {
+        font-size: 10px !important;
+        padding: 4px 6px !important;
+        margin-right: 2px !important;
+    }
+
+    /* Scheme name */
+    /*.scheme-name {*/
+    /*    max-width: 75px !important;*/
+    /*    font-size: 11px !important;*/
+    /*}*/
+
+    /* Fullscreen */
+    .js-fullscreen {
+        display: none !important;
+    }
+
+    /* Logout */
+    .navbar-bg .btn-danger {
+        font-size: 10px !important;
+        padding: 4px 6px !important;
+        margin-left: 2px !important;
+        white-space: nowrap;
+    }
+
+    .navbar-bg .btn-danger i {
+        margin-right: 2px !important;
+    }
+}
+
+/* Very small mobile */
+@media (max-width: 400px) {
+
+    #openSchemeModalBtn {
+        font-size: 9px !important;
+        padding: 3px 5px !important;
+    }
+
+    /*.scheme-name {*/
+    /*    max-width: 60px !important;*/
+    /*    font-size: 10px !important;*/
+    /*}*/
+
+    .navbar-bg .btn-danger {
+        font-size: 9px !important;
+        padding: 3px 5px !important;
+  
+</style>
 <div class="main">
 	<nav class="navbar navbar-expand navbar-light navbar-bg">
 		<a class="sidebar-toggle js-sidebar-toggle">
@@ -105,12 +189,13 @@
 						$schemeName = \DB::table('scheme_step1')->where('ID', $schemeId)->value('Name');
 					@endphp
 
-					<a class="nav-icon pe-md-0 dropdown-toggle fw-semibold text-dark d-flex align-items-center gap-2"
+					<a class="nav-icon pe-md-0 dropdown-toggle fw-semibold text-dark d-flex align-items-center gap-2 scheme-name"
 						href="#"
 						data-bs-toggle="dropdown"
-						style="text-decoration:none;">
+						style="text-decoration:none; font-size: clamp(15px, 1.2vw, 16px);">
 							<!-- <i class="fa fa-building"></i> -->
-							{{ $schemeName ?? 'Select Scheme' }}
+							<!--{{ $schemeName ?? 'Select Scheme' }}-->
+							{{ isset($schemeName) ? \Illuminate\Support\Str::limit($schemeName, 10, '...') : 'Select Scheme' }}
 					</a>
 					<div class="dropdown-menu dropdown-menu-end">
 						<!-- <a class='dropdown-item' href='pages-profile.html'><i class="align-middle me-1" data-feather="user"></i> Profile</a>

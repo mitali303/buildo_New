@@ -948,11 +948,11 @@ $activeFinanceRoutes = request()->is(
 						</a>
 					</li>
 					@endif
-							<li class="sidebar-item {{ request()->is('material-request-list*') ? 'active' : '' }}">
+							<!-- <li class="sidebar-item {{ request()->is('material-request-list*') ? 'active' : '' }}">
 			<a class="sidebar-link" href="{{ route('material_request.list') }}">
 				Material Request
 			</a>
-		</li>
+		</li> -->
 					
 				</ul>
 			</li>

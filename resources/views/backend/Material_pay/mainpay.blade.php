@@ -1,6 +1,32 @@
 @extends('backend.partials.master')
 
 @section('title', 'Invoice Payments')
+<style>
+@media (max-width: 768px) {
+
+    /* Show + Search एकाखाली एक */
+    #mainpay-table_wrapper .dataTables_length,
+    #mainpay-table_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px !important;
+    }
+
+    #mainpay-table_wrapper .dataTables_filter {
+        margin-top: 5px !important;
+    }
+
+    /* Mobile horizontal scroller */
+    #mainpay-table_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+
+    #mainpay-table {
+        min-width: 700px !important;
+    }
+}
+</style>
 
 @section('maincontent')
 <main class="content">
@@ -42,6 +68,7 @@ $(function () {
     $('#mainpay-table').DataTable({
         processing: true,
         serverSide: true,
+           scrollX: true,
         ajax: {
             url: "{{ route('Material_pay.mainpay') }}",
             data: {

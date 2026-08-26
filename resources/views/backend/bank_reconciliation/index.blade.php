@@ -2,6 +2,26 @@
 @section('title')
   Bank Reconciliation
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -32,7 +52,7 @@
                                     <th>Amount</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th></th>
                                     <th></th>
                                     <th><input type="text" placeholder="Search Customer Name" class="form-control"/></th>
@@ -41,7 +61,7 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                </tr>
+                                </tr> -->
                             </thead>
                         </table>
                     </div>
@@ -55,6 +75,8 @@
 <script>
 $(function () {
     let table = $('#datatables-buttons').DataTable({
+         responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: "{{ route('bank_reconciliation') }}",

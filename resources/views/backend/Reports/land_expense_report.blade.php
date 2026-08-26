@@ -3,7 +3,26 @@
 @section('title')
     Land Expenses Report
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
 
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -17,19 +36,19 @@
         {{-- Filter Form --}}
         <form id="filterForm" class="row g-2 mb-3">
 
-            <div class="col-md-2">
+            <div class="col-4 col-md-2">
                 <label class="form-label">From Date</label>
                 <input type="date" name="from_date" class="form-control"
                        value="{{ request('from_date', now()->startOfMonth()->format('Y-m-d')) }}">
             </div>
 
-            <div class="col-md-2">
+            <div class="col-4 col-md-2">
                 <label class="form-label">To Date</label>
                 <input type="date" name="to_date" class="form-control"
                        value="{{ request('to_date', now()->format('Y-m-d')) }}">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-4 col-md-2">
                 <label class="form-label">Expense Type</label>
                 <select name="typesrch" class="form-control">
                     <option value="">Select Type</option>
@@ -40,7 +59,7 @@
                 </select>
             </div>
 
-            <div class="col-md-2 align-self-end">
+            <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
                 <button type="submit" class="btn btn-primary">
                     Search
                 </button>
@@ -80,7 +99,8 @@ $(document).ready(function () {
     let table = $('#datatables-buttons').DataTable({
         processing: true,
         serverSide: true,
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         ajax: {
             url: "{{ route('reports.land_expense_report') }}",
             data: function (d) {

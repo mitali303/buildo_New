@@ -3,7 +3,33 @@
 @section('title')
 GST Report
 @endsection
+<style>
+    @media (max-width: 767px) {
 
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        justify-content: flex-start;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        width: 120px;
+        margin-left: 5px;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        width: auto !important;
+        margin-left: 5px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -12,20 +38,20 @@ GST Report
                 <h3><strong>GST Report</strong></h3>
             </div>
         </div>
-<form method="GET" action="{{ route('reports.gst_report') }}" class="row mb-3">
-                    <div class="col-md-3 d-flex align-items-center">
+            <form method="GET" action="{{ route('reports.gst_report') }}" class="row mb-3">
+                    <div class="col-6 col-md-3 d-flex align-items-center">
                         <label class="me-3 mb-0">From </label>
                         <input type="date" name="from_date" class="form-control datepicker"
                                value="{{ \Carbon\Carbon::parse($fromDate)->format('d-m-Y') }}">
-                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
 
-                    <div class="col-md-3 d-flex align-items-center">
-                        <label class="me-3 mb-0">To </label>&nbsp;
+                    <div class="col-6 col-md-3 d-flex align-items-center">
+                        <label class="me-3 mb-0">To </label>
                         <input type="date" name="to_date" class="form-control datepicker"
                                value="{{ \Carbon\Carbon::parse($toDate)->format('d-m-Y') }}">
-                    </div>&nbsp;&nbsp;
+                    </div>
 
-                    <div class="col-md-3 align-self-end">
+                    <div class="col-12 col-md-3 text-center mt-2">
                         <button class="btn btn-primary">Search</button>
                     </div>
                 </form>
@@ -35,7 +61,7 @@ GST Report
           <div class="col-12">
         <div class="card">
             <div class="card-body">
-
+            <div class="table-responsive">
                 <table id="datatables-buttons" class="table table-striped" style="width:100%">
                     <thead >
                         <tr>
@@ -68,7 +94,7 @@ GST Report
                         @endforeach
                     </tbody>
                 </table>
-
+            </div>
             </div>
         </div>
         </div>

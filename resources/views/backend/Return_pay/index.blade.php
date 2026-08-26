@@ -2,6 +2,26 @@
 @section('title')
     Return Payment
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -14,22 +34,22 @@
 
         <div class="row mb-3">
 
-            <div class="col-md-3">
-                <label>From Date</label>
-                <input type="date" id="from_date" class="form-control">
-            </div>
+    <div class="col-6 col-md-3">
+        <label>From Date</label>
+        <input type="date" id="from_date" class="form-control">
+    </div>
 
-            <div class="col-md-3">
-                <label>To Date</label>
-                <input type="date" id="to_date" class="form-control">
-            </div>
+    <div class="col-6 col-md-3">
+        <label>To Date</label>
+        <input type="date" id="to_date" class="form-control">
+    </div>
 
-            <div class="col-md-3 d-flex align-items-end">
-                <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
-                <button id="resetBtn" class="btn btn-secondary">Reset</button>
-            </div>
+    <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
+        <button id="filterBtn" class="btn btn-primary">Filter</button>
+        <button id="resetBtn" class="btn btn-secondary">Reset</button>
+    </div>
 
-        </div>
+</div>
         <div class="row">
             <div class="col-12"> 
                 <div class="card">
@@ -80,7 +100,8 @@ document.addEventListener("DOMContentLoaded", function() {
     $('#to_date').val(formatDate(today));
 
     var datatablesButtons = $("#datatables-buttons").DataTable({
-        responsive: true,
+         responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: {

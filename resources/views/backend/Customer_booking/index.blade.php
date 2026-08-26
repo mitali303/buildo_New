@@ -11,7 +11,22 @@
         overflow-y: auto;
         padding: 10px;
     }
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
     </style>
+    
     <div class="container-fluid p-0">
         <div class="row mb-2 mb-xl-3">
             <div class="col-auto d-none d-sm-block">

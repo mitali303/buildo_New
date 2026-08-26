@@ -3,7 +3,30 @@
 @section('title')
 Generate Salary
 @endsection
+<style>
+@media (max-width: 767.98px) {
+    .mobile-table-scroll {
+        overflow-x: auto;
+        width: 100%;
+    }
 
+    .mobile-table-scroll table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    #generatedMonthTable_wrapper .dataTables_length,
+    #generatedMonthTable_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+}
+</style>
 @section('maincontent')
 
 <main class="content">
@@ -22,7 +45,7 @@ Generate Salary
 
         <div class="row">
 
-            <div class="col-md-4">
+            <div class="col-6 col-md-3">
 
                 <label>Month</label>
 
@@ -47,7 +70,7 @@ Generate Salary
 
             </div>
 
-            <div class="col-md-4">
+            <div class="col-6 col-md-3">
 
                 <label>Year</label>
 
@@ -65,7 +88,7 @@ Generate Salary
 
             </div>
 
-            <div class="col-md-4">
+            <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
 
                 <br>
 
@@ -92,7 +115,7 @@ Generate Salary
     </div>
 
         <div class="card-body">
-
+        <div class="mobile-table-scroll">
             <table class="table table-bordered" id="generatedMonthTable">
 
                 <thead>
@@ -108,7 +131,7 @@ Generate Salary
                 </thead>
 
             </table>
-
+            </div>
         </div>
     </div>
 
@@ -145,12 +168,20 @@ function loadGeneratedMonthTable()
         processing:true,
         serverSide:true,
 
+        dom:
+            '<"row"<"col-12"l>>' +
+            '<"row"<"col-12"f>>' +
+            'rt' +
+            '<"row"<"col-12"i><"col-12"p>>',
+        
+
         ajax:
         "{{ route('salary.generated.month.list') }}",
 
         columns:[
 
             {
+                
                 data:'DT_RowIndex',
                 searchable:false,
                 orderable:false

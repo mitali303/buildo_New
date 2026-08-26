@@ -2,6 +2,26 @@
 @section('title')
   Customer Refund
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -12,24 +32,24 @@
             <div class="col-auto ms-auto text-end mt-n1">
                 
                 @if (hasPermission('create_customer_refund') == true)
-                    <a href="{{route('customer_refund.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i>Add New Record</a>
+                    <a href="{{route('customer_refund.create')}}" class="btn btn-sm  btn-primary"><i class="fas fa-plus"></i>Add New Record</a>
                 @endif
             </div>
         </div>
 
         <div class="row mb-3">
 
-            <div class="col-md-3">
+            <div class="col-4 col-md-2">
                 <label>From Date</label>
                 <input type="date" id="from_date" class="form-control">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-4 col-md-2">
                 <label>To Date</label>
                 <input type="date" id="to_date" class="form-control">
             </div>
 
-            <div class="col-md-3 d-flex align-items-end">
+            <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
                 <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
                 <button id="resetBtn" class="btn btn-secondary">Reset</button>
             </div>
@@ -82,7 +102,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let table = $('#datatables-buttons').DataTable({
         processing: true,
         serverSide: true,
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         orderCellsTop: true,
         fixedHeader: true,
 

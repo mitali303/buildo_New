@@ -34,6 +34,24 @@
         display: none !important;
     }
 }
+#datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 <main class="content">
     <div class="container-fluid p-0">
@@ -41,25 +59,23 @@
             <h1 class="h3 d-inline align-middle">Return Payment</h1> 
         </div>
        <div class="row mb-3">
-                <div class="col-md-2">
+                <div class="col-6 col-md-3">
                     <input type="text" id="fdate" class="form-control datepicker"
                         value="{{ date('d-m-Y') }}" readonly>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-6 col-md-3">
                     <input type="text" id="tdate" class="form-control datepicker"
                         value="{{ date('d-m-Y') }}" readonly>
                 </div>
-
-                <div class="col-md-2" style="width: 13%;">
+                    <div class="col-md-6 align-self-end mt-2">
+                
                     <button class="btn btn-success" onclick="Getdata()">Show</button>
-                </div>
-                <div class="col-md-2"style="width: 8%;">
+                
                 <button class="btn btn-primary" onclick="printReport()">Print</button>
-            </div>
-
-            <div class="col-md-2">
+         
                 <button class="btn btn-info" onclick="exportExcel()">Export to Excel</button>
+            
             </div>
         </div>
         
@@ -109,6 +125,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // DataTable
     table = $("#datatables-buttons").DataTable({
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: {

@@ -6,6 +6,20 @@
 .nowrap {
     white-space: nowrap !important;
 }
+@media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 @section('maincontent')
 <main class="content">
@@ -18,17 +32,17 @@
         </div>
 <div class="row mb-3">
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
         <label>From Date</label>
         <input type="date" id="from_date" class="form-control">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
         <label>To Date</label>
         <input type="date" id="to_date" class="form-control">
     </div>
 
-    <div class="col-md-3 d-flex align-items-end">
+    <div class="col-md-3 col-12 mt-2 mt-md-0 text-center">
         <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
         <button id="resetBtn" class="btn btn-secondary">Reset</button>
     </div>

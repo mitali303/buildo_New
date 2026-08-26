@@ -36,6 +36,24 @@
         display: none !important;
     }
 }
+  #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 <main class="content">
     <div class="container-fluid p-0">
@@ -48,8 +66,8 @@
 
             <!-- Buttons -->
             <div class="col-auto d-flex gap-2">
-                <button class="btn btn-success" onclick="printReport()">Print</button>
-                <button type="button" class="btn btn-info" onclick="exportExcel()">Export to Excel</button>
+                <button class="btn btn-sm btn-success" onclick="printReport()">Print</button>
+                <button type="button" class="btn btn-sm btn-info" onclick="exportExcel()">Export to Excel</button>
             </div>
         </div>
     <div id="print-area">
@@ -96,7 +114,8 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     $('#datatables-buttons').DataTable({
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         fixedHeader: true
     });
 });

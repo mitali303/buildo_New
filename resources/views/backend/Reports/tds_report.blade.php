@@ -1,7 +1,15 @@
 @extends('backend.partials.master')
 
 @section('title','TDS Report')
-
+<style>
+@media (max-width: 768px) {
+    #vendor {
+        font-size: 13px;
+        padding-left: 6px;
+        padding-right: 4px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
 <div class="container-fluid p-0">
@@ -10,15 +18,15 @@
 
 {{-- Filters --}}
 <div class="row mb-3">
-    <div class="col-md-2">
+    <div class="col-4 col-md-3">
         <input type="date" id="fdate" class="form-control"
                value="{{ now()->startOfMonth()->format('Y-m-d') }}">
     </div>
-    <div class="col-md-2">
+    <div class="col-4 col-md-3">
         <input type="date" id="tdate" class="form-control"
                value="{{ now()->format('Y-m-d') }}">
     </div>
-    <div class="col-md-3">
+    <div class="col-4 col-md-3 ">
         <select id="vendor" class="form-control">
             <option value="">Select Vendor</option>
             @foreach($vendors as $v)
@@ -26,7 +34,7 @@
             @endforeach
         </select>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2 mt-2">
         <button class="btn btn-primary" id="filter">Show</button>
     </div>
 </div>
@@ -79,6 +87,8 @@ let table = $('#tds-table').DataTable({
     serverSide: false,
     processing: true,
     searching: false,
+    responsive   : false,
+            scrollX: true,
     lengthChange: true,
     dom: 'ltip',
 

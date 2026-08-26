@@ -2,6 +2,26 @@
 @section('title')
   Account Transfer
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -18,17 +38,17 @@
         </div>
         <form method="GET" action="" class="row mb-3 align-items-end">
 
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <label class="form-label">From</label>
         <input type="date" name="from_date" value="{{ $fromDate }}" class="form-control">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <label class="form-label">To</label>
         <input type="date" name="to_date" value="{{ $toDate }}" class="form-control">
     </div>
 
-    <div class="col-md-2">
+    <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
         <button class="btn btn-primary">Search</button>
     </div>
 
@@ -49,7 +69,7 @@
                                     <th>Amount</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th></th>
                                     <th></th>
                                     <th><input type="text" placeholder="Search Account From" class="form-control"/></th>
@@ -58,7 +78,7 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                </tr>
+                                </tr> -->
                             </thead>
                         </table>
                     </div>
@@ -72,9 +92,10 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     let table = $('#datatables-buttons').DataTable({
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
-        responsive: true,
         orderCellsTop: true,
         fixedHeader: true,
         ajax: {

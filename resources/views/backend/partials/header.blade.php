@@ -85,6 +85,30 @@
     color: #ffffff;
     border: none;
 }
+.add-scheme-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+}.add-scheme-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+}
+@media (max-width: 576px) {
+    #schemeCardsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #schemeCardsContainer > * {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #schemeCardsContainer .scheme-card {
+        width: 100%;
+        margin: 0;
+    }
+}
 	</style>
 	<!-- END SETTINGS -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120946860-10"></script>
@@ -105,7 +129,7 @@
 <!-- Global Modal -->
 <!-- Modal code remains unchanged -->
 <div class="modal fade" id="defaultModalSuccess" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-xl" >
+	<div class="modal-dialog modal-xl" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Select Scheme</h5>
@@ -114,7 +138,7 @@
 
 			<div class="modal-body">
 				<div class="mb-3">
-					<label for="userSelector" class="form-label">Select Scheme</label>
+					<!-- <label for="userSelector" class="form-label">Select Scheme</label> -->
 					<div class="row" id="schemeCardsContainer">
 						<!-- Cards will be loaded here -->
 					</div>
@@ -122,6 +146,11 @@
 			</div>
 
 			<div class="modal-footer">
+				@if (Auth::check() && Auth::user()->Role == 1)
+					<a href="{{ route('Scheme.create') }}" class="btn btn-primary add-scheme-btn">
+					<i class="fas fa-plus"></i> Add Scheme
+					</a>
+				@endif
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-success" id="saveUserBtn">Okay</button>
 			</div>
@@ -130,3 +159,18 @@
 </div>
 <body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-layout="default">
 	<div class="wrapper">
+		<script>
+$(document).on('click', '#addSchemeBtn', function () {
+
+    // Close modal
+    $('#defaultModalSuccess').modal('hide');
+
+    // Remove modal backdrop
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open');
+    $('body').css('padding-right', '');
+
+    // Redirect
+    window.location.href = "{{ route('Scheme.create') }}";
+});
+</script>

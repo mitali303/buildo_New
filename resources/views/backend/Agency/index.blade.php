@@ -2,6 +2,36 @@
 @section('title')
     Agency
 @endsection
+<style>
+@media (max-width: 768px) {
+
+    /* Show + Search same line */
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 50% !important;
+        float: left !important;
+        margin-bottom: 10px !important;
+    }
+
+    #datatables-buttons_wrapper .dataTables_filter {
+        text-align: right !important;
+    }
+
+    #datatables-buttons_wrapper .dataTables_filter input {
+        width: 120px !important;
+        max-width: 100% !important;
+    }
+
+    /* Horizontal scroller */
+    #datatables-buttons_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+
+    #datatables-buttons {
+        min-width: 650px !important;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -40,7 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* initialise DataTable */
     var datatablesButtons = $("#datatables-buttons").DataTable({
-        responsive   : true,
+         responsive: false,
+    scrollX: true,
         processing   : true,
         serverSide   : true,
         ajax         : "{{ route('Agency') }}",

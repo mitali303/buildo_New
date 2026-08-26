@@ -12,6 +12,17 @@
         overflow-y: auto;
         padding: 10px;
     }
+    
+@media (max-width: 768px) {
+    #customer-payment-table_wrapper .dataTables_length,
+    #customer-payment-table_wrapper .dataTables_filter {
+        float: none !important;
+        width: 100% !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+}
+
     </style>
     <div class="container-fluid p-0">
 

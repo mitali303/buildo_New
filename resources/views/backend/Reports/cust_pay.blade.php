@@ -4,12 +4,38 @@
 @section('maincontent')
 <style>
 .dataTables_length select {
+    width: 65px !important;
     height: 35px;
-    padding: 5px 35px 5px 12px;
+    padding: 5px 25px 5px 8px !important;
     margin: 0 8px;
     border: 1px solid #ced4da;
     border-radius: 5px;
 }
+
+@media (max-width: 767px) {
+    .customer-select {
+        width: 50%;
+    }
+}
+@media (max-width: 767px) {
+    .dataTables_filter {
+        text-align: left !important;
+        margin: 10px 0;
+    }
+
+    .dataTables_filter input {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    .dt-buttons {
+        margin-bottom: 10px;
+    }
+    .dataTables_length {
+        text-align: left !important;
+    }
+}
+
 </style>
 <main class="content">
     <link rel="stylesheet"
@@ -26,9 +52,9 @@ href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
             {{-- CUSTOMER FILTER --}}
             <div class="row mb-3">
-                <div class="col-md-4">
+                <div class="col-12 col-md-4 col-lg-4">
                     <label>Select Customer</label>
-                    <select id="customer_id" class="form-control choices-single-customer">
+                    <select id="customer_id" class="form-control choices-single-customer customer-select">
                         <option value="">Select Customer</option>
                         @foreach($customers as $cust)
                             <option value="{{ $cust->ID }}">
@@ -85,10 +111,12 @@ href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
             [10,25,50,100,"All"]
         ],
         dom:
-    "<'row'<'col-md-6'l><'col-md-6'f>>" +
-    "<'row mt-2'<'col-md-6'B><'col-md-6'>>" +
+    "<'row'<'col-12'l>>" +
+    "<'row'<'col-12'f>>" +
+    "<'row'<'col-12'B>>" +
     "rt" +
-    "<'row'<'col-md-6'i><'col-md-6'p>>",
+    "<'row'<'col-12'i>>" +
+    "<'row'<'col-12'p>>",
 
         buttons: [
             {

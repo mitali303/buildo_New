@@ -3,12 +3,31 @@
 @section('title')
     Site Work Payment
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
 
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
         @if (hasPermission('create_purchase_order'))
-        <a href="{{route('Site_work_order.create')}}" class="btn btn-primary float-end mt-n1">
+        <a href="{{route('Site_work_order.create')}}" class="btn btn-primary btn-sm float-end mt-n1">
             <i class="fas fa-plus"></i> New Site Work Order
         </a>
         @endif
@@ -44,7 +63,8 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     var datatablesButtons = $("#datatables-buttons").DataTable({
-        responsive: true,
+         responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: {

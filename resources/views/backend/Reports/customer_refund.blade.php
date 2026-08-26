@@ -35,6 +35,24 @@
         display: none !important;
     }
 }
+#datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <main class="content">
@@ -47,20 +65,21 @@
     
     <div class="row mb-3">
 
-    <div class="col-md-3">
+   <div class="col-6 col-md-3">
         <label>From Date</label>
         <input type="date" id="from_date" class="form-control">
     </div>
 
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <label>To Date</label>
         <input type="date" id="to_date" class="form-control">
     </div>
 
-    <div class="col-md-4 align-self-end">
+    <div class="col-md-6 align-self-end mt-2">
         <button id="filter" class="btn btn-primary">Search</button>
         <button id="reset" class="btn btn-secondary">Reset</button>
         <button class="btn btn-success" onclick="printReport()">Print</button>
+        <button type="button" class="btn btn-sm btn-info" onclick="exportExcel()">Export Excel </button>
     </div>
 
 <!-- Buttons -->
@@ -138,22 +157,23 @@ document.addEventListener("DOMContentLoaded", function() {
     let table = $('#datatables-buttons').DataTable({
         processing: true,
         serverSide: true,
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         orderCellsTop: true,
         fixedHeader: true,
-        dom: '<"row"<"col-md-6"l><"col-md-6"Bf>>rtip',
+        // dom: '<"row"<"col-md-6"l><"col-md-6"Bf>>rtip',
 
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fa fa-file-excel"></i> Export Excel',
-                    title: 'Customer Refund Report',
-                    className: 'btn btn-info',
-                    exportOptions: {
-                        columns: [0,1,2,3,4]
-                    }
-                }
-            ],
+            // buttons: [
+            //     {
+            //         extend: 'excelHtml5',
+            //         text: '<i class="fa fa-file-excel"></i> Export Excel',
+            //         title: 'Customer Refund Report',
+            //         className: 'btn btn-info',
+            //         exportOptions: {
+            //             columns: [0,1,2,3,4]
+            //         }
+            //     }
+            // ],
         ajax: {
             url: "{{ route('customer_refund') }}",
             data: function(d){

@@ -4,6 +4,24 @@
 @endsection
 <style>
 .nowrap { white-space: nowrap; }
+
+@media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+      #datatables-buttons_wrapper td:nth-child(2),
+    #datatables-buttons_wrapper th:nth-child(2) {
+        white-space: nowrap;
+}
 </style>
 @section('maincontent')
 <main class="content">
@@ -49,10 +67,10 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
-                        <button id="resetBtn" class="btn btn-secondary">Reset</button>
-                    </div>
+                        <div class="col-md-3 d-flex align-items-end g-2">
+                            <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
+                            <button id="resetBtn" class="btn btn-secondary">Reset</button>
+                        </div>
 
                 </div> 
 
@@ -85,7 +103,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // initialise DataTable
     var datatablesButtons = $("#datatables-buttons").DataTable({
-        responsive   : true,
+        responsive   : false,
+        scrollX: true,
         processing   : true,
         serverSide   : true,
 

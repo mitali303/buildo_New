@@ -2,11 +2,31 @@
 @section('title')
   Employee Advance
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
         @if (hasPermission('create_EmployeeAdvance') == true)
-        <a href="{{route('EmployeeAdvance.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Employee Advance</a>
+        <a href="{{route('EmployeeAdvance.create')}}" class="btn btn-sm btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Employee Advance</a>
         @endif
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Employee Advance Table</h1>
@@ -71,7 +91,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     var datatablesButtons = $("#datatables-buttons").DataTable({
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
 
@@ -102,8 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
          dom:
             "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
             "<'row mb-2'<'col-md-12'B>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
+            "<'row'<'col-sm-10'tr>>" +
+            "<'row mt-1'<'col-md-4'i><'col-md-7'p>>",
 
         buttons: [
             {

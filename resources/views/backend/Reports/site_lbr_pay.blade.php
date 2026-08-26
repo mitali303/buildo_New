@@ -5,6 +5,10 @@
 @section('maincontent')
 
 <style>
+      #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
 @media print {
 
     /* Hide everything */
@@ -35,6 +39,18 @@
         display: none !important;
     }
 }
+@media (max-width: 768px) {
+
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+}
+
 </style>
 
 
@@ -46,19 +62,22 @@
         </div>
         
                 <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
-
+                 <div class="d-flex gap-2">
                 <input type="text" id="fdate" class="form-control datepicker" style="width:150px"
                     value="{{ date('d-m-Y') }}" readonly>
-
+                
                 <input type="text" id="tdate" class="form-control datepicker" style="width:150px"
                     value="{{ date('d-m-Y') }}" readonly>
-
+                </div>
+                <div class="w-100 d-md-auto">
                 <button class="btn btn-success" onclick="Getdata()">Show</button>
-
+                
+                
                 <button class="btn btn-primary" onclick="printReport()">Print</button>
-
+             
+                 
                 <button class="btn btn-info" onclick="exportExcel()">Export to Excel</button>
-
+ </div>
             </div>
         
 
@@ -112,6 +131,8 @@ document.addEventListener("DOMContentLoaded", function () {
     table = $("#datatables-buttons").DataTable({
         processing: true,
         serverSide: true,
+        responsive   : false,
+            scrollX: true,
         ajax: {
             url: "{{ route('report.Site_lbr_pay') }}",
             data: function (d) {
@@ -129,6 +150,10 @@ document.addEventListener("DOMContentLoaded", function () {
             { data: 'retain_amt' },
             { data: 'gtotal' },
         ],
+        dom:
+    "<'row'<'col-md-6'l><'col-md-6 text-end'fB>>" +
+    "<'row'<'col-sm-12'tr>>" +
+    "<'row'<'col-md-5'i><'col-md-7'p>>",
         buttons: ['copy', 'print'],
     });
 

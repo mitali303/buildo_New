@@ -13,6 +13,52 @@
         overflow-wrap: anywhere !important;
         min-width: 300px;
     }
+    @media (max-width: 768px) {
+    .filter-section {
+        flex-wrap: wrap !important;
+    }
+
+    .filter-section input,
+    .filter-section select {
+        width: 30% !important;
+        margin-right: 5px !important;
+    }
+
+    #siteSearchBtn {
+        margin-left: 0 !important;
+        margin-top: 8px;
+    }
+
+    #clearSiteBtn {
+        margin-top: 8px;
+    }
+
+    #siteSearchBtn::before {
+        content: "";
+    }
+}
+@media (max-width: 768px) {
+
+    /* DataTable Show + Search */
+    #daily-work-report_wrapper .dataTables_length,
+    #daily-work-report_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+    /* Search next line */
+    #daily-work-report_wrapper .dataTables_filter {
+        margin-top: 5px;
+    }
+
+    /* Date column straight */
+    #daily-work-report th:nth-child(2),
+    #daily-work-report td:nth-child(2) {
+        white-space: nowrap !important;
+    }
+}
 </style>
 
 @section('maincontent')
@@ -23,7 +69,7 @@
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Daily Work Report</h1>
         </div>
-           <div class="d-flex align-items-center mb-3">
+           <div class="d-flex align-items-center mb-3 filter-section">
             <input type="date" id="fromDate" class="form-control form-control-sm me-2" style="width:170px;">
 
 <input type="date" id="toDate" class="form-control form-control-sm me-2" style="width:170px;">
@@ -38,16 +84,17 @@
         @endforeach
 
     </select>
+   <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-start gap-2 mt-2 mt-md-0">
+        <!-- <div class="w-100"></div> -->
+            <button type="button" id="siteSearchBtn" class="btn btn-primary btn-sm ms-2">
+                Search
+            </button>
 
-    <button type="button" id="siteSearchBtn" class="btn btn-primary btn-sm ms-2">
-        Search
-    </button>
-
-    <button type="button" id="clearSiteBtn" class="btn btn-secondary btn-sm ms-2">
-        Clear
-    </button>
-
-</div>
+            <button type="button" id="clearSiteBtn" class="btn btn-secondary btn-sm ms-2">
+                Clear
+            </button>
+    </div>
+    </div>
 
 
         <div class="row">
@@ -135,9 +182,15 @@
 <script>
 $(document).ready(function () {
 
+    const today = new Date().toISOString().split('T')[0];
+
+        $('#fromDate').val(today);
+        $('#toDate').val(today);
+
     var table = $('#daily-work-report').DataTable({
 
-        responsive: false,
+        responsive   : false,
+            scrollX: true,
 
         scrollX: true,
 

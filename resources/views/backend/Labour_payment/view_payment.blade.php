@@ -1,7 +1,30 @@
 @extends('backend.partials.master')
 
 @section('title','Labour Payment')
+<style>
+@media (max-width: 768px) {
+    #payment-table_wrapper .dataTables_length,
+    #payment-table_wrapper .dataTables_filter {
+        float: none !important;
+        width: 100% !important;
+        text-align: left !important;
+        margin-bottom: 8px;
+    }
 
+    #payment-table_wrapper .dataTables_filter input {
+        width: 150px !important;
+    }
+
+    #payment-table_wrapper {
+        overflow-x: auto;
+    }
+    #payment-table {
+        min-width: 900px !important;
+        white-space: nowrap !important;
+    }
+    
+}
+</style>
 @section('maincontent')
 <main class="content">
 <div class="container-fluid p-0">
@@ -67,7 +90,8 @@ let table = $("#payment-table").DataTable({
 
     processing: true,
     serverSide: true,
-    responsive: true,
+    responsive   : false,
+            scrollX: true,
 
     ajax: {
         url: "{{ route('Labour_work_pay.viewPayment.data',$ids) }}",

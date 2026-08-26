@@ -1,13 +1,24 @@
 @extends('backend.partials.master')
 
 @section('title', 'Available Flats Report')
+<style>
+    @media (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
+    #myTable {
+        min-width: 800px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
 
         <div class="row mb-2 mb-xl-3">
-            <div class="col-auto d-none d-sm-block">
+            <div class="col-auto">
                 <h3><strong>Available Flat Report</strong></h3>
             </div>
         </div>
@@ -29,7 +40,7 @@
                               
                             </div>
                         </div>
-
+                    <div class="table-responsive">
                         <table id="myTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -64,7 +75,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-
+                    </div>
                     </div>
                 </div>
             </div>

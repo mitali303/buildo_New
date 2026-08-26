@@ -32,6 +32,26 @@
         display: none !important;
     }
 }
+
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+
 </style>
 
 <main class="content">
@@ -52,12 +72,12 @@
         </div>
         <div class="row mb-3">
 
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <label>From Date</label>
                 <input type="date" id="from_date" class="form-control">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <label>To Date</label>
                 <input type="date" id="to_date" class="form-control">
             </div>
@@ -120,6 +140,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     table = $("#datatables-buttons").DataTable({
         processing: true,
+        responsive   : false,
+            scrollX: true,
         serverSide: true,
         ajax: {
             url: "{{ route('report.Material_pay') }}",

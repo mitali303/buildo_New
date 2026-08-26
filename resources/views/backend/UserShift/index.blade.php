@@ -3,7 +3,26 @@
 @section('title')
 User Shift Assignment
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
 
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 
 <main class="content">
@@ -100,7 +119,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var datatablesButtons = $("#datatables-buttons").DataTable({
 
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
 
@@ -117,10 +137,11 @@ document.addEventListener("DOMContentLoaded", function() {
         ],
 
         dom:
-    "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
-    "<'row mb-2'<'col-md-12'B>>" +
-    "<'row'<'col-sm-12'tr>>" +
-    "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
+            "<'row'<'col-12'l>>" +
+            "<'row'<'col-12'f>>" +
+            "<'row'<'col-12'B>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-md-5'i><'col-md-7'p>>",
 
         buttons: [
     {

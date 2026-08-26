@@ -3,7 +3,31 @@
 @section('title')
 Bank Transaction Report
 @endsection
+<style>
+@media (max-width: 767px) {
+    select {
+        font-size: 11px !important;
+    }
+    .datepicker{
+        font-size: 11px !important
+    }
+}
+@media (max-width: 767px) {
+    .report-btn {
+        width: 33.333% !important;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
 
+    .report-btn .btn {
+        width: 100%;
+        padding: 6px 2px;
+        font-size: clamp(9px, 2.7vw, 13px);
+        white-space: normal;
+        line-height: 1.2;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
 <div class="container-fluid p-0">
@@ -14,17 +38,17 @@ Bank Transaction Report
 <div class="card-body">
 
 <div class="row mb-3">
-    <div class="col-md-2">
-        <input type="text" id="fdate" class="form-control datepicker"
+    <div class="col-4 col-md-2">
+        <input type="text" id="fdate" class="form-control datepicker "
                value="{{ date('d-m-Y') }}" readonly>
     </div>
 
-    <div class="col-md-2">
+    <div class="col-4 col-md-2">
         <input type="text" id="tdate" class="form-control datepicker"
                value="{{ date('d-m-Y') }}" readonly>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-4 col-md-2">
         <select id="account_no" class="form-control">
             <option value="">Select</option>
             @foreach($accounts as $acc)
@@ -35,14 +59,14 @@ Bank Transaction Report
         </select>
     </div>
 
-    <div class="col-md-2" style="width: 15%;">
+  <div class="col-md-2 report-btn mt-2">
         <button class="btn btn-success" onclick="Getdata()">Show Report</button>
     </div>
-    <div class="col-md-2"style="width: 8%;">
+    <div class="col-md-2 report-btn mt-2">
     <button class="btn btn-primary" onclick="printReport()">Print</button>
 </div>
 
-<div class="col-md-2">
+<div class="col-md-2 report-btn mt-2">
     <button class="btn btn-info" onclick="exportExcel()">Export to Excel</button>
 </div>
 </div>

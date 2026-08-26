@@ -2,6 +2,27 @@
 @section('title')
     Purchase Order
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -41,13 +62,14 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Datatables with Buttons
         var datatablesButtons = $("#datatables-buttons").DataTable({
-            responsive: true,
+            responsive   : false,
+            scrollX: true,
             processing: true,
             serverSide: true,
             ajax: "{{ route('PurchaseOrder') }}", // Your route
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'Date', name: 'Date' },
+                { data: 'Date', name: 'Date'  },
                 { data: 'Pono', name: 'Pono' },
                  { data: 'vendor_name', name: 'vendor_name' },
     { data: 'scheme_name', name: 'scheme_name' },

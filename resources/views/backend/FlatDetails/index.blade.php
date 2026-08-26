@@ -2,7 +2,22 @@
 @section('title')
     Flat Details
 @endsection
+<style>
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
 
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -75,7 +90,8 @@
 $(document).ready(function() {
     // Initialize DataTable
     var table = $('#datatables-buttons').DataTable({
-        responsive: true,
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: "{{ route('Flat') }}",

@@ -2,6 +2,26 @@
 @section('title')
     Payment Slab
 @endsection
+<style>
+@media (max-width: 768px) {
+
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px !important;
+    }
+
+    #datatables-buttons_wrapper .dataTables_filter {
+        margin-top: 5px !important;
+    }
+
+    #datatables-buttons_wrapper .dataTables_filter input {
+        width: 150px !important;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">

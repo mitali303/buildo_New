@@ -72,6 +72,7 @@
                 </div>
 
                 {{-- WORK ENTRY TABLE --}}
+                <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -81,6 +82,7 @@
                             <th>Pay Now</th>
                         </tr>
                     </thead>
+                
                     <tbody>
                  @foreach($works as $work)
 
@@ -104,10 +106,11 @@
                      @endforeach
                     </tbody>
                 </table>
-
+            </div>
                 <hr>
 
                 {{-- PAYMENT SECTION --}}
+                <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -189,7 +192,7 @@
                         </tr>
                     </tbody>
                 </table>
-
+            </div>
                 <div class="mt-3">
                     <button class="btn btn-primary">Create</button>
                     <a href="{{ route('Labour_work_pay') }}"
@@ -204,6 +207,16 @@
 </div>
 </main>
 @endsection
+<script>
+    $('#datatables-buttons').DataTable({
+    responsive: false,
+    scrollX: true,
+    autoWidth: false,
+    lengthChange: true,
+    buttons: ['copy', 'print']
+});
+
+    </script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const fp = flatpickr("#datepicker", {

@@ -2,6 +2,21 @@
 @section('title')
     {{ $type === 'investor' ? 'Investor' : 'Partner' }} Payment
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -46,7 +61,8 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Datatables with Buttons
         var datatablesButtons = $("#datatables-buttons").DataTable({
-            responsive: true,
+            responsive   : false,
+        scrollX: true,
             processing: true,
             serverSide: true,
             ajax: "{{ route('Partner_pay.mainpay',['type' => $type, 'partner' => $partner]) }}", // Your route

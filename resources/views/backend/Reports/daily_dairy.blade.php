@@ -35,6 +35,18 @@
         display: none !important;
     }
 }
+@media (max-width: 768px) {
+
+    #daily-diary_wrapper .dataTables_length,
+    #daily-diary_wrapper .dataTables_filter {
+        width: 100% !important;
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+}
+
 </style>
 
 <main class="content">
@@ -89,6 +101,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     let table = $('#daily-diary').DataTable({
+        responsive   : false,
+            scrollX: true,
         processing: true,
         serverSide: true,
         ajax: {
@@ -105,6 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { data: 'debit' },
             { data: 'credit' },
         ]
+        
     });
 
     $('#filter').click(function () {

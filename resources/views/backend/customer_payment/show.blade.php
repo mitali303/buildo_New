@@ -98,20 +98,21 @@
 <div class="card mb-3">
    
     <div class="card-body p-0">
+    <div class="table-responsive">
         <table class="table table-striped">
-    <thead class="table-primary">
-        <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Receipt No</th>
-            <th>Payment Method</th>
-            <th>Account No</th>
-            <th>Amount</th>
-            <th>Type</th>
-            <th>Payment By</th>
-            <th>Action</th>
-        </tr>
-    </thead>
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Receipt No</th>
+                    <th>Payment Method</th>
+                    <th>Account No</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Payment By</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
     <tbody>
         @foreach($payments as $k => $pay)

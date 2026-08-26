@@ -49,17 +49,26 @@ Material Purchase Report
     min-width: 1600px;
     white-space: nowrap;
 }
+@media (max-width: 575.98px) {
+    input.form-control,
+    select.form-control,
+    button.btn {
+        font-size: 11px !important;
+        height: 30px !important;
+        padding: 2px !important;
+    }
+
 </style>
 
 <main class="content">
     <div class="container-fluid p-0">
 
         <div class="row mb-2 mb-xl-3">
-            <div class="col-auto d-none d-sm-block">
+            <div class="col-auto">
                 <h3><strong>Material Purchase Report</strong></h3>
             </div>
-            <div class="col-auto ms-auto text-end mt-n1">
-                 <button class="btn btn-primary" onclick="printReport()">Print</button>
+            <div class="col-auto ms-auto text-end mt-n1 ">
+                 <button class="btn btn-primary"  onclick="printReport()">Print</button>
 
                   <!-- <button type="button" class="btn btn-info" onclick="exportExcel()">Export to Excel</button> -->
             </div>
@@ -71,16 +80,16 @@ Material Purchase Report
                 {{-- Filters --}}
                 <form method="GET" action="{{ route('reports.material_purchase_report') }}">
                     <div class="row mb-3">
-                        <div class="col-md-2">
+                       <div class="col-4 col-md-2">
                             <input type="date" name="from_date" class="form-control"
                                    value="{{ $fromDate }}">
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <input type="date" name="to_date" class="form-control"
                                    value="{{ $toDate }}">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <select name="vendor_id" class="form-control">
                                 <option value="">Select Supplier</option>
                                 @foreach($vendors as $vendor)
@@ -91,8 +100,8 @@ Material Purchase Report
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select name="material_id" class="form-control">
+                       <div class="col-4 col-md-2">
+                            <select name="material_id" class="form-control mt-2">
                                 <option value="">Select Material</option>
                                 @foreach($materials as $material)
                                     <option value="{{ $material->id }}"
@@ -102,8 +111,8 @@ Material Purchase Report
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select name="scheme_id" class="form-control">
+                        <div class="col-4 col-md-2">
+                            <select name="scheme_id" class="form-control mt-2">
                                 <option value="">Select Site</option>
                                 @foreach($schemes as $scheme)
                                     <option value="{{ $scheme->id }}"
@@ -114,7 +123,7 @@ Material Purchase Report
                             </select>
                         </div>
 
-                        <div class="col-md-2">
+                         <div class="col-4 col-md-2 mt-2">
                             <button class="btn btn-primary w-100">Search</button>
                         </div>
                     </div>

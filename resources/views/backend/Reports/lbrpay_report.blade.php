@@ -2,6 +2,26 @@
 @section('title')
     Labour Work
 @endsection
+<style>
+    #datatables-buttons th:nth-child(2),
+#datatables-buttons td:nth-child(2) {
+    white-space: nowrap !important;
+}
+    @media (max-width: 768px) {
+    #datatables-buttons_wrapper .dataTables_length,
+    #datatables-buttons_wrapper .dataTables_filter {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    #datatables-buttons_wrapper .dt-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -15,14 +35,14 @@
             </div>
                 <div class="row mb-3">
 
-                    <div class="col-md-3">
+                    <div class="col-4 col-md-3">
                         <label>From Date</label>
-                        <input type="date" id="from_date" class="form-control" value="{{ request('from_date', now()->startOfMonth()->format('Y-m-d')) }}">
+                        <input type="date" id="from_date" class="form-control form-control-sm" value="{{ request('from_date', now()->startOfMonth()->format('Y-m-d')) }}">
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-4 col-md-3">
                         <label>To Date</label>
-                        <input type="date" id="to_date" class="form-control" value="{{ request('to_date', now()->format('Y-m-d')) }}">
+                        <input type="date" id="to_date" class="form-control form-control-sm" value="{{ request('to_date', now()->format('Y-m-d')) }}">
                     </div>
 
                     @php
@@ -31,9 +51,9 @@
                     $agencies = Agency::orderBy('Name')
                     ->get();
                     @endphp
-                    <div class="col-md-3">
+                    <div class="col-4 col-md-3">
                         <label>Agency</label>
-                        <select id="agency_filter" class="form-control">
+                        <select id="agency_filter" class="form-control form-control-sm">
                             <option value="">All Agencies</option>
                             @foreach($agencies as $agency)
                                 <option value="{{ $agency->ID }}">{{ $agency->Name }}</option>
@@ -41,7 +61,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
                         <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
                         <button id="resetBtn" class="btn btn-secondary">Reset</button>
                     </div>
@@ -79,7 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // initialise DataTable
     var datatablesButtons = $("#datatables-buttons").DataTable({
-        responsive   : true,
+        responsive   : false,
+            scrollX: true,
         processing   : true,
         serverSide   : true,
 
