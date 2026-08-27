@@ -204,13 +204,15 @@
 						'cancel-booking', 'cancel-booking/create',
 						'customer-booking', 'customer-booking/create',
 						'add-bill', 'add-bill/create'
-					);
+					)
+					|| request()->routeIs('reports.available_flat_report');
 				@endphp
 				@if (
 					hasPermission('customer_demand_raise_read') ||
 					hasPermission('cancel_booking_read') ||
 					hasPermission('customer_booking_read') ||
-					hasPermission('add_bill_read')
+					hasPermission('add_bill_read') ||
+					hasPermission('available_flat_report_read')
 				)
 				<li class="sidebar-item {{ $activeSchemeManagementRoutes ? 'active' : '' }}">
 					<a data-bs-target="#schememanagement" data-bs-toggle="collapse" class="sidebar-link {{ $activeSchemeManagementRoutes ? '' : 'collapsed' }}">
@@ -240,6 +242,18 @@
 						@if (hasPermission('add_bill_read'))
 						<li class="sidebar-item {{ request()->is('add-bill') ? 'active' : '' }}">
 							<a class='sidebar-link' href="{{ route('Add_bill') }}">Add Bill</a>
+						</li>
+						@endif
+
+						{{-- Available Flat Report --}}
+						@if (hasPermission('available_flat_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.available_flat_report') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.available_flat_report') }}"
+							>
+								Booking Management Report
+							</a>
 						</li>
 						@endif
 
@@ -281,12 +295,12 @@
 				</li>
 			@endif -->
 			@if(Auth::user()->Role == 2)
-    <li class="sidebar-item">
-        <a class="sidebar-link" href="{{ route('enquiries.index') }}">
-            Enquiry List
-        </a>
-    </li>
-@endif
+					<li class="sidebar-item">
+						<a class="sidebar-link" href="{{ route('enquiries.index') }}">
+							Enquiry List
+						</a>
+					</li>
+				@endif
 	
 		@if(hasPermission('call_outcome_read'))
         	<li class="sidebar-item">
@@ -327,47 +341,86 @@
 	</ul>
 	</li>
 	@endif
-		<!--DailyWork-->
-	@php
-        $activeDailyWorkRoutes = request()->is('DailyWork*');
-        @endphp
-        
-        @if(hasPermission('daily_work_read'))
-        
-        <li class="sidebar-item {{ $activeDailyWorkRoutes ? 'active' : '' }}">
-        
-            <a data-bs-target="#dailywork" 
-               data-bs-toggle="collapse" 
-               class="sidebar-link {{ $activeDailyWorkRoutes ? '' : 'collapsed' }}">
-        
-                <i class="align-middle fas fa-clipboard"></i>
-                <span class="align-middle">Daily Work</span>
-        
-            </a>
-        
-            <ul id="dailywork" 
-                class="sidebar-dropdown list-unstyled collapse {{ $activeDailyWorkRoutes ? 'show' : '' }}"
-                data-bs-parent="#sidebar">
-        
-                <li class="sidebar-item {{ request()->is('DailyWork*') ? 'active' : '' }}">
-                    <a class="sidebar-link" href="{{ route('DailyWork') }}">
-                        Daily Work Entry
-                    </a>
-                </li>
+						{{-- ========================================================= --}}
+				{{-- DAILY WORK --}}
+				{{-- ========================================================= --}}
 
-				<li class="sidebar-item {{ request()->routeIs('material_request.*') ? 'active' : '' }}">
-    <a class="sidebar-link" href="{{ route('material_request.list') }}">
-        <i class="align-middle" data-feather="file-text"></i>
-        <span class="align-middle">Material Request</span>
-    </a>
-</li>
-        
-            </ul>
+				@php
+					$activeDailyWorkRoutes =
+						request()->routeIs('DailyWork') ||
+						request()->routeIs('dailyworkreport.index') ||
+						request()->routeIs('material_request.*');
+				@endphp
 
-        
-        </li>
-        
-        @endif
+				@if (hasPermission('daily_work_read'))
+
+				<li class="sidebar-item {{ $activeDailyWorkRoutes ? 'active' : '' }}">
+
+					{{-- Parent --}}
+					<a
+						data-bs-target="#dailywork"
+						data-bs-toggle="collapse"
+						class="sidebar-link {{ $activeDailyWorkRoutes ? '' : 'collapsed' }}"
+						href="#dailywork"
+						aria-expanded="{{ $activeDailyWorkRoutes ? 'true' : 'false' }}"
+					>
+						<i class="align-middle fas fa-clipboard"></i>
+
+						<span class="align-middle">
+							Daily Work
+						</span>
+					</a>
+
+					{{-- Child Reports --}}
+					<ul
+						id="dailywork"
+						class="sidebar-dropdown list-unstyled collapse {{ $activeDailyWorkRoutes ? 'show' : '' }}"
+						data-bs-parent="#sidebar"
+					>
+
+						{{-- Daily Work Entry --}}
+						<li class="sidebar-item {{ request()->routeIs('DailyWork') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('DailyWork') }}"
+							>
+								Daily Work Entry
+							</a>
+						</li>
+
+
+						{{-- Daily Work Report --}}
+						@if (hasPermission('daily_work_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('dailyworkreport.index') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('dailyworkreport.index') }}"
+							>
+								Daily Work Report
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Material Request --}}
+						<li class="sidebar-item {{ request()->routeIs('material_request.*') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('material_request.list') }}"
+							>
+								<i class="align-middle" data-feather="file-text"></i>
+
+								<span class="align-middle">
+									Material Request
+								</span>
+							</a>
+						</li>
+
+					</ul>
+
+				</li>
+
+				@endif
 
 
 
@@ -446,171 +499,173 @@
 			
 
 			<!-- Financial Accounting -->
-@php
-$activeFinanceRoutes = request()->is(
-   	 'site-work-order-payments','site-work-order-payments/create','site-work-order-payments/edit*',
-	 'owner-payments',          'owner-payments/create',          	'owner-payments/edit*',
- 	 'labour-payments',			'labour-payments/create',			'labour-payments/edit*',
- 	'material-payments',		'material-payments/create',			'material-payments/edit*',
-	'payments/partner*',		'payments/investor*',
-	'site-expenses',			'site-expenses/create',				'site-expenses/edit*',
-	'return-payments',			'return-payments/create',			'return-payments/edit*',
-	'tds-payments*',				'tds-payments/create*',				'tds-payments/edit*',
-	'view-payment-tds*',
-	'bank_reconciliation*', 	'account_transfer*', 				'customer_payment*',
- 	'post_dated_cheque*',
-    'customer_refund*',
-	'land_expenses',			 'land_expenses/create',			'land_expenses/edit*',
-	'stamp_other_expenses',		 'stamp_other_expenses/create',		'stamp_other_expenses/edit*'
-);
-@endphp
-
-@if (
-    hasPermission('site_work_order_payment_read')  || hasPermission('material_payment_read') || 
-    hasPermission('labour_work_payment_read')  || hasPermission('owner_payment_read') ||
-    hasPermission('partners_payment_read')     || hasPermission('investors_payment_read') || 
-    hasPermission('site_expenses_read')        || hasPermission('return_payment_read')   || 
-    hasPermission('tds_payment_read')          || hasPermission('bank_reconciliation_read') || 
-    hasPermission('account_transfer_read')     || hasPermission('customer_payment_read') || 
-    hasPermission('post_dated_cheque_read')    || hasPermission('customer_refund_read')  || 
-    hasPermission('land_expenses_read')        || hasPermission('stamp_other_expenses_read')
-)
-
-<li class="sidebar-item {{ $activeFinanceRoutes ? 'active' : '' }}">
-    
-    <a data-bs-target="#finance" data-bs-toggle="collapse"
-       class="sidebar-link {{ $activeFinanceRoutes ? '' : 'collapsed' }}"
-       aria-expanded="{{ $activeFinanceRoutes ? 'true' : 'false' }}">
-        
-        <i class="align-middle" data-feather="dollar-sign"></i> 
-        <span class="align-middle">Financial Accounting</span>
-    </a>
-
-    <ul id="finance" class="sidebar-dropdown list-unstyled collapse {{ $activeFinanceRoutes ? 'show' : '' }}" data-bs-parent="#sidebar">
-		
-
-        {{-- Site Work --}}
-        @if (hasPermission('site_work_order_payment_read'))
-        <li class="sidebar-item {{ request()->is('site-work-order-payments*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Site_work_pay') }}">Site Work Order Payment</a>
-        </li>
-        @endif
-
-        {{-- Owner --}}
-        @if (hasPermission('owner_payment_read'))
-        <li class="sidebar-item {{ request()->is('owner-payments*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Owner_Pay') }}">Owner Payment</a>
-        </li>
-        @endif
-
-        {{-- Labour --}}
-        @if (hasPermission('labour_work_payment_read'))
-        <li class="sidebar-item {{ request()->is('labour-payments*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Labour_work_pay') }}">Labour Work Payment</a>
-        </li>
-        @endif
-
-        {{-- Material --}}
-        @if (hasPermission('material_payment_read'))
-        <li class="sidebar-item {{ request()->is('material-payments*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Material_pay') }}">Material Payment</a>
-        </li>
-        @endif
-
-        {{-- Partners --}}
-        @if (hasPermission('partners_payment_read'))
-        <li class="sidebar-item {{ request()->is('payments/partner*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Partner_pay', ['type' => 'partner']) }}">Partners Payment</a>
-        </li>
-        @endif
-
-        {{-- Investors --}}
-        @if (hasPermission('investors_payment_read'))
-		<li class="sidebar-item {{ request()->is('payments/investor*') ? 'active' : '' }}">
-    		<a class='sidebar-link' href="{{ route('Partner_pay', ['type' => 'investor']) }}">
-       	 Investors Payment </a>
-		</li>
-		@endif
-
-        {{-- Site Expenses --}}
-        @if (hasPermission('site_expenses_read'))
-        <li class="sidebar-item {{ request()->is('site-expenses*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Site_exp_pay') }}">Site Expenses</a>
-        </li>
-        @endif
-
-        {{-- ✅ Return Payment FIXED --}}
-        @if (hasPermission('return_payment_read'))
-        <li class="sidebar-item {{ request()->is('return-payments*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('Return_pay') }}">Return Payment</a>
-        </li>
-        @endif
 		@php
-		$isTdsActive = request()->is(
-			'tds-payments*',
-			'view-payment-tds*'
+		$activeFinanceRoutes = request()->is(
+			'site-work-order-payments','site-work-order-payments/create','site-work-order-payments/edit*',
+			'owner-payments',          'owner-payments/create',          	'owner-payments/edit*',
+			'labour-payments',			'labour-payments/create',			'labour-payments/edit*',
+			'material-payments',		'material-payments/create',			'material-payments/edit*',
+			'payments/partner*',		'payments/investor*',
+			'site-expenses',			'site-expenses/create',				'site-expenses/edit*',
+			'return-payments',			'return-payments/create',			'return-payments/edit*',
+			'tds-payments*',				'tds-payments/create*',				'tds-payments/edit*',
+			'view-payment-tds*',
+			'bank_reconciliation*', 	'account_transfer*', 				'customer_payment*',
+			'post_dated_cheque*',
+			'customer_refund*',
+			'land_expenses',			 'land_expenses/create',			'land_expenses/edit*',
+			'stamp_other_expenses',		 'stamp_other_expenses/create',		'stamp_other_expenses/edit*'
 		);
 		@endphp
-				{{-- TDS --}}
-				@if (hasPermission('tds_payment_read'))
-			<li class="sidebar-item {{ $isTdsActive ? 'active' : '' }}">
-			<a class='sidebar-link' href="{{ route('Tds_pay') }}">
-				TDS Payment
+
+		@if (
+			hasPermission('site_work_order_payment_read')  || hasPermission('material_payment_read') || 
+			hasPermission('labour_work_payment_read')  || hasPermission('owner_payment_read') ||
+			hasPermission('partners_payment_read')     || hasPermission('investors_payment_read') || 
+			hasPermission('site_expenses_read')        || hasPermission('return_payment_read')   || 
+			hasPermission('tds_payment_read')          || hasPermission('bank_reconciliation_read') || 
+			hasPermission('account_transfer_read')     || hasPermission('customer_payment_read') || 
+			hasPermission('post_dated_cheque_read')    || hasPermission('customer_refund_read')  || 
+			hasPermission('land_expenses_read')        || hasPermission('stamp_other_expenses_read')
+		)
+
+		<li class="sidebar-item {{ $activeFinanceRoutes ? 'active' : '' }}">
+			
+			<a data-bs-target="#finance" data-bs-toggle="collapse"
+			class="sidebar-link {{ $activeFinanceRoutes ? '' : 'collapsed' }}"
+			aria-expanded="{{ $activeFinanceRoutes ? 'true' : 'false' }}">
+				
+				<i class="align-middle" data-feather="dollar-sign"></i> 
+				<span class="align-middle">Financial Accounting</span>
 			</a>
+
+			<ul id="finance" class="sidebar-dropdown list-unstyled collapse {{ $activeFinanceRoutes ? 'show' : '' }}" data-bs-parent="#sidebar">
+				
+
+				{{-- Site Work --}}
+				@if (hasPermission('site_work_order_payment_read'))
+				<li class="sidebar-item {{ request()->is('site-work-order-payments*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Site_work_pay') }}">Site Work Order Payment</a>
+				</li>
+				@endif
+
+				{{-- Labour --}}
+				@if (hasPermission('labour_work_payment_read'))
+				<li class="sidebar-item {{ request()->is('labour-payments*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Labour_work_pay') }}">Labour Work Payment</a>
+				</li>
+				@endif
+
+				{{-- Material --}}
+				@if (hasPermission('material_payment_read'))
+				<li class="sidebar-item {{ request()->is('material-payments*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Material_pay') }}">Material Payment</a>
+				</li>
+				@endif
+
+					{{-- Customer Payment --}}
+				@if (hasPermission('customer_payment_read'))
+				<li class="sidebar-item {{ request()->is('customer_payment*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('customer_payment') }}">Customer Payment</a>
+				</li>
+				@endif
+
+				{{-- Owner --}}
+				@if (hasPermission('owner_payment_read'))
+				<li class="sidebar-item {{ request()->is('owner-payments*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Owner_Pay') }}">Owner Payment</a>
+				</li>
+				@endif
+
+					{{-- Site Expenses --}}
+				@if (hasPermission('site_expenses_read'))
+				<li class="sidebar-item {{ request()->is('site-expenses*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Site_exp_pay') }}">Site Expenses</a>
+				</li>
+				@endif
+
+		
+
+				{{-- Partners --}}
+				@if (hasPermission('partners_payment_read'))
+				<li class="sidebar-item {{ request()->is('payments/partner*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Partner_pay', ['type' => 'partner']) }}">Partners Payment</a>
+				</li>
+				@endif
+
+				{{-- Investors --}}
+				@if (hasPermission('investors_payment_read'))
+				<li class="sidebar-item {{ request()->is('payments/investor*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Partner_pay', ['type' => 'investor']) }}">
+				Investors Payment </a>
+				</li>
+				@endif
+
+				{{-- ✅ Return Payment FIXED --}}
+				@if (hasPermission('return_payment_read'))
+				<li class="sidebar-item {{ request()->is('return-payments*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Return_pay') }}">Return Payment</a>
+				</li>
+				@endif
+				@php
+				$isTdsActive = request()->is(
+					'tds-payments*',
+					'view-payment-tds*'
+				);
+				@endphp
+						{{-- TDS --}}
+						@if (hasPermission('tds_payment_read'))
+					<li class="sidebar-item {{ $isTdsActive ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('Tds_pay') }}">
+						TDS Payment
+					</a>
+				</li>
+				@endif
+
+				{{-- Account Transfer --}}
+				@if (hasPermission('account_transfer_read'))
+				<li class="sidebar-item {{ request()->is('account_transfer*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('account_transfer') }}">Account Transfer</a>
+				</li>
+				@endif
+
+				{{-- Refund --}}
+				@if (hasPermission('customer_refund_read'))
+				<li class="sidebar-item {{ request()->is('customer_refund*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('customer_refund') }}">Customer Refund</a>
+				</li>
+				@endif
+
+				{{-- Land --}}
+				@if (hasPermission('land_expenses_read'))
+				<li class="sidebar-item {{ request()->is('land_expenses*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('land_expenses') }}">Land Expenses</a>
+				</li>
+				@endif
+
+				{{-- Stamp --}}
+				@if (hasPermission('stamp_other_expenses_read'))
+				<li class="sidebar-item {{ request()->is('stamp_other_expenses*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('stamp_other_expenses') }}">Stamp & Other Expenses</a>
+				</li>
+				@endif
+
+				{{-- Bank --}}
+				@if (hasPermission('bank_reconciliation_read'))
+				<li class="sidebar-item {{ request()->is('bank_reconciliation*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('bank_reconciliation') }}">Bank Reconciliation</a>
+				</li>
+				@endif
+
+				{{-- PDC --}}
+				@if (hasPermission('post_dated_cheque_read'))
+				<li class="sidebar-item {{ request()->is('post_dated_cheque*') ? 'active' : '' }}">
+					<a class='sidebar-link' href="{{ route('post_dated_cheque') }}">Post Dated Cheque</a>
+				</li>
+				@endif
+
+			</ul>
 		</li>
-        @endif
-
-        {{-- Bank --}}
-        @if (hasPermission('bank_reconciliation_read'))
-        <li class="sidebar-item {{ request()->is('bank_reconciliation*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('bank_reconciliation') }}">Bank Reconciliation</a>
-        </li>
-        @endif
-
-        {{-- Account Transfer --}}
-        @if (hasPermission('account_transfer_read'))
-        <li class="sidebar-item {{ request()->is('account_transfer*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('account_transfer') }}">Account Transfer</a>
-        </li>
-        @endif
-
-        {{-- Customer Payment --}}
-        @if (hasPermission('customer_payment_read'))
-        <li class="sidebar-item {{ request()->is('customer_payment*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('customer_payment') }}">Customer Payment</a>
-        </li>
-        @endif
-
-        {{-- PDC --}}
-        @if (hasPermission('post_dated_cheque_read'))
-        <li class="sidebar-item {{ request()->is('post_dated_cheque*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('post_dated_cheque') }}">Post Dated Cheque</a>
-        </li>
-        @endif
-
-        {{-- Refund --}}
-        @if (hasPermission('customer_refund_read'))
-        <li class="sidebar-item {{ request()->is('customer_refund*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('customer_refund') }}">Customer Refund</a>
-        </li>
-        @endif
-
-        {{-- Land --}}
-        @if (hasPermission('land_expenses_read'))
-        <li class="sidebar-item {{ request()->is('land_expenses*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('land_expenses') }}">Land Expenses</a>
-        </li>
-        @endif
-
-        {{-- Stamp --}}
-        @if (hasPermission('stamp_other_expenses_read'))
-        <li class="sidebar-item {{ request()->is('stamp_other_expenses*') ? 'active' : '' }}">
-            <a class='sidebar-link' href="{{ route('stamp_other_expenses') }}">Stamp & Other Expenses</a>
-        </li>
-        @endif
-
-    </ul>
-</li>
 
 			@endif
 
@@ -687,276 +742,641 @@ $activeFinanceRoutes = request()->is(
 		</li>
 		@endif	
 
-						{{-- Reports --}}
+					{{-- ========================================================= --}}
+					{{-- WORK ORDER & LABOUR PAYMENT --}}
+					{{-- ========================================================= --}}
+
 					@php
-			$activeReportRoutes = request()->routeIs('report.*')
-				|| request()->routeIs('reports.*')
-				|| request()->routeIs('bank.transaction.report');
+						$siteWorkPaymentActive = request()->routeIs('report.Site_lbr_pay');
+						$labourPaymentActive = request()->routeIs('reports.lbrpay_report');
+
+						$workOrderLabourActive =
+							$siteWorkPaymentActive || $labourPaymentActive;
+					@endphp
+
+					@if (
+						hasPermission('site_labour_payment_report_read') ||
+						hasPermission('lbrwp_report_read')
+					)
+
+					<li class="sidebar-item">
+
+						{{-- Parent --}}
+						<a
+							data-bs-target="#workOrderLabourPayment"
+							data-bs-toggle="collapse"
+							class="sidebar-link {{ $workOrderLabourActive ? '' : 'collapsed' }}"
+							aria-expanded="{{ $workOrderLabourActive ? 'true' : 'false' }}"
+						>
+							<i class="align-middle" data-feather="briefcase"></i>
+
+							<span class="align-middle small" style="font-size: 11px !important;">
+								Work Order &amp; Labour Payment Reports
+							</span>
+						</a>
+
+						{{-- Child Reports --}}
+						<ul
+							id="workOrderLabourPayment"
+							class="sidebar-dropdown list-unstyled collapse {{ $workOrderLabourActive ? 'show' : '' }}"
+						>
+
+							{{-- Work Order Payment Report --}}
+							@if (hasPermission('site_labour_payment_report_read'))
+							<li class="sidebar-item {{ $siteWorkPaymentActive ? 'active' : '' }}">
+								<a
+									class="sidebar-link"
+									href="{{ route('report.Site_lbr_pay') }}"
+								>
+									Work Order Payment Report
+								</a>
+							</li>
+							@endif
+
+
+							{{-- Labour Payment Report --}}
+							@if (hasPermission('lbrwp_report_read'))
+							<li class="sidebar-item {{ $labourPaymentActive ? 'active' : '' }}">
+								<a
+									class="sidebar-link"
+									href="{{ route('reports.lbrpay_report') }}"
+								>
+									Labour Payment Report
+								</a>
+							</li>
+							@endif
+
+						</ul>
+
+					</li>
+
+					@endif
+
+
+
+						{{-- ========================================================= --}}
+						{{-- SUPPLIER & MATERIAL REPORTS --}}
+						{{-- ========================================================= --}}
+
+						@php
+							$supplierMaterialActive =
+								request()->routeIs('report.Material_pay') ||
+								request()->routeIs('report.material_cunsum') ||
+								request()->routeIs('report.material_transfer') ||
+								request()->routeIs('report.material_recieve') ||
+								request()->routeIs('reports.material_purchase_report') ||
+								request()->routeIs('reports.stock_report');
+						@endphp
+
+						@if (
+							hasPermission('supplier_payment_report_read') ||
+							hasPermission('material_consumption_read') ||
+							hasPermission('material_transferred_report_read') ||
+							hasPermission('material_received_report_read') ||
+							hasPermission('material_purchase_report_read') ||
+							hasPermission('stock_report_read')
+						)
+
+						<li class="sidebar-item">
+
+							{{-- Parent --}}
+							<a
+								data-bs-target="#supplierMaterialReports"
+								data-bs-toggle="collapse"
+								class="sidebar-link {{ $supplierMaterialActive ? '' : 'collapsed' }}"
+								aria-expanded="{{ $supplierMaterialActive ? 'true' : 'false' }}"
+							>
+								<i class="align-middle" data-feather="package"></i>
+
+								<span class="align-middle">
+									Supplier &amp; Material Reports
+								</span>
+							</a>
+
+							{{-- Child Reports --}}
+							<ul
+								id="supplierMaterialReports"
+								class="sidebar-dropdown list-unstyled collapse {{ $supplierMaterialActive ? 'show' : '' }}"
+							>
+
+								{{-- Supplier Payment Report --}}
+								@if (hasPermission('supplier_payment_report_read'))
+								<li class="sidebar-item {{ request()->routeIs('report.Material_pay') ? 'active' : '' }}">
+									<a
+										class="sidebar-link"
+										href="{{ route('report.Material_pay') }}"
+									>
+										Supplier Payment Report
+									</a>
+								</li>
+								@endif
+
+
+								{{-- Material Consumption Report --}}
+								@if (hasPermission('material_consumption_read'))
+								<li class="sidebar-item {{ request()->routeIs('report.material_cunsum') ? 'active' : '' }}">
+									<a
+										class="sidebar-link"
+										href="{{ route('report.material_cunsum') }}"
+									>
+										Material Consumption Report
+									</a>
+								</li>
+								@endif
+
+
+								{{-- Material Transferred Report --}}
+								@if (hasPermission('material_transferred_report_read'))
+								<li class="sidebar-item {{ request()->routeIs('report.material_transfer') ? 'active' : '' }}">
+									<a
+										class="sidebar-link"
+										href="{{ route('report.material_transfer') }}"
+									>
+										Material Transferred Report
+									</a>
+								</li>
+								@endif
+
+
+								{{-- Material Received Report --}}
+								@if (hasPermission('material_received_report_read'))
+								<li class="sidebar-item {{ request()->routeIs('report.material_recieve') ? 'active' : '' }}">
+									<a
+										class="sidebar-link"
+										href="{{ route('report.material_recieve') }}"
+									>
+										Material Received Report
+									</a>
+								</li>
+								@endif
+
+
+								{{-- Material Purchase Report --}}
+								@if (hasPermission('material_purchase_report_read'))
+								<li class="sidebar-item {{ request()->routeIs('reports.material_purchase_report') ? 'active' : '' }}">
+									<a
+										class="sidebar-link"
+										href="{{ route('reports.material_purchase_report') }}"
+									>
+										Material Purchase Report
+									</a>
+								</li>
+								@endif
+
+
+								{{-- Stock Report --}}
+								@if (hasPermission('stock_report_read'))
+								<li class="sidebar-item {{ request()->routeIs('reports.stock_report') ? 'active' : '' }}">
+									<a
+										class="sidebar-link"
+										href="{{ route('reports.stock_report') }}"
+									>
+										Stock Report
+									</a>
+								</li>
+								@endif
+
+							</ul>
+
+						</li>
+
+						@endif
+
+
+			{{-- ========================================================= --}}
+				{{-- PARTNER & LOAN REPORTS --}}
+				{{-- ========================================================= --}}
+
+				@php
+					$partnerLoanActive =
+						(request()->routeIs('report.partner_pay') && in_array(request('type'), ['partner', 'investor'])) ||
+						request()->routeIs('reports.loan_payment_report') ||
+						request()->routeIs('report.return_pay');
+				@endphp
+
+				@if (
+					hasPermission('partners_payment_report_read') ||
+					hasPermission('investors_payment_report_read') ||
+					hasPermission('loan_payment_report_read') ||
+					hasPermission('return_payment_report_read')
+				)
+
+				<li class="sidebar-item">
+
+					{{-- Parent --}}
+					<a
+						data-bs-target="#partnerLoanReports"
+						data-bs-toggle="collapse"
+						class="sidebar-link {{ $partnerLoanActive ? '' : 'collapsed' }}"
+						aria-expanded="{{ $partnerLoanActive ? 'true' : 'false' }}"
+					>
+						<i class="align-middle" data-feather="users"></i>
+
+						<span class="align-middle">
+							Partner &amp; Loan Reports
+						</span>
+					</a>
+
+					{{-- Child Reports --}}
+					<ul
+						id="partnerLoanReports"
+						class="sidebar-dropdown list-unstyled collapse {{ $partnerLoanActive ? 'show' : '' }}"
+					>
+
+						{{-- Partners Payment Report --}}
+						@if (hasPermission('partners_payment_report_read'))
+						@php
+							$isPartner =
+								request()->routeIs('report.partner_pay') &&
+								request('type') === 'partner';
+						@endphp
+
+						<li class="sidebar-item {{ $isPartner ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('report.partner_pay', ['type' => 'partner']) }}"
+							>
+								Partners Payment Report
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Investors Payment Report --}}
+						@if (hasPermission('investors_payment_report_read'))
+						@php
+							$isInvestor =
+								request()->routeIs('report.partner_pay') &&
+								request('type') === 'investor';
+						@endphp
+
+						<li class="sidebar-item {{ $isInvestor ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('report.partner_pay', ['type' => 'investor']) }}"
+							>
+								Investors Payment Report
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Loan Payment Report --}}
+						@if (hasPermission('loan_payment_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.loan_payment_report') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.loan_payment_report') }}"
+							>
+								Loan Payment Report
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Return Payment Report --}}
+						@if (hasPermission('return_payment_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('report.return_pay') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('report.return_pay') }}"
+							>
+								Return Payment Report
+							</a>
+						</li>
+						@endif
+
+					</ul>
+
+				</li>
+
+				@endif
+
+		{{-- ========================================================= --}}
+			{{-- FINANCIAL & EXPENSE REPORTS --}}
+			{{-- ========================================================= --}}
+
+			@php
+				$financialExpenseActive =
+					request()->routeIs('report.daily_diary') ||
+					request()->routeIs('report.income_expense') ||
+					request()->routeIs('bank.transaction.report') ||
+					request()->routeIs('reports.site_expenses_report') ||
+					request()->routeIs('reports.land_expense_report') ||
+					request()->routeIs('reports.stamp_other_expense_report') ||
+					request()->routeIs('report.tds');
 			@endphp
 
 			@if (
-				hasPermission('site_labour_payment_report_read') ||
-				hasPermission('supplier_payment_report_read')    ||
-				hasPermission('partners_payment_report_read')    ||
-				hasPermission('investors_payment_report_read')   ||
-				hasPermission('material_consumption_read')       ||
-				hasPermission('return_payment_report_read')      ||
-				hasPermission('daily_diary_read')                ||
-				hasPermission('customer_refund_report_read')     ||
-				hasPermission('loan_payment_report_read')        ||
-				hasPermission('income_expense_report_read')      ||
-				hasPermission('tds_report_read')                 ||
-				hasPermission('abstract_report_read')        ||
-				hasPermission('material_transferred_report_read')||
-				hasPermission('material_received_report_read')   ||
-				hasPermission('stock_report_read')               ||
-				hasPermission('material_purchase_report_read')   ||
-				hasPermission('site_expenses_report_read')       ||
-				hasPermission('customer_payment_report_read')    ||
-				hasPermission('bank_transaction_report_read')    ||
-				hasPermission('available_flat_report_read')      ||
-				hasPermission('land_expense_report_read')        ||
-				hasPermission('stamp_other_expenses_read')       ||
-				hasPermission('rera_report_read')                ||
-				hasPermission('gst_report_read')
+				hasPermission('daily_diary_read') ||
+				hasPermission('income_expense_report_read') ||
+				hasPermission('bank_transaction_report_read') ||
+				hasPermission('site_expenses_report_read') ||
+				hasPermission('land_expense_report_read') ||
+				hasPermission('stamp_other_expense_report_read') ||
+				hasPermission('tds_report_read')
 			)
-			<li class="sidebar-item {{ $activeReportRoutes ? 'active' : '' }}">
-				<a data-bs-target="#reports" data-bs-toggle="collapse" class="sidebar-link {{ $activeReportRoutes ? '' : 'collapsed' }}">
-					<i class="align-middle" data-feather="bar-chart-2"></i> 
-					<span class="align-middle">Reports</span>
+
+			<li class="sidebar-item">
+
+				{{-- Parent --}}
+				<a
+					data-bs-target="#financialExpenseReports"
+					data-bs-toggle="collapse"
+					class="sidebar-link {{ $financialExpenseActive ? '' : 'collapsed' }}"
+					aria-expanded="{{ $financialExpenseActive ? 'true' : 'false' }}"
+				>
+					<i class="align-middle" data-feather="dollar-sign"></i>
+
+					<span class="align-middle">
+						Financial &amp; Expense Reports
+					</span>
 				</a>
-				<ul id="reports" class="sidebar-dropdown list-unstyled collapse {{ $activeReportRoutes ? 'show' : '' }}" data-bs-parent="#sidebar">
 
-					@if (hasPermission('site_labour_payment_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/site-labour-payment-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.Site_lbr_pay') }}">Site Work Payment Report</a>
-					</li>
-					@endif
-					
-					@if (hasPermission('site_labour_payment_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/lbrpay_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.lbrpay_report') }}">Labour Payment Report</a>
-					</li>
-					@endif
+				{{-- Child Reports --}}
+				<ul
+					id="financialExpenseReports"
+					class="sidebar-dropdown list-unstyled collapse {{ $financialExpenseActive ? 'show' : '' }}"
+				>
 
-					@if (hasPermission('supplier_payment_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/supplier-payment-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.Material_pay') }}">Supplier Payment Report</a>
-					</li>
-					@endif
-
-				{{-- Partners Payment Report --}}
-                    @if (hasPermission('partners_payment_report_read'))
-                    @php
-                    $isPartner = request()->routeIs('report.partner_pay') && request('type') === 'partner';
-                    @endphp
-                    
-                    <li class="sidebar-item {{ $isPartner ? 'active' : '' }}">
-                         <a class='sidebar-link' href="{{ route('report.partner_pay', ['type' => 'partner']) }}">
-                             Partners Payment Report
-                         </a>
-                    </li>
-                    @endif
-                    {{-- Investors Payment Report --}}
-                    @if (hasPermission('investors_payment_report_read'))
-                    @php
-                    $isInvestor = request()->routeIs('report.partner_pay') && request('type') === 'investor';
-                    @endphp
-                    
-                    <li class="sidebar-item {{ $isInvestor ? 'active' : '' }}">
-                         <a class='sidebar-link' href="{{ route('report.partner_pay', ['type' => 'investor']) }}">
-                             Investors Payment Report
-                         </a>
-                    </li>
-                    @endif
-
-					@if (hasPermission('material_consumption_read'))
-					<li class="sidebar-item {{ request()->is('reports/material-consumption') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.material_cunsum') }}">Material Consumption</a>
-					</li>
-					@endif
-
-					@if (hasPermission('return_payment_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/return-payment-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.return_pay') }}">Return Payment Report</a>
-					</li>
-					@endif
-
+					{{-- Daily Diary --}}
 					@if (hasPermission('daily_diary_read'))
-					<li class="sidebar-item {{ request()->is('reports/daily-diary') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.daily_diary') }}">Daily Diary</a>
+					<li class="sidebar-item {{ request()->routeIs('report.daily_diary') ? 'active' : '' }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('report.daily_diary') }}"
+						>
+							Daily Diary
+						</a>
 					</li>
 					@endif
 
-					@if (hasPermission('customer_refund_read'))
-					<li class="sidebar-item {{ request()->is('reports/customer_refund') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.customer_refund') }}">Customer Refund Report</a>
-					</li>
-					@endif
 
-					@if (hasPermission('loan_payment_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/loan_payment_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.loan_payment_report') }}">Loan Payment Report</a>
-					</li>
-					@endif
-
+					{{-- Income Expense Report --}}
 					@if (hasPermission('income_expense_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/income-expense-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.income_expense') }}">Income Expense Report</a>
-					</li>
-					@endif
-
-					@if (hasPermission('tds_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/tds-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.tds') }}">TDS Report</a>
-					</li>
-					@endif
-
-					@if (hasPermission('abstract_report_read'))
-					<li class="sidebar-item {{ request()->routeIs('report.abstract') ? 'active' : '' }}">
-						<a class="sidebar-link" href="{{ route('report.abstract') }}">
-							Abstract Report
+					<li class="sidebar-item {{ request()->routeIs('report.income_expense') ? 'active' : '' }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('report.income_expense') }}"
+						>
+							Income Expense Report
 						</a>
 					</li>
 					@endif
 
-					@if (hasPermission('material_transferred_report_read'))
-					<li class="sidebar-item {{ request()->routeIs('report.material_transfer') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.material_transfer') }}">
-							Material Transferred Report
-						</a>
-					</li>
-				@endif
 
-					@if (hasPermission('material_received_report_read'))
-					<li class="sidebar-item {{ request()->routeIs('report.material_recieve') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('report.material_recieve') }}">
-							Material Received Report
-						</a>
-					</li>
-					@endif
-
-					@if (hasPermission('stock_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/stock_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.stock_report') }}">Stock Report</a>
-					</li>
-					@endif
-
-					@if (hasPermission('material_purchase_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/material_purchase_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.material_purchase_report') }}">Material Purchase Report</a>
-					</li>
-					@endif
-
-					@if (hasPermission('site_expenses_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/site_expenses_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.site_expenses_report') }}">Site Expenses Report</a>
-					</li>
-					@endif
-			
-				@if (hasPermission('customer_payment_report_read'))
-					@php
-						$customerPaymentActive = request()->is('reports/customer-payment/*');
-					@endphp
-
-					<li class="sidebar-item {{ $customerPaymentActive ? 'show' : '' }}">
-						<a data-bs-target="#customerPaymentReport"
-						data-bs-toggle="collapse"
-						class="sidebar-link {{ $customerPaymentActive ? '' : 'collapsed' }}">
-							<span class="align-middle">Customer Payment Report</span>
-						</a>
-
-						<ul id="customerPaymentReport"
-							class="sidebar-dropdown list-unstyled collapse {{ $customerPaymentActive ? 'show' : '' }}">
-
-							<li class="sidebar-item {{ request()->is('reports/customer-payment/customer') ? 'active' : '' }}">
-								<a class="sidebar-link" href="{{ route('reports.customer_payment.customer') }}">
-									Customer Payment
-								</a>
-							</li>
-
-							<li class="sidebar-item {{ request()->is('reports/customer-payment/bank') ? 'active' : '' }}">
-								<a class="sidebar-link" href="{{ route('reports.customer_payment.bank') }}">
-									Bank Payment
-								</a>
-							</li>
-
-							<li class="sidebar-item {{ request()->is('reports/customer-payment/self') ? 'active' : '' }}">
-								<a class="sidebar-link" href="{{ route('reports.customer_payment.self') }}">
-									Self Payment
-								</a>
-							</li>
-							<li class="sidebar-item {{ request()->is('reports/customer-payment-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.customer.payment.report') }}">Receipt Report</a>
-					</li>
-
-						</ul>
-					</li>
-					@endif
-
+					{{-- Bank Transaction Report --}}
 					@if (hasPermission('bank_transaction_report_read'))
 					<li class="sidebar-item {{ request()->routeIs('bank.transaction.report') ? 'active' : '' }}">
-						<a class="sidebar-link" href="{{ route('bank.transaction.report') }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('bank.transaction.report') }}"
+						>
 							Bank Transaction Report
 						</a>
 					</li>
 					@endif
 
-					@if (hasPermission('available_flat_report_read'))
-					<li class="sidebar-item {{ request()->routeIs('reports.available_flat_report*') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.available_flat_report') }}">Available Flat Report</a>
+
+					{{-- Site Expenses Report --}}
+					@if (hasPermission('site_expenses_report_read'))
+					<li class="sidebar-item {{ request()->routeIs('reports.site_expenses_report') ? 'active' : '' }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('reports.site_expenses_report') }}"
+						>
+							Site Expenses Report
+						</a>
 					</li>
 					@endif
 
+
+					{{-- Land Expense Report --}}
 					@if (hasPermission('land_expense_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/land_expense_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.land_expense_report') }}">Land Expense Report</a>
+					<li class="sidebar-item {{ request()->routeIs('reports.land_expense_report') ? 'active' : '' }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('reports.land_expense_report') }}"
+						>
+							Land Expense Report
+						</a>
 					</li>
 					@endif
 
+
+					{{-- Stamp & Other Expenses --}}
 					@if (hasPermission('stamp_other_expense_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/stamp_other_expense_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.stamp_other_expense_report') }}">
-								Stamp &amp; Other Expenses
-						</a>
-					</li>
-
-					@endif
-
-					@if (hasPermission('rera_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/rera_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.rera_report') }}">RERA Report</a>
-					</li>
-					@endif
-
-					@if (hasPermission('gst_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/gst_report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.gst_report') }}">GST Report</a>
-					</li>
-					@endif
-					
-					<!-- @if (hasPermission('gst_report_read'))
-					<li class="sidebar-item {{ request()->is('reports/customer-payment-report') ? 'active' : '' }}">
-						<a class='sidebar-link' href="{{ route('reports.customer.payment.report') }}">Customer Payment Report</a>
-					</li>
-					@endif -->
-
-					@if (hasPermission('daily_work_report_read'))
-					<li class="sidebar-item {{ request()->routeIs('dailyworkreport.index') ? 'active' : '' }}">
-						<a class="sidebar-link" href="{{ route('dailyworkreport.index') }}">
-							Daily Work Report
+					<li class="sidebar-item {{ request()->routeIs('reports.stamp_other_expense_report') ? 'active' : '' }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('reports.stamp_other_expense_report') }}"
+						>
+							Stamp &amp; Other Expenses
 						</a>
 					</li>
 					@endif
-							<!-- <li class="sidebar-item {{ request()->is('material-request-list*') ? 'active' : '' }}">
-			<a class="sidebar-link" href="{{ route('material_request.list') }}">
-				Material Request
-			</a>
-		</li> -->
-					
+
+
+					{{-- TDS Report --}}
+					@if (hasPermission('tds_report_read'))
+					<li class="sidebar-item {{ request()->routeIs('report.tds') ? 'active' : '' }}">
+						<a
+							class="sidebar-link"
+							href="{{ route('report.tds') }}"
+						>
+							TDS Report
+						</a>
+					</li>
+					@endif
+
 				</ul>
+
 			</li>
+
 			@endif
+
+
+				{{-- ========================================================= --}}
+				{{-- CUSTOMER PAYMENT & REFUND REPORTS --}}
+				{{-- ========================================================= --}}
+
+				@php
+					$customerPaymentRefundActive =
+						request()->routeIs('reports.customer_payment.customer') ||
+						request()->routeIs('reports.customer_payment.bank') ||
+						request()->routeIs('reports.customer_payment.self') ||
+						request()->routeIs('reports.customer.payment.report') ||
+						request()->routeIs('reports.customer_refund');
+				@endphp
+
+				@if (
+					hasPermission('customer_payment_report_read') ||
+					hasPermission('customer_refund_report_read')
+				)
+
+				<li class="sidebar-item">
+
+					{{-- Parent --}}
+					<a
+						data-bs-target="#customerPaymentRefundReports"
+						data-bs-toggle="collapse"
+						class="sidebar-link {{ $customerPaymentRefundActive ? '' : 'collapsed' }}"
+						aria-expanded="{{ $customerPaymentRefundActive ? 'true' : 'false' }}"
+					>
+						<i class="align-middle" data-feather="users"></i>
+
+						<span class="align-middle small">
+							Customer Payment Reports
+						</span>
+					</a>
+
+					{{-- Child Reports --}}
+					<ul
+						id="customerPaymentRefundReports"
+						class="sidebar-dropdown list-unstyled collapse {{ $customerPaymentRefundActive ? 'show' : '' }}"
+					>
+
+						{{-- Customer Payment --}}
+						@if (hasPermission('customer_payment_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.customer_payment.customer') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.customer_payment.customer') }}"
+							>
+								Customer Payment
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Bank Payment --}}
+						@if (hasPermission('customer_payment_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.customer_payment.bank') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.customer_payment.bank') }}"
+							>
+								Bank Payment
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Self Payment --}}
+						@if (hasPermission('customer_payment_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.customer_payment.self') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.customer_payment.self') }}"
+							>
+								Self Payment
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Receipt Report --}}
+						@if (hasPermission('customer_payment_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.customer.payment.report') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.customer.payment.report') }}"
+							>
+								Receipt Report
+							</a>
+						</li>
+						@endif
+
+
+						{{-- Customer Refund Report --}}
+						@if (hasPermission('customer_refund_report_read'))
+						<li class="sidebar-item {{ request()->routeIs('reports.customer_refund') ? 'active' : '' }}">
+							<a
+								class="sidebar-link"
+								href="{{ route('reports.customer_refund') }}"
+							>
+								Customer Refund Report
+							</a>
+						</li>
+						@endif
+
+					</ul>
+
+				</li>
+
+				@endif
+
+				{{-- ========================================================= --}}
+					{{-- COMPLIANCE REPORTS --}}
+					{{-- ========================================================= --}}
+
+					@php
+						$complianceActive =
+							
+							request()->routeIs('reports.rera_report') ||
+							request()->routeIs('reports.gst_report');
+					@endphp
+
+					@if (
+						
+						hasPermission('rera_report_read') ||
+						hasPermission('gst_report_read')
+					)
+
+					<li class="sidebar-item">
+
+						{{-- Parent --}}
+						<a
+							data-bs-target="#ComplianceReports"
+							data-bs-toggle="collapse"
+							class="sidebar-link {{ $complianceActive ? '' : 'collapsed' }}"
+							aria-expanded="{{ $complianceActive ? 'true' : 'false' }}"
+						>
+							<i class="align-middle" data-feather="file-text"></i>
+
+							<span class="align-middle">
+								Compliance Reports
+							</span>
+						</a>
+
+						{{-- Child Reports --}}
+						<ul
+							id="ComplianceReports"
+							class="sidebar-dropdown list-unstyled collapse {{ $complianceActive ? 'show' : '' }}"
+						>
+
+
+
+							{{-- RERA Report --}}
+							@if (hasPermission('rera_report_read'))
+							<li class="sidebar-item {{ request()->routeIs('reports.rera_report') ? 'active' : '' }}">
+								<a
+									class="sidebar-link"
+									href="{{ route('reports.rera_report') }}"
+								>
+									RERA Report
+								</a>
+							</li>
+							@endif
+
+
+							{{-- GST Report --}}
+							@if (hasPermission('gst_report_read'))
+							<li class="sidebar-item {{ request()->routeIs('reports.gst_report') ? 'active' : '' }}">
+								<a
+									class="sidebar-link"
+									href="{{ route('reports.gst_report') }}"
+								>
+									GST Report
+								</a>
+							</li>
+							@endif
+
+						</ul>
+
+					</li>
+
+					@endif
 
 			<!-- App Report -->
 			{{--@php
@@ -1024,10 +1444,5 @@ $activeFinanceRoutes = request()->is(
 			</li>
 			@endif
 		</ul>
-
-			
-
-
-
 	</div>
 </nav>
