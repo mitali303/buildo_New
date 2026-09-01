@@ -1,3 +1,65 @@
+
+<style>
+    /* Reports sidebar scrolling */
+    #sidebar .sidebar-content {
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    #sidebar .simplebar-wrapper {
+        height: 100vh !important;
+    }
+
+    #sidebar .simplebar-mask {
+        height: 100vh !important;
+    }
+
+    #sidebar .simplebar-offset {
+        height: 100% !important;
+    }
+
+    #sidebar .simplebar-content-wrapper {
+        height: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    #sidebar .simplebar-content {
+        min-height: 100%;
+    }
+
+    #sidebar .sidebar-nav {
+        padding-bottom: 100px !important;
+    }
+
+    #sidebar .sidebar-dropdown {
+        overflow: visible;
+    }
+	#sidebar .sidebar-link {
+    padding-right: 30px !important;
+	}
+
+	#sidebar .sidebar-link::after {
+		right: 10px !important;
+	}
+	/* Sidebar parent menu arrow - fixed alignment */
+	#sidebar > .sidebar-content .sidebar-nav > .sidebar-item > .sidebar-link {
+		position: relative !important;
+		padding-right: 40px !important;
+	}
+
+	#sidebar > .sidebar-content .sidebar-nav > .sidebar-item > .sidebar-link::after {
+		position: absolute !important;
+		right: 15px !important;
+		top: 50% !important;
+		transform: translateY(-50%) !important;
+	}
+
+	/* Keep submenu links normal */
+	#sidebar .sidebar-dropdown .sidebar-link {
+		padding-right: 15px !important;
+	}
+</style>
 <nav id="sidebar" class="sidebar js-sidebar">
 	<div class="sidebar-content js-simplebar">
 		<a class='sidebar-brand' href="{{route('dashboard')}}">
@@ -742,6 +804,65 @@
 		</li>
 		@endif	
 
+		{{-- ========================================================= --}}
+		{{-- REPORTS MAIN MENU --}}
+		{{-- ========================================================= --}}
+
+		@php
+			$reportsActive =
+				request()->routeIs('report.Site_lbr_pay') ||
+				request()->routeIs('reports.lbrpay_report') ||
+
+				request()->routeIs('report.Material_pay') ||
+				request()->routeIs('report.material_cunsum') ||
+				request()->routeIs('report.material_transfer') ||
+				request()->routeIs('report.material_recieve') ||
+				request()->routeIs('reports.material_purchase_report') ||
+				request()->routeIs('reports.stock_report') ||
+
+				request()->routeIs('report.partner_pay') ||
+				request()->routeIs('reports.loan_payment_report') ||
+				request()->routeIs('report.return_pay') ||
+
+				request()->routeIs('report.daily_diary') ||
+				request()->routeIs('report.income_expense') ||
+				request()->routeIs('bank.transaction.report') ||
+				request()->routeIs('reports.site_expenses_report') ||
+				request()->routeIs('reports.land_expense_report') ||
+				request()->routeIs('reports.stamp_other_expense_report') ||
+				request()->routeIs('report.tds') ||
+
+				request()->routeIs('reports.customer_payment.customer') ||
+				request()->routeIs('reports.customer_payment.bank') ||
+				request()->routeIs('reports.customer_payment.self') ||
+				request()->routeIs('reports.customer.payment.report') ||
+				request()->routeIs('reports.customer_refund') ||
+
+				request()->routeIs('reports.rera_report') ||
+				request()->routeIs('reports.gst_report');
+		@endphp
+
+		<li class="sidebar-item">
+
+			<a
+				data-bs-target="#reportsMenu"
+				data-bs-toggle="collapse"
+				class="sidebar-link {{ $reportsActive ? '' : 'collapsed' }}"
+				aria-expanded="{{ $reportsActive ? 'true' : 'false' }}"
+			>
+				<i class="align-middle" data-feather="bar-chart-2"></i>
+
+				<span class="align-middle">
+					Reports
+				</span>
+			</a>
+
+			<ul
+				id="reportsMenu"
+				class="sidebar-dropdown list-unstyled collapse {{ $reportsActive ? 'show' : '' }}"
+				>
+
+
 					{{-- ========================================================= --}}
 					{{-- WORK ORDER & LABOUR PAYMENT --}}
 					{{-- ========================================================= --}}
@@ -771,7 +892,7 @@
 							<i class="align-middle" data-feather="briefcase"></i>
 
 							<span class="align-middle small" style="font-size: 11px !important;">
-								Work Order &amp; Labour Payment Reports
+								Work Order &amp; Labour Payment 
 							</span>
 						</a>
 
@@ -788,7 +909,7 @@
 									class="sidebar-link"
 									href="{{ route('report.Site_lbr_pay') }}"
 								>
-									Work Order Payment Report
+									Work Order Payment 
 								</a>
 							</li>
 							@endif
@@ -801,7 +922,7 @@
 									class="sidebar-link"
 									href="{{ route('reports.lbrpay_report') }}"
 								>
-									Labour Payment Report
+									Labour Payment 
 								</a>
 							</li>
 							@endif
@@ -849,7 +970,7 @@
 								<i class="align-middle" data-feather="package"></i>
 
 								<span class="align-middle">
-									Supplier &amp; Material Reports
+									Supplier &amp; Material 
 								</span>
 							</a>
 
@@ -973,7 +1094,7 @@
 						<i class="align-middle" data-feather="users"></i>
 
 						<span class="align-middle">
-							Partner &amp; Loan Reports
+							Partner &amp; Loan 
 						</span>
 					</a>
 
@@ -996,7 +1117,7 @@
 								class="sidebar-link"
 								href="{{ route('report.partner_pay', ['type' => 'partner']) }}"
 							>
-								Partners Payment Report
+								Partners Payment 
 							</a>
 						</li>
 						@endif
@@ -1015,7 +1136,7 @@
 								class="sidebar-link"
 								href="{{ route('report.partner_pay', ['type' => 'investor']) }}"
 							>
-								Investors Payment Report
+								Investors Payment 
 							</a>
 						</li>
 						@endif
@@ -1028,7 +1149,7 @@
 								class="sidebar-link"
 								href="{{ route('reports.loan_payment_report') }}"
 							>
-								Loan Payment Report
+								Loan Payment 
 							</a>
 						</li>
 						@endif
@@ -1041,7 +1162,7 @@
 								class="sidebar-link"
 								href="{{ route('report.return_pay') }}"
 							>
-								Return Payment Report
+								Return Payment 
 							</a>
 						</li>
 						@endif
@@ -1089,7 +1210,7 @@
 					<i class="align-middle" data-feather="dollar-sign"></i>
 
 					<span class="align-middle">
-						Financial &amp; Expense Reports
+						Financial &amp; Expense 
 					</span>
 				</a>
 
@@ -1226,7 +1347,7 @@
 						<i class="align-middle" data-feather="users"></i>
 
 						<span class="align-middle small">
-							Customer Payment Reports
+							Customer Payment 
 						</span>
 					</a>
 
@@ -1282,7 +1403,7 @@
 								class="sidebar-link"
 								href="{{ route('reports.customer.payment.report') }}"
 							>
-								Receipt Report
+								Receipt 
 							</a>
 						</li>
 						@endif
@@ -1295,7 +1416,7 @@
 								class="sidebar-link"
 								href="{{ route('reports.customer_refund') }}"
 							>
-								Customer Refund Report
+								Customer Refund 
 							</a>
 						</li>
 						@endif
@@ -1377,6 +1498,10 @@
 					</li>
 
 					@endif
+
+	</ul>
+
+    </li>
 
 			<!-- App Report -->
 			{{--@php

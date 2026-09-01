@@ -35,7 +35,7 @@
                         @method('PUT')
                     @endif
                    
-<input type="hidden" name="Pid" value="{{ $invoice->ID ?? '' }}">
+                <input type="hidden" name="Pid" value="{{ $invoice->ID ?? '' }}">
 
                     <div class="row">
                         <div class="mb-3 col-md-4">
@@ -56,7 +56,7 @@
                         </div>
 
 
-                        <div class="col-md-4" id="po_div">
+                        <div class="col-md-4 mb-3" id="po_div">
                             <label class="form-label">Supplier <span class="text-danger">*</span></label>
 
                             <select name="PurchaseFrom"
@@ -76,7 +76,7 @@
                             @enderror
                         </div>                                            
 
-                        <div class="col-md-4" id="scheme">
+                        <div class="col-md-4 mb-3" id="scheme">
                             <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                             <select name="Destination" id="Destination"
@@ -117,9 +117,9 @@
                         </div>
                         
                     </div>
-@if ($errors->has('invoice_id'))
-    <small class="text-danger">{{ $errors->first('invoice_id') }}</small>
-@endif
+                        @if ($errors->has('invoice_id'))
+                            <small class="text-danger">{{ $errors->first('invoice_id') }}</small>
+                        @endif
 
                     <div class="row">
                        <div class="row mt-4">
@@ -182,7 +182,7 @@
                                         </ul>
                                     </div>
                                 @endif
-
+                            <div class="table-responsive">
                                <table class="table table-bordered table-striped" id="materialTable" style="font-size:13px;">
                                 <thead class="table-light">
                                     <tr>
@@ -244,7 +244,7 @@
                                     </tbody>
 
 
-                            </table>
+                                </table>
                             </div>
                         </div>
                     </div> 

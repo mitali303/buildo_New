@@ -84,7 +84,7 @@
                   
                   <div class="col-md-3">
                     <label class="form-label" for="email">Email</label>
-				            <input name="email" id="email" type="email"  class="form-control email" value="{{ old('email', $postdated->Email ?? '') }}"/>
+				            <input name="email" id="email" type="email"  class="form-control email mb-2" value="{{ old('email', $postdated->Email ?? '') }}"/>
 				          </div>
 
                   <div class="mb-3 col-md-3">
@@ -245,7 +245,8 @@
 
               </div><br>
 
-              <div class="row col-md-12"  style="margin-left: 0px;">
+          <div class="row col-md-12"  style="margin-left: 0px;">
+            <div class="table-responsive">
                 <table class="table table-striped table-bordered" style="height: 100px;width:90%">
                 <thead>
                   <tr style="height: 50px;">
@@ -278,6 +279,7 @@
                   </tr>
                 </tbody>
                 </table>
+</div>
               </div><br>
 
               <div class="row" >
@@ -555,75 +557,77 @@
             <br><hr>
 
               <div class="row">
-                <table class="table" id="mytable">
-                  <thead>
-                    <tr>
-                     
-                      <th>Payment Method <small class="text-danger">*</small></th>
-                      <th>Receipt No</th>
-                      <th>Account No</th>
-                      <th>Cheque No / Transaction ID</th>
-                      <th>Amount</th>
-                      <th>Narration</th>
-                      
-                      
-                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
+                <div class="table-responsive">
+                    <table class="table" id="mytable">
+                      <thead>
+                        <tr>
+                        
+                          <th>Payment Method <small class="text-danger">*</small></th>
+                          <th>Receipt No</th>
+                          <th>Account No</th>
+                          <th>Cheque No / Transaction ID</th>
+                          <th>Amount</th>
+                          <th>Narration</th>
+                          
+                          
+                          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
 
-                      <td>
-                        <select name="Pay_type" id="Pay_type" class="form-control" onChange="check_type();">
-                          <option value="">Select Payment Method</option>
-                          <option value="cash" {{ old('payment_method', $booking_pay->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
-                          <option value="cheque" {{ old('payment_method', $booking_pay->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-                          <option value="e-payment" {{ old('payment_method', $booking_pay->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
-                        </select>
-                        @error('payment_method')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                          <td>
+                            <select name="Pay_type" id="Pay_type" class="form-control" onChange="check_type();">
+                              <option value="">Select Payment Method</option>
+                              <option value="cash" {{ old('payment_method', $booking_pay->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
+                              <option value="cheque" {{ old('payment_method', $booking_pay->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                              <option value="e-payment" {{ old('payment_method', $booking_pay->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
+                            </select>
+                            @error('payment_method')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
 
-                      </td>
-                       <td>                                                        
-                        <input type="text" style="width:90px;"  readonly name="receipt_no" id="receipt_no"  value="{{ old('receipt_no', $booking_pay->receipt_no ?? ($orderNo ?? '')) }}" class=" form-control required"/>
-                      </td>
-                      <td>
-                        <div id="Ac" style="width:200px;">
-                        <select name="account_no" id="account_no" class="form-control" >
-                          <option value="">Select Account</option>
-                          @foreach($banks as $bank)
-                            <option value="{{ $bank->ID }}"
-                              {{ old('account_no', $booking_pay->account_no ?? '') == $bank->ID ? 'selected' : '' }}>
-                              {{ $bank->Name }}
-                            </option>
-                          @endforeach
-                        </select>
-                      </div>
-                      </td>
-                      <td>
-                        <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $booking_pay->cheque_no ?? '') }}">
-                      </td>
-                      
-                      
-                      <td>
-                        <input type="number" name="amount_pay" id="amount_pay" readonly
-                            class="form-control @error('amount_pay') is-invalid @enderror"
-                            value="{{ old('amount_pay', $booking_pay->amt_pay ?? '') }}" onkeyup="chek_amt();">
+                          </td>
+                          <td>                                                        
+                            <input type="text" style="width:90px;"  readonly name="receipt_no" id="receipt_no"  value="{{ old('receipt_no', $booking_pay->receipt_no ?? ($orderNo ?? '')) }}" class=" form-control required"/>
+                          </td>
+                          <td>
+                            <div id="Ac" style="width:200px;">
+                            <select name="account_no" id="account_no" class="form-control" >
+                              <option value="">Select Account</option>
+                              @foreach($banks as $bank)
+                                <option value="{{ $bank->ID }}"
+                                  {{ old('account_no', $booking_pay->account_no ?? '') == $bank->ID ? 'selected' : '' }}>
+                                  {{ $bank->Name }}
+                                </option>
+                              @endforeach
+                            </select>
+                          </div>
+                          </td>
+                          <td>
+                            <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $booking_pay->cheque_no ?? '') }}">
+                          </td>
+                          
+                          
+                          <td>
+                            <input type="number" name="amount_pay" id="amount_pay" readonly
+                                class="form-control @error('amount_pay') is-invalid @enderror"
+                                value="{{ old('amount_pay', $booking_pay->amt_pay ?? '') }}" onkeyup="chek_amt();">
 
-                            <input type="hidden"  style=""name="amount_pay_old" id="amount_pay_old"  value="<?php //echo $pendingAmt;?>" class=" input-md form-control "/>
+                                <input type="hidden"  style=""name="amount_pay_old" id="amount_pay_old"  value="<?php //echo $pendingAmt;?>" class=" input-md form-control "/>
 
-                        @error('amount_pay')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                      </td>
-                      <td>
-                        <textarea type="text" style="height: 34px;"    class=" input-medium form-control"  id="narration"  name="narration" >{{ old('narration', $booking_pay->narration ?? '') }}</textarea>
-                      </td>
-                      
-                    </tr>
-                  </tbody>
-                </table>
+                            @error('amount_pay')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                          </td>
+                          <td>
+                            <textarea type="text" style="height: 34px;"    class=" input-medium form-control"  id="narration"  name="narration" >{{ old('narration', $booking_pay->narration ?? '') }}</textarea>
+                          </td>
+                          
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
               </div>
 
 		

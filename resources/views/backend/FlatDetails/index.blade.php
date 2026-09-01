@@ -87,6 +87,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+window.currentFlatSchemeId = null;
+
 $(document).ready(function() {
     // Initialize DataTable
     var table = $('#datatables-buttons').DataTable({
@@ -153,6 +155,8 @@ $(document).ready(function() {
     
     // Function to view flat details
     function viewFlatDetails(schemeId, schemeName) {
+        window.currentFlatSchemeId = schemeId;
+
         // Show modal with loading state
         $('#schemeName').text(schemeName);
         $('#flatDetailsContent').html(`
@@ -262,7 +266,16 @@ function calTotalsq(i) {
 }
 
 function saveFlatRow(rowId) {
+    const schemeId = window.currentFlatSchemeId || $('#scheme').val();
+
+    if (!schemeId) {
+        alert('Scheme is required before saving a flat.');
+        return;
+    }
+
     const data = {
+        scheme_ID: schemeId,
+        ClientID: schemeId,
         FlatType: $("#FlatType" + rowId).val(),
         Wing: $("#Wing" + rowId).val(),
         Floor: $("#Floor" + rowId).val(),
@@ -287,14 +300,18 @@ function saveFlatRow(rowId) {
             btn.removeClass("btn-primary").addClass("btn-success").text("Saved");
         },
         error: function(xhr) {
-            alert("Error: " + xhr.responseText);
+            alert("Error: " + (xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.responseText));
         }
     });
 }
 
 function updateFlatRow(flatId, rowId) {
+    const schemeId = window.currentFlatSchemeId || $('#scheme').val();
+
     const data = {
         ID: flatId,
+        scheme_ID: schemeId,
+        ClientID: schemeId,
         FlatType: $("#FlatType" + rowId).val(),
         Wing: $("#Wing" + rowId).val(),
         Floor: $("#Floor" + rowId).val(),
@@ -319,7 +336,7 @@ function updateFlatRow(flatId, rowId) {
             btn.removeClass('btn-primary').addClass('btn-success').text('Updated');
         },
         error: function(err) {
-            alert("Error updating flat row: " + err.responseText);
+            alert("Error updating flat row: " + (err.responseJSON && err.responseJSON.message ? err.responseJSON.message : err.responseText));
         }
     });
 }

@@ -16,6 +16,15 @@
         padding: 4px 8px;
         font-size: 12px;
     }
+    /* Date & Due Date */
+        #datatables-buttons th:nth-child(2),
+        #datatables-buttons td:nth-child(2),
+        #datatables-buttons th:nth-child(8),
+        #datatables-buttons td:nth-child(8) {
+            white-space: nowrap !important;
+            min-width: 100px !important;
+            width: 100px !important;
+        }
 }
 </style>
 @section('maincontent')

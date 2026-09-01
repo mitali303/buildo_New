@@ -41,14 +41,18 @@ GST Report
             <form method="GET" action="{{ route('reports.gst_report') }}" class="row mb-3">
                     <div class="col-6 col-md-3 d-flex align-items-center">
                         <label class="me-3 mb-0">From </label>
-                        <input type="date" name="from_date" class="form-control datepicker"
-                               value="{{ \Carbon\Carbon::parse($fromDate)->format('d-m-Y') }}">
+                        <input type="date"
+               name="from_date"
+               value="{{ \Carbon\Carbon::parse($fromDate)->format('Y-m-d') }}"
+               class="form-control">
                     </div>
 
                     <div class="col-6 col-md-3 d-flex align-items-center">
                         <label class="me-3 mb-0">To </label>
-                        <input type="date" name="to_date" class="form-control datepicker"
-                               value="{{ \Carbon\Carbon::parse($toDate)->format('d-m-Y') }}">
+                        <input type="date"
+               name="to_date"
+               value="{{ \Carbon\Carbon::parse($toDate)->format('Y-m-d') }}"
+               class="form-control">
                     </div>
 
                     <div class="col-12 col-md-3 text-center mt-2">
@@ -62,7 +66,7 @@ GST Report
         <div class="card">
             <div class="card-body">
             <div class="table-responsive">
-                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%; white-space: nowrap;">
                     <thead >
                         <tr>
                             <th>#</th>
@@ -102,17 +106,5 @@ GST Report
     </div>
 </main>
 @endsection
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
-<script>
-    $(function () {
-        $('.datepicker').datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true,
-            todayHighlight: true
-        });
-    });
-</script>
 

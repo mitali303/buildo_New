@@ -37,7 +37,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-4" id="scheme">
+                        <div class="col-md-4 mb-3" id="scheme">
                             <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                             <select name="Destination" id="Destination"
@@ -87,7 +87,7 @@
 
 
                     {{-- ROW 2 : Rate Table --}}
-                    <div class="row mt-3">
+                    <div class="row mt-3 mb-3">
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center mt-3">

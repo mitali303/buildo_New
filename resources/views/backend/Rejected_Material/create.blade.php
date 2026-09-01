@@ -50,7 +50,7 @@
                             @error('srno') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <div class="col-md-4" id="scheme">
+                        <div class="col-md-4 mb-2" id="scheme">
                             <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                             <select name="Destination" id="Destination"
@@ -68,7 +68,7 @@
                             @error('Destination') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                       <div class="col-md-4" id="po_div">
+                       <div class="col-md-4 mb-2" id="po_div">
                             <label class="form-label">Purchase From <span class="text-danger">*</span></label>
 
                             {{-- <select name="purchasefrom" id="purchasefrom"
@@ -113,15 +113,15 @@
                         <div class="mb-3 col-md-4" id="Inv_div">
                             <label class="form-label">Invoice No.<span class="text-danger">*</span></label>
                             <select name="inv_no" id="inv_no" class="form-control" onchange="GetInvoiceDetails();">
-    <option value="">Select</option>
+                                <option value="">Select</option>
 
-    @if(isset($invoiceNumbers))
-        <option value="{{ $invoiceNumbers->ID }}"
-            {{ old('inv_no', $Invno ?? '') == $invoiceNumbers->ID ? 'selected' : '' }}>
-            {{ $invoiceNumbers->Invno }}
-        </option>
-    @endif
-</select>
+                                @if(isset($invoiceNumbers))
+                                    <option value="{{ $invoiceNumbers->ID }}"
+                                        {{ old('inv_no', $Invno ?? '') == $invoiceNumbers->ID ? 'selected' : '' }}>
+                                        {{ $invoiceNumbers->Invno }}
+                                    </option>
+                                @endif
+                            </select>
 
                 @error('inv_no') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
@@ -130,7 +130,7 @@
                     </div>
 
                     <div class="row">
-                       <div class="row mt-4">
+                       <div class="row mt-4 mb-2">
                             <div class="col-md-12" style="overflow-x: auto; width: 100%;">
                                 @if ($errors->any())
                                     @php

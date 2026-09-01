@@ -48,7 +48,7 @@
                             @error('Pono') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                       <div class="col-md-4" id="po_div">
+                       <div class="col-md-4 mb-3" id="po_div">
                             <label class="form-label">Purchase From <span class="text-danger">*</span></label>
 
                             <select name="purchasefrom" id="purchasefrom"
@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4" id="scheme">
+                        <div class="col-md-4 mb-3" id="scheme">
                             <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                             <select name="Destination" id="Destination"

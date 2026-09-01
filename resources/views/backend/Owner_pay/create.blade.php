@@ -34,14 +34,14 @@
                     <input type="hidden" name="Pid" value="{{ $invoice->ID ?? '' }}">
 
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-2">
                             <label>Date</label>
                             <input type="text" name="Date"
                                 class="form-control"
                                 value="{{ date('d-m-Y') }}" readonly>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-2">
                             <label>Scheme</label>
                             <input type="text"
                                 class="form-control"
@@ -62,7 +62,7 @@
                     {{-- Summary Section --}}
                     <div class="row mb-3">
                         
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-2">
                             <label>Paid Amount</label>
                             <input type="text"
                                 class="form-control"
@@ -82,7 +82,7 @@
                     <hr>
 
                     <h5 class="mb-3">Owner Detail</h5>
-
+                <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -151,9 +151,9 @@
                             @endforeach
                         </tbody>
                     </table>
-
+                </div>
                     <br>
-
+                <div class="table-responsive">
                     <table id="pmttble" class="table table-bordered table-hover" style="width:95%;">
                     <thead>
                         <tr>
@@ -256,7 +256,7 @@
                         </tr>
                     </tbody>
                 </table>
-
+            </div>
                     <br>
 
                     {{-- Submit --}}

@@ -59,7 +59,7 @@
                         </div>
 
 
-                        <div class="col-md-4" id="scheme">
+                        <div class="col-md-4 mb-2" id="scheme">
                             <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                             <select name="Destination" id="Destination"
@@ -77,7 +77,7 @@
                             @error('Destination') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <div class="col-md-4" id="exp-type-container">
+                        <div class="col-md-4 mb-2" id="exp-type-container">
                             <label class="form-label">
                                 Expenses Type <span class="text-danger">*</span>
                             </label>
@@ -90,8 +90,8 @@
 
                                 <option value="">Select</option>
                                  <option value="OTHER" style="font-weight:bold; color:#0d6efd;">
-    ➕ ADD NEW
-</option>
+                                    ➕ ADD NEW
+                                </option>
                                 @php
                                     $fixedTypes = [
                                         'Department Expence',
@@ -109,13 +109,13 @@
                                 @endforeach
 
                            @foreach($expences as $expence)
-    @if(!in_array($expence->Exp_type, $fixedTypes) && $expence->Exp_type != 'OTHER')
-        <option value="{{ $expence->Exp_type }}"
-            {{ $selectedValue == $expence->Exp_type ? 'selected' : '' }}>
-            {{ $expence->Exp_type }}
-        </option>
-    @endif
-@endforeach
+                                @if(!in_array($expence->Exp_type, $fixedTypes) && $expence->Exp_type != 'OTHER')
+                                    <option value="{{ $expence->Exp_type }}"
+                                        {{ $selectedValue == $expence->Exp_type ? 'selected' : '' }}>
+                                        {{ $expence->Exp_type }}
+                                    </option>
+                                @endif
+                            @endforeach
 
                             </select>
 
@@ -269,7 +269,7 @@
 
                     </div>
                     <br>
-
+                    <div class="table-responsive">
                     <table id="pmttble" class="table table-bordered table-hover" style="width:95%;">
                     <thead>
                         <tr>
@@ -380,7 +380,7 @@
                         </tr>
                     </tbody>
                 </table>
-
+                </div>
                     <br>
 
                     {{-- Submit --}}

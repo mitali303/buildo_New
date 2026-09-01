@@ -323,16 +323,28 @@ public function store(Request $request)
 
 public function saveRow(Request $request)
 {
+    $schemeId = $request->input('scheme_ID', $request->input('ClientID'));
+
+    if (empty($schemeId)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Scheme is required before saving a flat.'
+        ], 422);
+    }
+
     $data = $request->only([
         'scheme_ID', 'ClientID', 'FlatType', 'Wing', 'Floor', 'FlatNo',
         'Area', 'Other1', 'Other2', 'Terrace', 'FlatAttribute',
         'TotalSqFt', 'TotalSqMtr'
     ]);
 
+    $data['scheme_ID'] = $schemeId;
+    $data['ClientID'] = $request->input('ClientID', $schemeId);
     $data['ID'] = uniqid();
-    $data['userID'] = auth()->id(); // or session('userID') if you’re using custom session
-    $data['Created'] = now(); // or session('userID') if you’re using custom session
-    $data['LastEdited'] = now(); // or session('userID') if you’re using custom session
+    $data['userID'] = auth()->id();
+    $data['Created'] = now();
+    $data['LastEdited'] = now();
+
     Flat_details::create($data);
 
     return response()->json(['success' => true]);
@@ -497,10 +509,17 @@ public function update(Request $request)
 
 public function updateRow(Request $request)
 {
+    $schemeId = $request->input('scheme_ID', $request->input('ClientID'));
+
     $data = $request->only([
         'FlatType', 'Wing', 'Floor', 'FlatNo', 'Area', 'Other1', 'Other2', 'Terrace',
         'FlatAttribute', 'TotalSqFt', 'TotalSqMtr'
     ]);
+
+    if (!empty($schemeId)) {
+        $data['scheme_ID'] = $schemeId;
+        $data['ClientID'] = $request->input('ClientID', $schemeId);
+    }
 
     $flat = Flat_details::findOrFail($request->ID);
 

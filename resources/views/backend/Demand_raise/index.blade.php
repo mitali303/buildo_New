@@ -17,6 +17,14 @@
         font-size: 12px;
     }
 }
+@media (max-width: 768px) {
+    #datatables-buttons th:nth-child(2),
+    #datatables-buttons td:nth-child(2),
+    #datatables-buttons th:nth-child(8),
+    #datatables-buttons td:nth-child(8) {
+        white-space: nowrap !important;
+    }
+}
 </style>
 @section('maincontent')
 <main class="content">

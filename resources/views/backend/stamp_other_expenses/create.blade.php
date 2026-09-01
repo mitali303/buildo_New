@@ -128,6 +128,7 @@
               </div><br>
 
               <div class="row">
+                <div class="table-responsive">
                 <table class="table" id="mytable">
                   <thead>
                     <tr>
@@ -151,37 +152,37 @@
                     <tr>
 
                       <td>
-<select name="Pay_type" id="Pay_type" class="form-control" onChange="check_type();">
+                        <select name="Pay_type" id="Pay_type" class="form-control" onChange="check_type();">
 
-<option value="">Select Payment Method</option>
+                        <option value="">Select Payment Method</option>
 
-<option value="cash"
-{{ old('Pay_type', $postdated->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
-Cash
-</option>
+                        <option value="cash"
+                        {{ old('Pay_type', $postdated->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
+                        Cash
+                        </option>
 
-<option value="cheque"
-{{ old('Pay_type', $postdated->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
-Cheque
-</option>
+                        <option value="cheque"
+                        {{ old('Pay_type', $postdated->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
+                        Cheque
+                        </option>
 
-<option value="e-payment"
-{{ old('Pay_type', $postdated->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>
-E-payment
-</option>
+                        <option value="e-payment"
+                        {{ old('Pay_type', $postdated->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>
+                        E-payment
+                        </option>
 
-</select>
+                        </select>
 
-@error('Pay_type')
-<small class="text-danger">{{ $message }}</small>
-@enderror
+                        @error('Pay_type')
+                        <small class="text-danger">{{ $message }}</small>
+                        @enderror
 
-</td>
-         @error('amount_pay')
-    <div class="text-danger">
-        {{ $message }}
-    </div>
-@enderror            
+                        </td>
+                                @error('amount_pay')
+                            <div class="text-danger">
+                                {{ $message }}
+                            </div>
+                        @enderror            
                       <td>
                         <div id="Ac" style="">
                         <select name="account_no" id="account_no" class="form-control" onchange="getBalance();">
@@ -230,6 +231,7 @@ E-payment
                     </tr>
                   </tbody>
                 </table>
+                    </div>
               </div>
               <input type='hidden' name="Uid" id="Uid" value="{{ $db_record->ID ?? '000' }}">
 

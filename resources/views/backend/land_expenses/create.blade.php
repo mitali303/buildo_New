@@ -154,6 +154,7 @@
               </div><br>
 
               <div class="row">
+                <div class="table-responsive">
                 <table class="table" id="mytable">
                   <thead>
                     <tr>
@@ -241,6 +242,7 @@
                     </tr>
                   </tbody>
                 </table>
+            </div>
               </div>
               <input type='hidden' name="Uid" id="Uid" value="{{ $db_record->ID ?? '000' }}">
 

@@ -1,7 +1,19 @@
 @extends('backend.partials.master')
 
 @section('title', 'Create Labour Payment')
+<style>
+@media (max-width: 768px) {
 
+    /* Labour Work Entry Table */
+    .table-responsive table:first-child th:first-child,
+    .table-responsive table:first-child td:first-child {
+        white-space: nowrap !important;
+        min-width: 100px !important;
+        width: 100px !important;
+    }
+
+}
+</style>
 @section('maincontent')
 <main class="content">
 <div class="container-fluid p-0">
@@ -30,7 +42,7 @@
 
                 {{-- DATE --}}
                 <div class="row mb-3">
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label>Date *</label>
                         <input type="text"
                                name="Date"
@@ -40,7 +52,7 @@
                     </div>
 
                     {{-- AGENCY --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label>Agency</label>
                         <input type="text"
                                class="form-control"

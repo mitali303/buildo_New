@@ -59,7 +59,7 @@
                         </div>
 
 
-                        <div class="col-md-4" id="scheme">
+                        <div class="col-md-4 mb-2" id="scheme">
                             <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                             <select name="Destination" id="Destination"
@@ -77,7 +77,7 @@
                             @error('Destination') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <div class="col-md-4" id="exp-type-container">
+                        <div class="col-md-4 mb-2" id="exp-type-container">
                             <label class="form-label">
                                 Return Type <span class="text-danger">*</span>
                             </label>
@@ -328,6 +328,7 @@
                     <br>
 
                     <div class="col-md-12 d-none" id="order-table-container">
+                        
                         <table class="table table-bordered table-striped">
                             <thead class="table-light">
                                 <tr>
@@ -348,7 +349,7 @@
                         </table>
                     </div>
                     <br>
-
+                    <div class="table-responsive">
                     <table id="pmttble" class="table table-bordered table-hover" style="width:95%;">
                     <thead>
                         <tr>
@@ -459,7 +460,7 @@
                         </tr>
                     </tbody>
                 </table>
-
+            </div>
                     <br>
 
                     {{-- Submit --}}
