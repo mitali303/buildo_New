@@ -21,6 +21,7 @@
 
 <script src="{{asset ('backend/js/app.js')}}"></script>
 <script src="{{asset ('backend/js/datatables.js')}}"></script>
+<script src="{{ asset('js/marathi-typing.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     @if(session('success'))

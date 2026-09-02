@@ -115,8 +115,13 @@
 							Select Scheme
 						</button>
 					</li>
+					<li class="nav-item">
+						<button type="button" class="btn btn-sm filter-btn me-2" id="marathiModeButton">
+							Marathi: ONl
+						</button>
+					</li>
 
-					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
+					<div class="dropdown-menu dangropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
 						<div class="dropdown-menu-header">
 							4 New Notifications
 						</div>

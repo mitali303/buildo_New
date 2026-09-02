@@ -35,6 +35,11 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-sm btn-outline-primary my-2 me-2" id="marathiModeButton">
+                                Marathi: ON
+                            </button>
+                        </li>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -76,5 +81,6 @@
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('js/marathi-typing.js') }}"></script>
 </body>
 </html>
