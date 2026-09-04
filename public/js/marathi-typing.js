@@ -46,19 +46,37 @@
         return text;
     }
 
+    // function updateButton() {
+    //     var button = document.getElementById('marathiModeButton');
+
+    //     if (!button) {
+    //         return;
+    //     }
+
+    //     button.textContent = marathiMode ? 'Marathi: ON' : 'English: ON';
+    //     button.title = marathiMode
+    //         ? 'English typing will be converted to Marathi'
+    //         : 'English typing is enabled';
+    //     button.setAttribute('aria-pressed', String(marathiMode));
+    // }
     function updateButton() {
         var button = document.getElementById('marathiModeButton');
+        var indicator = document.getElementById('languageIndicator');
 
-        if (!button) {
-            return;
-        }
+        if (!button) { return; }
 
-        button.textContent = marathiMode ? 'Marathi: ON' : 'English: ON';
-        button.title = marathiMode
-            ? 'English typing will be converted to Marathi'
-            : 'English typing is enabled';
+        button.style.color = marathiMode ? '#198754' : '#0d6efd';
+
+        button.title = marathiMode ? 'Marathi' : 'English';
+
         button.setAttribute('aria-pressed', String(marathiMode));
+
+        if (indicator) {
+            indicator.textContent = marathiMode ? 'म' : 'Eng';
+            indicator.style.color = marathiMode ? '#198754' : '#0d6efd';
+        }
     }
+
 
     function convertField(element) {
         if (!isSupportedField(element) || composing.has(element)) {
@@ -119,13 +137,18 @@
     });
 
     document.addEventListener('click', function (event) {
-        if (event.target.closest('#marathiModeButton')) {
-            marathiMode = !marathiMode;
-            localStorage.setItem(storageKey, marathiMode ? 'on' : 'off');
-            updateButton();
-        }
-    });
+    if (event.target.closest('#marathiModeButton')) {
 
-    document.addEventListener('DOMContentLoaded', updateButton);
-    updateButton();
+        marathiMode = !marathiMode;
+
+        localStorage.setItem(
+            storageKey,
+            marathiMode ? 'on' : 'off'
+        );
+
+        updateButton();
+
+        alert(marathiMode ? 'Marathi' : 'English');
+    }
+});
 }());

@@ -7,10 +7,11 @@
     <div class="mb-3">
       <h1 class="h3 d-inline align-middle">Account transfer</h1>
     </div>
-<style>
-.pdtl{
-	display:none;
-}</style>
+    <style>
+      .pdtl{
+        display:none;
+      }
+      </style>
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -80,8 +81,8 @@
 
                       </td>
                       <td id="balancevalue">
-                        <input type="text" name="balance" id="balance" class="form-control"
-value="{{ old('balance', $accounttransfers->balance ?? '') }}" required>
+                          <input type="text" name="balance" id="balance" class="form-control"
+                          value="{{ old('balance', $accounttransfers->balance ?? '') }}" required>
                       </td>
                       <td>
                         <select name="account_no_to" id="account_no_to" class="form-control " required onchange="checkselected();" >

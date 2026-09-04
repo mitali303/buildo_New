@@ -110,7 +110,7 @@ class AccountTransferController extends Controller
         $availableBalance = getBalanceTransferRefund(
             $request->account_no,
             null,
-            now()->format('Y-m-d')
+            $date
         );
 
         // 🔴 HARD STOP

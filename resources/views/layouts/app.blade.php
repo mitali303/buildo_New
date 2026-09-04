@@ -36,8 +36,11 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <button type="button" class="btn btn-sm btn-outline-primary my-2 me-2" id="marathiModeButton">
-                                Marathi: ON
+                            <button type="button"
+                                    class="btn btn-sm me-2"
+                                    id="marathiModeButton"
+                                    style="padding: 2px 6px; font-size: 16px; line-height: 1;">
+                                🌐
                             </button>
                         </li>
                         <!-- Authentication Links -->

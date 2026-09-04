@@ -115,10 +115,14 @@
 							Select Scheme
 						</button>
 					</li>
-					<li class="nav-item">
-						<button type="button" class="btn btn-sm filter-btn me-2" id="marathiModeButton">
-							Marathi: ONl
+					<li class="nav-item d-flex align-items-center">
+						<button type="button" class="btn btn-sm me-1" id="marathiModeButton" style="padding: 2px 6px; font-size: 16px; line-height: 1;">
+							🌐
+							<span id="languageIndicator"
+								style="font-size: 10px; font-weight: 400;">म
+							</span>
 						</button>
+
 					</li>
 
 					<div class="dropdown-menu dangropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
@@ -217,12 +221,12 @@
 					</div>
 				</li>
 				<li class="nav-item">
-    <a class="btn btn-sm btn-danger ms-2"
-       href="#"
-       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        <i class="fa fa-power-off me-1"></i> Logout
-    </a>
-</li>
+					<a class="btn btn-sm btn-danger ms-2"
+					href="#"
+					onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+						<i class="fa fa-power-off me-1"></i> Logout
+					</a>
+				</li>
 			</ul>
 		</div>
 	</nav>
