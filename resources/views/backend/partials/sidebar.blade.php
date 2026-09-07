@@ -114,6 +114,12 @@
 					<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
 				</a>
 			</li>
+			<li class="sidebar-item {{ request()->is('estimates*') || request()->is('construction-estimates*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('Estimate') }}">
+					<i class="align-middle" data-feather="file-text"></i>
+					<span class="align-middle">Construction Estimate</span>
+				</a>
+			</li>
 			<!-- masters -->
 				@php
 					$activeMastersRoutes = request()->is(

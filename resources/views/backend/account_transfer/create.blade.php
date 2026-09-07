@@ -26,112 +26,112 @@
           @endif -->
 
 
-          <div class="card-body">
-            <form action="@if(!empty($accounttransfers)){{ route('account_transfer.update') }}@else{{ route('account_transfer.store') }}@endif"
-                  method="POST" enctype="multipart/form-data">
-              @csrf
-              
-              @if(!empty($accounttransfers))
-                @method('PUT')
-                <input type="hidden" name="ID" value="{{ $accounttransfers->ID }}">
-              @endif
-              {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
-              
-             
+    <div class="card-body">
+          <form action="@if(!empty($accounttransfers)){{ route('account_transfer.update') }}@else{{ route('account_transfer.store') }}@endif"
+                      method="POST" enctype="multipart/form-data">
+                  @csrf
+                  
+                  @if(!empty($accounttransfers))
+                    @method('PUT')
+                    <input type="hidden" name="ID" value="{{ $accounttransfers->ID }}">
+                  @endif
+                  {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
+                  
+                
 
-              <div class="row">
-                <table class="table" id="mytable">
-                  <thead>
-                    <tr>
-                     
-                      <th>Date</th>
-                      <th>Amount from<small class="text-danger">*</small></th>
-                      <th  id="balance_title">Balance<small class="text-danger">*</small></th>
-                       <th>Account To<small class="text-danger">*</small></th>
-                       <th>Amount<small class="text-danger">*</small></th>
-                      <th>Payment Method <small class="text-danger">*</small></th>
-                      <th>Cheque No / Transaction ID<span class="text-danger" id="cheque_field">*</span></th>
-                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-
-                      <td>
-                        <input type="date" name="Date" class="form-control @error('Date') is-invalid @enderror" value="{{ old('Date', $accounttransfers->Date ?? date('Y-m-d')) }}">
-
-                      @error('Date')
-                          <small class="text-danger">{{ $message }}</small>
-                      @enderror
-
-                      </td>
-                      <td>
-                        <select name="account_no" id="account_no" class="form-control" required onchange="getBalance();">
-                          <option value="">Select Account</option>
-                          @foreach($banks as $bank)
-                            <option value="{{ $bank->ID }}"
-                              {{ old('account_from', $accounttransfers->account_from ?? '') == $bank->ID ? 'selected' : '' }}>
-                              {{ $bank->Name }}
-                            </option>
-                          @endforeach
-                        </select>
-                        @error('account_no_to')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-
-                      </td>
-                      <td id="balancevalue">
-                          <input type="text" name="balance" id="balance" class="form-control"
-                          value="{{ old('balance', $accounttransfers->balance ?? '') }}" required>
-                      </td>
-                      <td>
-                        <select name="account_no_to" id="account_no_to" class="form-control " required onchange="checkselected();" >
-                          <option value="">Select Account</option>
-                          @foreach($banks as $bank)
-                            <option value="{{ $bank->ID }}"
-                              {{ old('account_to', $accounttransfers->account_to ?? '') == $bank->ID ? 'selected' : '' }}>
-                              {{ $bank->Name }}
-                            </option>
-                          @endforeach
-                        </select>
-                      </td>
-                      <td>
-                        <input type="number" name="total_pay" required
-                            class="form-control @error('total_pay') is-invalid @enderror"
-                            value="{{ old('total_pay', $accounttransfers->amt_pay ?? '') }}">
-
-                      @error('total_pay')
-                          <small class="text-danger">{{ $message }}</small>
-                      @enderror
-
+                  <div class="row">
+                    <table class="table" id="mytable">
+                      <thead>
+                        <tr>
                         
-                      </td>
-                      <td>
-                        <select name="payment_method" id="payment_method" class="form-control" required>
-                          <option value="">Select Payment Method</option>
-                          <option value="cash" {{ old('payment_method', $accounttransfers->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
-                          <option value="cheque" {{ old('payment_method', $accounttransfers->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-                          <option value="e-payment" {{ old('payment_method', $accounttransfers->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
-                        </select>
-                        @error('payment_method')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                          <th>Date</th>
+                          <th>Amount from<small class="text-danger">*</small></th>
+                          <th  id="balance_title">Balance<small class="text-danger">*</small></th>
+                          <th>Account To<small class="text-danger">*</small></th>
+                          <th>Amount<small class="text-danger">*</small></th>
+                          <th>Payment Method <small class="text-danger">*</small></th>
+                          <th>Cheque No / Transaction ID<span class="text-danger" id="cheque_field">*</span></th>
+                          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
 
-                      </td>
-                      
-                      
-                      <td>
-                        <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $accounttransfers->cheque_no ?? '') }}">
-                      </td>
-                      
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                          <td>
+                            <input type="date" name="Date" class="form-control @error('Date') is-invalid @enderror" value="{{ old('Date', $accounttransfers->Date ?? date('Y-m-d')) }}">
 
-              <br>
-              <button type="submit" class="btn btn-primary">{{ empty($accounttransfers) ? 'Create' : 'Update' }}</button>
-              <a href="{{ route('account_transfer') }}" class="btn btn-secondary">Cancel</a>
+                          @error('Date')
+                              <small class="text-danger">{{ $message }}</small>
+                          @enderror
+
+                          </td>
+                          <td>
+                            <select name="account_no" id="account_no" class="form-control" required onchange="getBalance();">
+                              <option value="">Select Account</option>
+                              @foreach($banks as $bank)
+                                <option value="{{ $bank->ID }}"
+                                  {{ old('account_from', $accounttransfers->account_from ?? '') == $bank->ID ? 'selected' : '' }}>
+                                  {{ $bank->Name }}
+                                </option>
+                              @endforeach
+                            </select>
+                            @error('account_no_to')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+
+                          </td>
+                          <td id="balancevalue">
+                              <input type="text" name="balance" id="balance" class="form-control"
+                              value="{{ old('balance', $accounttransfers->balance ?? '') }}" required>
+                          </td>
+                          <td>
+                            <select name="account_no_to" id="account_no_to" class="form-control " required onchange="checkselected();" >
+                              <option value="">Select Account</option>
+                              @foreach($banks as $bank)
+                                <option value="{{ $bank->ID }}"
+                                  {{ old('account_to', $accounttransfers->account_to ?? '') == $bank->ID ? 'selected' : '' }}>
+                                  {{ $bank->Name }}
+                                </option>
+                              @endforeach
+                            </select>
+                          </td>
+                          <td>
+                            <input type="number" name="total_pay" required
+                                class="form-control @error('total_pay') is-invalid @enderror"
+                                value="{{ old('total_pay', $accounttransfers->amt_pay ?? '') }}">
+
+                          @error('total_pay')
+                              <small class="text-danger">{{ $message }}</small>
+                          @enderror
+
+                            
+                          </td>
+                          <td>
+                            <select name="payment_method" id="payment_method" class="form-control" required>
+                              <option value="">Select Payment Method</option>
+                              <option value="cash" {{ old('payment_method', $accounttransfers->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
+                              <option value="cheque" {{ old('payment_method', $accounttransfers->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                              <option value="e-payment" {{ old('payment_method', $accounttransfers->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
+                            </select>
+                            @error('payment_method')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+
+                          </td>
+                          
+                          
+                          <td>
+                            <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $accounttransfers->cheque_no ?? '') }}">
+                          </td>
+                          
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <br>
+                  <button type="submit" class="btn btn-primary">{{ empty($accounttransfers) ? 'Create' : 'Update' }}</button>
+                  <a href="{{ route('account_transfer') }}" class="btn btn-secondary">Cancel</a>
             </form>
           </div>
         </div>

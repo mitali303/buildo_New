@@ -68,6 +68,7 @@ use App\Http\Controllers\Backend\CreateLeadController;
 use App\Http\Controllers\Backend\LeadSourceController;
 use App\Http\Controllers\Backend\LeadMeetingController;
 use App\Http\Controllers\Backend\QuotationController;
+use App\Http\Controllers\Backend\EstimateController;
 use App\Http\Controllers\Backend\DailyWorkController;
 use App\Http\Controllers\Backend\MaterialRequestController;
 
@@ -1138,6 +1139,14 @@ Route::group(['middleware' => 'auth'], function () {
             Route::delete('/LeadMeeting/delete/{id}', [LeadMeetingController::class, 'destroy'])->name('LeadMeeting.delete');
 
             //Quotation
+            Route::get('/estimates', [EstimateController::class, 'index'])->name('Estimate');
+            Route::get('/estimates/create', [EstimateController::class, 'create'])->name('Estimate.create');
+            Route::post('/estimates/save', [EstimateController::class, 'store'])->name('Estimate.store');
+            Route::get('/estimates/edit/{id}', [EstimateController::class, 'edit'])->name('Estimate.edit');
+            Route::put('/estimates/update/{id}', [EstimateController::class, 'update'])->name('Estimate.update');
+            Route::delete('/estimates/delete/{id}', [EstimateController::class, 'destroy'])->name('Estimate.delete');
+            Route::get('/construction-estimates', [EstimateController::class, 'index'])->name('ConstructionEstimate.index');
+
             Route::get('/Quotation', [QuotationController::class, 'index'])
                 ->name('Quotation')
                 ->middleware('hasPermission:Quotation_read');
@@ -1165,6 +1174,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::delete('/Quotation/delete/{id}', [QuotationController::class, 'destroy'])
                 ->name('Quotation.delete')
                 ->middleware('hasPermission:delete_Quotation');
+
+            
 
                
     
