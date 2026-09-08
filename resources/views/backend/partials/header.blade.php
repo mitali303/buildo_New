@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,7 +18,7 @@
 	<!-- toster -->
 	<!-- <link href="{{ asset('vendor/toastr/toastr.min.css') }}" rel="stylesheet"/> -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-<link href="{{ asset('jquery-upload-file-master/uploadfile.css') }}" rel="stylesheet">
+	<link href="{{ asset('jquery-upload-file-master/uploadfile.css') }}" rel="stylesheet">
 
 
 
@@ -25,7 +27,7 @@
 	<title>Buildo Construction - @yield('title')</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 	<!-- Choose your prefered color scheme -->
 	<!-- <link href="css/light.css" rel="stylesheet"> -->
@@ -39,86 +41,102 @@
 		body {
 			opacity: 0;
 		}
+
 		/* Toastr message text color overrides */
 		.toast-success {
-			color:rgb(223, 226, 224) !important; /* dark green for success */
-			background-color:rgb(11, 146, 42) !important;
+			color: rgb(223, 226, 224) !important;
+			/* dark green for success */
+			background-color: rgb(11, 146, 42) !important;
 		}
 
 		.toast-error {
-			color:rgb(235, 227, 228) !important; /* dark red for error */
-			background-color:rgb(226, 72, 85) !important;
+			color: rgb(235, 227, 228) !important;
+			/* dark red for error */
+			background-color: rgb(226, 72, 85) !important;
 		}
 
 		.toast-info {
-			color:rgb(224, 230, 231) !important; /* dark blue for info */
-			background-color:rgb(52, 182, 205) !important;
+			color: rgb(224, 230, 231) !important;
+			/* dark blue for info */
+			background-color: rgb(52, 182, 205) !important;
 		}
 
 		.toast-warning {
-			color:rgb(231, 228, 222) !important; /* dark yellow for warning */
-			background-color:rgb(186, 149, 29) !important;
+			color: rgb(231, 228, 222) !important;
+			/* dark yellow for warning */
+			background-color: rgb(186, 149, 29) !important;
 		}
 
 		.scheme-col-5 {
-    flex: 0 0 20%;
-    max-width: 20%;
-}
+			flex: 0 0 20%;
+			max-width: 20%;
+		}
 
-.scheme-card {
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 2px solid #dee2e6;
-}
+		.scheme-card {
+			cursor: pointer;
+			transition: all 0.2s ease;
+			border: 2px solid #dee2e6;
+		}
 
-.scheme-card:hover {
-    transform: scale(1.02);
-    border-color: #0d6efd;
-}
+		.scheme-card:hover {
+			transform: scale(1.02);
+			border-color: #0d6efd;
+		}
 
-.scheme-card.active {
-    border-color: #0d6efd;
-    background: #f0f6ff;
-}
-.filter-btn {
-    background-color: #233346;
-    color: #ffffff;
-    border: none;
-}
-.add-scheme-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-}.add-scheme-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-}
-@media (max-width: 576px) {
-    #schemeCardsContainer {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+		.scheme-card.active {
+			border-color: #0d6efd;
+			background: #f0f6ff;
+		}
 
-    #schemeCardsContainer > * {
-        width: 100%;
-        max-width: 100%;
-    }
+		.filter-btn {
+			background-color: #233346;
+			color: #ffffff;
+			border: none;
+		}
 
-    #schemeCardsContainer .scheme-card {
-        width: 100%;
-        margin: 0;
-    }
-}
+		.add-scheme-btn {
+			padding: 5px 10px;
+			font-size: 11px;
+		}
+
+		.add-scheme-btn {
+			padding: 5px 10px;
+			font-size: 11px;
+		}
+
+		@media (max-width: 576px) {
+			#schemeCardsContainer {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			#schemeCardsContainer>* {
+				width: 100%;
+				max-width: 100%;
+			}
+
+			#schemeCardsContainer .scheme-card {
+				width: 100%;
+				margin: 0;
+			}
+		}
 	</style>
 	<!-- END SETTINGS -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120946860-10"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120946860-10"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'UA-120946860-10', { 'anonymize_ip': true });
-</script></head>
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-120946860-10', {
+			'anonymize_ip': true
+		});
+	</script>
+</head>
 <!--
   HOW TO USE: 
   data-theme: default (default), dark, light, colored
@@ -147,9 +165,9 @@
 
 			<div class="modal-footer">
 				@if (Auth::check() && Auth::user()->Role == 1)
-					<a href="{{ route('Scheme.create') }}" class="btn btn-primary add-scheme-btn">
+				<a href="{{ route('Scheme.create') }}" class="btn btn-primary add-scheme-btn">
 					<i class="fas fa-plus"></i> Add Scheme
-					</a>
+				</a>
 				@endif
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-success" id="saveUserBtn">Okay</button>
@@ -157,20 +175,21 @@
 		</div>
 	</div>
 </div>
+
 <body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-layout="default">
 	<div class="wrapper">
 		<script>
-$(document).on('click', '#addSchemeBtn', function () {
+			$(document).on('click', '#addSchemeBtn', function() {
 
-    // Close modal
-    $('#defaultModalSuccess').modal('hide');
+				// Close modal
+				$('#defaultModalSuccess').modal('hide');
 
-    // Remove modal backdrop
-    $('.modal-backdrop').remove();
-    $('body').removeClass('modal-open');
-    $('body').css('padding-right', '');
+				// Remove modal backdrop
+				$('.modal-backdrop').remove();
+				$('body').removeClass('modal-open');
+				$('body').css('padding-right', '');
 
-    // Redirect
-    window.location.href = "{{ route('Scheme.create') }}";
-});
-</script>
+				// Redirect
+				window.location.href = "{{ route('Scheme.create') }}";
+			});
+		</script>

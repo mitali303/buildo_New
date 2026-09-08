@@ -26,29 +26,29 @@
                                 <div class="col-md-1">From :</div>
                                 <div class="col-md-2">
                                     <input type="text"
-                                           name="fdate"
-                                           id="fdate"
-                                           class="form-control date"
-                                           readonly
-                                           value="{{ now()->startOfMonth()->format('d-m-Y') }}">
+                                        name="fdate"
+                                        id="fdate"
+                                        class="form-control date"
+                                        readonly
+                                        value="{{ now()->startOfMonth()->format('d-m-Y') }}">
                                 </div>
 
                                 <div class="col-md-1">To :</div>
                                 <div class="col-md-2">
                                     <input type="text"
-                                           name="tdate"
-                                           id="tdate"
-                                           class="form-control date"
-                                           readonly
-                                           value="{{ now()->format('d-m-Y') }}">
+                                        name="tdate"
+                                        id="tdate"
+                                        class="form-control date"
+                                        readonly
+                                        value="{{ now()->format('d-m-Y') }}">
                                 </div>
 
                                 <div class="col-md-2">Work Completion % :</div>
                                 <div class="col-md-2">
                                     <input type="text"
-                                           name="workcompletion"
-                                           class="form-control"
-                                           placeholder="Enter %">
+                                        name="workcompletion"
+                                        class="form-control"
+                                        placeholder="Enter %">
                                 </div>
 
                                 <div class="col-md-2">
@@ -75,7 +75,7 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('.date').datepicker({
             dateFormat: 'dd-mm-yy'
         });

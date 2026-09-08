@@ -511,7 +511,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('report.daily_diary');
         Route::get('reports/income-expense-report', [Report_Controller::class, 'incomeExpense'])
             ->name('report.income_expense');
-        Route::get('/report/income-expense/export', [ReportController::class, 'exportIncomeExpense'])
+        Route::get('/report/income-expense/export', [Report_Controller::class, 'exportIncomeExpense'])
             ->name('report.income_expense.export');
         Route::get('reports/tds-report', [Report_Controller::class, 'tdsReport'])
             ->name('report.tds');
@@ -522,7 +522,7 @@ Route::group(['middleware' => 'auth'], function () {
         // routes/web.php
         Route::match(['get', 'post'], '/reports/abstract', [Report_Controller::class, 'abstractReport'])->name('report.abstract');
         Route::get('/reports/customer_refund', [Report_Controller::class, 'customerRefund'])->name('reports.customer_refund');
-        Route::get('/customer-refund-export', [ReportController::class, 'customerRefundExport'])
+        Route::get('/customer-refund-export', [Report_Controller::class, 'customerRefundExport'])
             ->name('customer_refund_export');
         Route::get('/reports/lbrpay_report', [Report_Controller::class, 'lbrpay_report'])->name('reports.lbrpay_report');
         Route::get('/reports/stamp_other_expense_report', [Report_Controller::class, 'stampOtherExpense'])

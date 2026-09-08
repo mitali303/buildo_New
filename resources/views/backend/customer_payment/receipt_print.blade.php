@@ -32,14 +32,14 @@
                 </td>
             </tr>
         </table>
-       
+
         {{-- Amount in Words --}}
         <table style="width:100%; font-size:16px; margin-top:15px;">
             <tr>
                 <td style="width:20%;">A sum of Rs.</td>
                 <td style="width:80%; border-bottom:1px solid black; text-align:center;">
                     {{ $totalInWords }}
-                    
+
                 </td>
             </tr>
         </table>

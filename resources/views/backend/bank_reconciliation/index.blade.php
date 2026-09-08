@@ -1,26 +1,28 @@
 @extends('backend.partials.master')
 @section('title')
-  Bank Reconciliation
+Bank Reconciliation
 @endsection
 <style>
     #datatables-buttons th:nth-child(2),
-#datatables-buttons td:nth-child(2) {
-    white-space: nowrap !important;
-}
-    @media (max-width: 768px) {
-    #datatables-buttons_wrapper .dataTables_length,
-    #datatables-buttons_wrapper .dataTables_filter {
-        width: 100%;
-        float: none;
-        text-align: left;
-        margin-bottom: 10px;
+    #datatables-buttons td:nth-child(2) {
+        white-space: nowrap !important;
     }
 
-    #datatables-buttons_wrapper .dt-buttons .btn {
-        padding: 4px 8px;
-        font-size: 12px;
+    @media (max-width: 768px) {
+
+        #datatables-buttons_wrapper .dataTables_length,
+        #datatables-buttons_wrapper .dataTables_filter {
+            width: 100%;
+            float: none;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        #datatables-buttons_wrapper .dt-buttons .btn {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
     }
-}
 </style>
 @section('maincontent')
 <main class="content">
@@ -73,52 +75,77 @@
 @endsection
 @section('scripts')
 <script>
-$(function () {
-    let table = $('#datatables-buttons').DataTable({
-         responsive   : false,
+    $(function() {
+        let table = $('#datatables-buttons').DataTable({
+            responsive: false,
             scrollX: true,
-        processing: true,
-        serverSide: true,
-        ajax: "{{ route('bank_reconciliation') }}",
-      columns: [
-    { data: 'DT_RowIndex', orderable: false, searchable: false },
-    { data: 'Date', name: 'Date' },
-    { data: 'customer_name', orderable: false, searchable: true},
-    { data: 'cheque_no', name: 'cheque_no' },
-    { data: 'bank_name',  orderable: false, searchable: true },
-    { data: 'type', name: 'type' },
-    { data: 'amount', name: 'amount' },
-    { data: 'actions', orderable: false, searchable: false }
-]
-    });
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('bank_reconciliation') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'Date',
+                    name: 'Date'
+                },
+                {
+                    data: 'customer_name',
+                    orderable: false,
+                    searchable: true
+                },
+                {
+                    data: 'cheque_no',
+                    name: 'cheque_no'
+                },
+                {
+                    data: 'bank_name',
+                    orderable: false,
+                    searchable: true
+                },
+                {
+                    data: 'type',
+                    name: 'type'
+                },
+                {
+                    data: 'amount',
+                    name: 'amount'
+                },
+                {
+                    data: 'actions',
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
 
-    $(document).on('click', '.clear-cheque', function () {
-        if (!confirm('Clear this cheque?')) return;
+        $(document).on('click', '.clear-cheque', function() {
+            if (!confirm('Clear this cheque?')) return;
 
-        $.post("{{ route('bank_reconciliation.clear') }}", {
-            _token: "{{ csrf_token() }}",
-            id: $(this).data('id'),
-            table: $(this).data('table')
-        }, function () {
-            table.ajax.reload();
+            $.post("{{ route('bank_reconciliation.clear') }}", {
+                _token: "{{ csrf_token() }}",
+                id: $(this).data('id'),
+                table: $(this).data('table')
+            }, function() {
+                table.ajax.reload();
+            });
+        });
+
+        $(document).on('click', '.bounce-cheque', function() {
+            let reason = prompt("Bounce reason:");
+            if (!reason) return;
+
+            $.post("{{ route('bank_reconciliation.bounce') }}", {
+                _token: "{{ csrf_token() }}",
+                id: $(this).data('id'),
+                table: $(this).data('table'),
+                reason: reason
+            }, function() {
+                table.ajax.reload();
+            });
         });
     });
-
-    $(document).on('click', '.bounce-cheque', function () {
-        let reason = prompt("Bounce reason:");
-        if (!reason) return;
-
-        $.post("{{ route('bank_reconciliation.bounce') }}", {
-            _token: "{{ csrf_token() }}",
-            id: $(this).data('id'),
-            table: $(this).data('table'),
-            reason: reason
-        }, function () {
-            table.ajax.reload();
-        });
-    });
-});
-
 </script>
 @endsection
-

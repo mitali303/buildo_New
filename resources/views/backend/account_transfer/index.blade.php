@@ -1,26 +1,28 @@
 @extends('backend.partials.master')
 @section('title')
-  Account Transfer
+Account Transfer
 @endsection
 <style>
     #datatables-buttons th:nth-child(2),
-#datatables-buttons td:nth-child(2) {
-    white-space: nowrap !important;
-}
-    @media (max-width: 768px) {
-    #datatables-buttons_wrapper .dataTables_length,
-    #datatables-buttons_wrapper .dataTables_filter {
-        width: 100%;
-        float: none;
-        text-align: left;
-        margin-bottom: 10px;
+    #datatables-buttons td:nth-child(2) {
+        white-space: nowrap !important;
     }
 
-    #datatables-buttons_wrapper .dt-buttons .btn {
-        padding: 4px 8px;
-        font-size: 12px;
+    @media (max-width: 768px) {
+
+        #datatables-buttons_wrapper .dataTables_length,
+        #datatables-buttons_wrapper .dataTables_filter {
+            width: 100%;
+            float: none;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        #datatables-buttons_wrapper .dt-buttons .btn {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
     }
-}
 </style>
 @section('maincontent')
 <main class="content">
@@ -30,29 +32,29 @@
                 <h3><strong></strong>Account Transfer</h3>
             </div>
             <div class="col-auto ms-auto text-end mt-n1">
-                
+
                 @if (hasPermission('create_account_transfer') == true)
-                    <a href="{{route('account_transfer.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i>Add New</a>
+                <a href="{{route('account_transfer.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i>Add New</a>
                 @endif
             </div>
         </div>
         <form method="GET" action="" class="row mb-3 align-items-end">
 
-    <div class="col-6 col-md-3">
-        <label class="form-label">From</label>
-        <input type="date" name="from_date" value="{{ $fromDate }}" class="form-control">
-    </div>
+            <div class="col-6 col-md-3">
+                <label class="form-label">From</label>
+                <input type="date" name="from_date" value="{{ $fromDate }}" class="form-control">
+            </div>
 
-    <div class="col-6 col-md-3">
-        <label class="form-label">To</label>
-        <input type="date" name="to_date" value="{{ $toDate }}" class="form-control">
-    </div>
+            <div class="col-6 col-md-3">
+                <label class="form-label">To</label>
+                <input type="date" name="to_date" value="{{ $toDate }}" class="form-control">
+            </div>
 
-    <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
-        <button class="btn btn-primary">Search</button>
-    </div>
+            <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
+                <button class="btn btn-primary">Search</button>
+            </div>
 
-</form>
+        </form>
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -89,53 +91,74 @@
 </main>
 @endsection
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
 
-    let table = $('#datatables-buttons').DataTable({
-        responsive   : false,
+        let table = $('#datatables-buttons').DataTable({
+            responsive: false,
             scrollX: true,
-        processing: true,
-        serverSide: true,
-        orderCellsTop: true,
-        fixedHeader: true,
-        ajax: {
-            url: "{{ route('account_transfer') }}",
-            data: function (d) {
-                d.from_date = $('input[name="from_date"]').val();
-                d.to_date   = $('input[name="to_date"]').val();
+            processing: true,
+            serverSide: true,
+            orderCellsTop: true,
+            fixedHeader: true,
+            ajax: {
+                url: "{{ route('account_transfer') }}",
+                data: function(d) {
+                    d.from_date = $('input[name="from_date"]').val();
+                    d.to_date = $('input[name="to_date"]').val();
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'date',
+                    name: 'Date'
+                },
+                {
+                    data: 'account_from_name',
+                    name: 'accountFrom.Name'
+                },
+                {
+                    data: 'payment_method',
+                    name: 'payment_method'
+                },
+                {
+                    data: 'balance',
+                    name: 'balance'
+                },
+                {
+                    data: 'account_to_name',
+                    name: 'accountTo.Name'
+                },
+                {
+                    data: 'amt_pay',
+                    name: 'amt_pay'
+                },
+                {
+                    data: 'actions',
+                    orderable: false,
+                    searchable: false
+                }
+            ],
+            drawCallback: function() {
+                feather.replace();
             }
-        },
-        columns: [
-            { data: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'date', name: 'Date' },
-            { data: 'account_from_name', name: 'accountFrom.Name' },
-            { data: 'payment_method', name: 'payment_method' },
-            { data: 'balance', name: 'balance' },
-            { data: 'account_to_name', name: 'accountTo.Name' },
-            { data: 'amt_pay', name: 'amt_pay' },
-            { data: 'actions', orderable: false, searchable: false }
-        ],
-        drawCallback: function () {
-            feather.replace();
-        }
-    });
-
-    // Reload table when Search button is clicked
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-        table.ajax.reload();
-    });
-
-    // Column search
-    $('#datatables-buttons thead tr:eq(1) th').each(function (i) {
-        $('input', this).on('keyup change', function () {
-            table.column(i).search(this.value).draw();
         });
+
+        // Reload table when Search button is clicked
+        $('form').on('submit', function(e) {
+            e.preventDefault();
+            table.ajax.reload();
+        });
+
+        // Column search
+        $('#datatables-buttons thead tr:eq(1) th').each(function(i) {
+            $('input', this).on('keyup change', function() {
+                table.column(i).search(this.value).draw();
+            });
+        });
+
     });
-
-});
 </script>
-
-
-
-

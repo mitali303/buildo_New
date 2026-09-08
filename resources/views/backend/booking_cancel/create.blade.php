@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-md-12">
 
-            <!-- @if ($errors->any())
+                <!-- @if ($errors->any())
                 <div class="alert alert-danger">
                     <strong>Something went wrong!</strong>
                     <ul style="margin-top:5px;">
@@ -25,11 +25,11 @@
                     <div class="card-body">
 
                         <form action="{{ !empty($cancelbook) ? route('booking_cancel.update') : route('booking_cancel.store') }}"
-                              method="POST">
+                            method="POST">
                             @csrf
                             @if(!empty($cancelbook))
-                                @method('PUT')
-                                <input type="hidden" name="id" value="{{ $cancelbook->ID }}">
+                            @method('PUT')
+                            <input type="hidden" name="id" value="{{ $cancelbook->ID }}">
                             @endif
 
                             <div class="row gy-3">
@@ -37,16 +37,15 @@
                                     <label class="form-label">Scheme <span class="text-danger">*</span></label>
 
                                     <select name="Destination" id="Destination"
-                                            class="form-control choices-single-destination"
-                                            data-placeholder="Select Destination"
-                                            >
+                                        class="form-control choices-single-destination"
+                                        data-placeholder="Select Destination">
                                         <option value="">Select</option>
-                                            @foreach($allschemes as $scheme)
-                                                <option value="{{ $scheme->ID }}"
-                                                    {{ old('Destination', $cancelbook->SchemID ?? $allschemes[0]->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
-                                                    {{ $scheme->Name }}
-                                                </option>
-                                            @endforeach
+                                        @foreach($allschemes as $scheme)
+                                        <option value="{{ $scheme->ID }}"
+                                            {{ old('Destination', $cancelbook->SchemID ?? $allschemes[0]->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
+                                            {{ $scheme->Name }}
+                                        </option>
+                                        @endforeach
                                     </select>
                                     @error('Destination') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
@@ -55,22 +54,22 @@
                                     <label class="form-label">Customers <span class="text-danger">*</span></label>
 
                                     <select name="CustomerID"
-                                            id="CustomerID"
-                                            class="form-control choices-single-customer"
-                                            onchange="getbookingdetail(this.value); getBookingDate(this.value);">
+                                        id="CustomerID"
+                                        class="form-control choices-single-customer"
+                                        onchange="getbookingdetail(this.value); getBookingDate(this.value);">
 
                                         <option value="">Select Customer</option>
 
                                         @foreach($customers as $customer)
-                                            <option value="{{ $customer->CutomerName }}"
-                                                {{ old('CustomerID', $bookingCustomer->CutomerName ?? '') == $customer->CutomerName ? 'selected' : '' }}>
-                                                {{ $customer->CutomerName }}
-                                            </option>
+                                        <option value="{{ $customer->CutomerName }}"
+                                            {{ old('CustomerID', $bookingCustomer->CutomerName ?? '') == $customer->CutomerName ? 'selected' : '' }}>
+                                            {{ $customer->CutomerName }}
+                                        </option>
                                         @endforeach
                                     </select>
 
                                     @error('CustomerID')
-                                        <small class="text-danger">{{ $message }}</small>
+                                    <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
@@ -81,8 +80,7 @@
                                             id="datepicker"
                                             class="form-control @error('Date') is-invalid @enderror"
                                             placeholder="Select date"
-                                            value="{{ old('Date', isset($cancelbook->Date) ? \Carbon\Carbon::parse($cancelbook->Date)->format('d-m-Y') : '') }}"
-                                        >
+                                            value="{{ old('Date', isset($cancelbook->Date) ? \Carbon\Carbon::parse($cancelbook->Date)->format('d-m-Y') : '') }}">
                                     </div>
                                     @error('Date') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
@@ -103,72 +101,71 @@
 @endsection
 @push('scripts')
 <script>
-let bookingDatePicker; // ✅ GLOBAL VARIABLE
+    let bookingDatePicker; // ✅ GLOBAL VARIABLE
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
 
-    bookingDatePicker = flatpickr("#datepicker", {
-        dateFormat: "d-m-Y",
-        allowInput: false
+        bookingDatePicker = flatpickr("#datepicker", {
+            dateFormat: "d-m-Y",
+            allowInput: false
+        });
+
     });
-
-});
 </script>
 
 <script>
-function getBookingDate(customer) {
+    function getBookingDate(customer) {
 
-    if (!customer) return;
+        if (!customer) return;
 
-    $.post("{{ route('ajax.booking.date') }}", {
-        cust_name: customer,
-        _token: "{{ csrf_token() }}"
-    }, function (res) {
+        $.post("{{ route('ajax.booking.date') }}", {
+            cust_name: customer,
+            _token: "{{ csrf_token() }}"
+        }, function(res) {
 
-        $("#datepicker").val(res.minDate);
-    });
-}
+            $("#datepicker").val(res.minDate);
+        });
+    }
 
-function getbookingdetail(customer) {
-    let scheme = $("#Destination").val();
-    if (!scheme || !customer) return;
+    function getbookingdetail(customer) {
+        let scheme = $("#Destination").val();
+        if (!scheme || !customer) return;
 
-    $.post("{{ route('ajax.booking.detail') }}", {
-        _token: "{{ csrf_token() }}",
-        schmid: scheme,
-        cust: customer,
-        cancelid: "{{ $cancelbook->ID ?? '' }}"
-    }, function (data) {
+        $.post("{{ route('ajax.booking.detail') }}", {
+            _token: "{{ csrf_token() }}",
+            schmid: scheme,
+            cust: customer,
+            cancelid: "{{ $cancelbook->ID ?? '' }}"
+        }, function(data) {
 
-        $("#mydivcust").html(data);
+            $("#mydivcust").html(data);
 
-        // 🔥 Pay_type & selectedAccountId now exist
-        if ($('#Pay_type').length) {
-            check_type();
+            // 🔥 Pay_type & selectedAccountId now exist
+            if ($('#Pay_type').length) {
+                check_type();
+            }
+        });
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        let scheme = "{{ old('Destination', $cancelbook->SchemID ?? '') }}";
+        let customer = "{{ old('CustomerID', $bookingCustomer->CutomerName ?? '') }}";
+
+        if (scheme && customer) {
+
+            // set scheme
+            $('#Destination').val(scheme);
+
+            // set customer
+            $('#CustomerID').val(customer);
+
+            // 🔥 trigger ajax manually
+            getbookingdetail(customer);
+            getBookingDate(customer);
         }
     });
-}
-
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    let scheme   = "{{ old('Destination', $cancelbook->SchemID ?? '') }}";
-    let customer = "{{ old('CustomerID', $bookingCustomer->CutomerName ?? '') }}";
-
-    if (scheme && customer) {
-
-        // set scheme
-        $('#Destination').val(scheme);
-
-        // set customer
-        $('#CustomerID').val(customer);
-
-        // 🔥 trigger ajax manually
-        getbookingdetail(customer);
-        getBookingDate(customer);
-    }
-});
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -178,4 +175,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 </script>
 @endpush
-

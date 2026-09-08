@@ -1,3 +1,6 @@
+@php
+    use App\Models\Backend\Scheme_Flat;
+@endphp
 @extends('backend.partials.master')
 
 @section('title', !empty($flat) ? 'Edit Flat Details' : 'Create Flat Details')
@@ -266,8 +269,7 @@
                     </div>
                     @endif
 
-                    @php use App\Models\Backend\Scheme_Flat;
-                            @endphp
+                    
 
                             @php
                                 $schemeId = old('Uid', request('Uid'));

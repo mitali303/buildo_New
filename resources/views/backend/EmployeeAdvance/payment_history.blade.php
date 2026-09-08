@@ -8,21 +8,21 @@ Advance Payment History
 
 <main class="content">
 
-<div class="container-fluid p-0">
+    <div class="container-fluid p-0">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">
-            Payment History -
-            {{ $advance->user->name ?? '' }}
-        </h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">
+                Payment History -
+                {{ $advance->user->name ?? '' }}
+            </h3>
 
-        <a href="{{ route('EmployeeAdvance') }}"
-           class="btn btn-secondary">
-            <i data-feather="arrow-left"></i> Back
-        </a>
-    </div>
+            <a href="{{ route('EmployeeAdvance') }}"
+                class="btn btn-secondary">
+                <i data-feather="arrow-left"></i> Back
+            </a>
+        </div>
 
-    <!-- <div class="card">
+        <!-- <div class="card">
 
         <div class="card-body">
 
@@ -88,89 +88,89 @@ Advance Payment History
 
     </div> -->
 
-    <div class="card mt-3">
+        <div class="card mt-3">
 
-        <div class="card-header">
-            <h5 class="mb-0">Payment History Details</h5>
-        </div>
+            <div class="card-header">
+                <h5 class="mb-0">Payment History Details</h5>
+            </div>
 
-        <div class="card-body">
+            <div class="card-body">
 
-            <div class="table-responsive">
+                <div class="table-responsive">
 
-                <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped">
 
-                    <thead class="table-dark">
+                        <thead class="table-dark">
 
-                        <tr>
-                            <th>#</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Payment Method</th>
-                            <th>Cheque No</th>
-                            <th>Remaining Balance</th>
-                            <th>Narration</th>
-                        </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Cheque No</th>
+                                <th>Remaining Balance</th>
+                                <th>Narration</th>
+                            </tr>
 
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
 
-                    @forelse($payments as $key => $payment)
+                            @forelse($payments as $key => $payment)
 
-                        <tr>
+                            <tr>
 
-                            <td>{{ $key + 1 }}</td>
+                                <td>{{ $key + 1 }}</td>
 
-                            <td>
-                                {{ date('d-m-Y',strtotime($payment->date)) }}
-                            </td>
+                                <td>
+                                    {{ date('d-m-Y',strtotime($payment->date)) }}
+                                </td>
 
-                            <td>
-                                ₹ {{ number_format($payment->advance,2) }}
-                            </td>
+                                <td>
+                                    ₹ {{ number_format($payment->advance,2) }}
+                                </td>
 
-                            <td>
-                                <span class="badge bg-success">
-                                    {{ ucfirst($payment->payment_method) }}
-                                </span>
-                            </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        {{ ucfirst($payment->payment_method) }}
+                                    </span>
+                                </td>
 
-                            <td>
-                                {{ $payment->cheque_no ?: '-' }}
-                            </td>
+                                <td>
+                                    {{ $payment->cheque_no ?: '-' }}
+                                </td>
 
-                            <td>
-                                ₹ {{ number_format($payment->remaining_amount,2) }}
-                            </td>
+                                <td>
+                                    ₹ {{ number_format($payment->remaining_amount,2) }}
+                                </td>
 
-                            <td>
-                                {{ $payment->narration }}
-                            </td>
+                                <td>
+                                    {{ $payment->narration }}
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    @empty
+                            @empty
 
-                        <tr>
-                            <td colspan="7" class="text-center">
-                                No Payment History Found
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    No Payment History Found
+                                </td>
+                            </tr>
 
-                    @endforelse
+                            @endforelse
 
-                    </tbody>
+                        </tbody>
 
-                </table>
+                    </table>
+
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
-</div>
 
 </main>
 

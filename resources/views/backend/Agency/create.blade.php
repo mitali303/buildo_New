@@ -10,39 +10,39 @@
         <div class="card">
             <div class="card-body">
                 <form action="{{ !empty($agencys) ? route('Agency.update') : route('Agency.store') }}"
-                      method="POST">
+                    method="POST">
                     @csrf
                     @if(!empty($agencys))
-                        @method('PUT')
-                        <input type="hidden" name="id" value="{{ $agencys->ID }}">
+                    @method('PUT')
+                    <input type="hidden" name="id" value="{{ $agencys->ID }}">
                     @endif
 
                     {{-- ROW 1: Type, Name, Contact No --}}
                     <div class="row">
-                        
+
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Name <span class="text-danger">*</span></label>
                             <input type="text" name="Name"
-                                   value="{{ old('Name', $agencys->Name ?? '') }}"
-                                   class="form-control @error('Name') is-invalid @enderror"
-                                   placeholder="Name">
+                                value="{{ old('Name', $agencys->Name ?? '') }}"
+                                class="form-control @error('Name') is-invalid @enderror"
+                                placeholder="Name">
                             @error('Name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Contact No <span class="text-danger">*</span></label>
                             <input type="text" name="ContactNo"
-                                   value="{{ old('ContactNo', $agencys->ContactNo ?? '') }}"
-                                   class="form-control @error('ContactNo') is-invalid @enderror"
-                                   placeholder="Contact No">
+                                value="{{ old('ContactNo', $agencys->ContactNo ?? '') }}"
+                                class="form-control @error('ContactNo') is-invalid @enderror"
+                                placeholder="Contact No">
                             @error('ContactNo') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-                    
+
                         <div class="mb-3 col-md-4">
-                             <label class="form-label">Address<span class="text-danger">*</span></label>
+                            <label class="form-label">Address<span class="text-danger">*</span></label>
                             <textarea name="Address" rows="2"
-                                      class="form-control @error('Address') is-invalid @enderror"
-                                      placeholder="Address">{{ old('Address', $agencys->Address ?? '') }}</textarea>
+                                class="form-control @error('Address') is-invalid @enderror"
+                                placeholder="Address">{{ old('Address', $agencys->Address ?? '') }}</textarea>
                             @error('Address') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                                                 <input type="number" step="1" name="MistriFemaleRate"
                                                     value="{{ old('MistriFemaleRate', $agencys->Mistri_f_rate ?? '') }}"
                                                     class="form-control">
-                                                    @error('MistriFemaleRate') <small class="text-danger">{{ $message }}</small> @enderror
+                                                @error('MistriFemaleRate') <small class="text-danger">{{ $message }}</small> @enderror
                                             </td>
                                         </tr>
 
@@ -86,13 +86,13 @@
                                                 <input type="number" step="1" name="LabourMaleRate"
                                                     value="{{ old('LabourMaleRate', $agencys->Labour_m_rate ?? '') }}"
                                                     class="form-control">
-                                                    @error('LabourMaleRate') <small class="text-danger">{{ $message }}</small> @enderror
+                                                @error('LabourMaleRate') <small class="text-danger">{{ $message }}</small> @enderror
                                             </td>
                                             <td>
                                                 <input type="number" step="1" name="LabourFemaleRate"
                                                     value="{{ old('LabourFemaleRate', $agencys->Labour_f_rate ?? '') }}"
                                                     class="form-control">
-                                                    @error('LabourFemaleRate') <small class="text-danger">{{ $message }}</small> @enderror
+                                                @error('LabourFemaleRate') <small class="text-danger">{{ $message }}</small> @enderror
                                             </td>
                                         </tr>
 
@@ -103,13 +103,13 @@
                                                 <input type="number" step="1" name="ThekedarMaleRate"
                                                     value="{{ old('ThekedarMaleRate', $agencys->Thekedar_m_rate ?? '') }}"
                                                     class="form-control">
-                                                    @error('ThekedarMaleRate') <small class="text-danger">{{ $message }}</small> @enderror
+                                                @error('ThekedarMaleRate') <small class="text-danger">{{ $message }}</small> @enderror
                                             </td>
                                             <td>
                                                 <input type="number" step="1" name="ThekedarFemaleRate"
                                                     value="{{ old('ThekedarFemaleRate', $agencys->Thekedar_f_rate ?? '') }}"
                                                     class="form-control">
-                                                    @error('ThekedarFemaleRate') <small class="text-danger">{{ $message }}</small> @enderror
+                                                @error('ThekedarFemaleRate') <small class="text-danger">{{ $message }}</small> @enderror
                                             </td>
                                         </tr>
 

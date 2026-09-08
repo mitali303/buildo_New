@@ -1,26 +1,28 @@
 @extends('backend.partials.master')
 @section('title')
-  Customer Refund
+Customer Refund
 @endsection
 <style>
     #datatables-buttons th:nth-child(2),
-#datatables-buttons td:nth-child(2) {
-    white-space: nowrap !important;
-}
-    @media (max-width: 768px) {
-    #datatables-buttons_wrapper .dataTables_length,
-    #datatables-buttons_wrapper .dataTables_filter {
-        width: 100%;
-        float: none;
-        text-align: left;
-        margin-bottom: 10px;
+    #datatables-buttons td:nth-child(2) {
+        white-space: nowrap !important;
     }
 
-    #datatables-buttons_wrapper .dt-buttons .btn {
-        padding: 4px 8px;
-        font-size: 12px;
+    @media (max-width: 768px) {
+
+        #datatables-buttons_wrapper .dataTables_length,
+        #datatables-buttons_wrapper .dataTables_filter {
+            width: 100%;
+            float: none;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        #datatables-buttons_wrapper .dt-buttons .btn {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
     }
-}
 </style>
 @section('maincontent')
 <main class="content">
@@ -30,9 +32,9 @@
                 <h3><strong></strong>Customer Refund</h3>
             </div>
             <div class="col-auto ms-auto text-end mt-n1">
-                
+
                 @if (hasPermission('create_customer_refund') == true)
-                    <a href="{{route('customer_refund.create')}}" class="btn btn-sm  btn-primary"><i class="fas fa-plus"></i>Add New Record</a>
+                <a href="{{route('customer_refund.create')}}" class="btn btn-sm  btn-primary"><i class="fas fa-plus"></i>Add New Record</a>
                 @endif
             </div>
         </div>
@@ -69,7 +71,7 @@
                                     <th> Amount</th>
                                     <th>Action</th>
                                 </tr>
-                               
+
                             </thead>
                         </table>
                     </div>
@@ -80,74 +82,90 @@
 </main>
 @endsection
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
 
-    let today = new Date();
-    let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        let today = new Date();
+        let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    function formatDate(date) {
-        let m = '' + (date.getMonth() + 1);
-        let d = '' + date.getDate();
-        let y = date.getFullYear();
+        function formatDate(date) {
+            let m = '' + (date.getMonth() + 1);
+            let d = '' + date.getDate();
+            let y = date.getFullYear();
 
-        if (m.length < 2) m = '0' + m;
-        if (d.length < 2) d = '0' + d;
+            if (m.length < 2) m = '0' + m;
+            if (d.length < 2) d = '0' + d;
 
-        return [y, m, d].join('-');
-    }
-
-    $('#from_date').val(formatDate(firstDay));
-    $('#to_date').val(formatDate(today));
-
-    let table = $('#datatables-buttons').DataTable({
-        processing: true,
-        serverSide: true,
-        responsive   : false,
-            scrollX: true,
-        orderCellsTop: true,
-        fixedHeader: true,
-
-        ajax: {
-            url: "{{ route('customer_refund') }}",
-            data: function(d){
-                d.from_date = $('#from_date').val();
-                d.to_date   = $('#to_date').val();
-            }
-        },
-
-        columns: [
-            { data: 'DT_RowIndex', orderable:false, searchable:false },
-            { data: 'date', name:'Date' },
-            { data: 'customer_name', name:'customers.CutomerName' },
-            { data: 'schemes_name', name:'schemes.Name' },
-            { data: 'amt_pay', name:'amt_pay' },
-            { data: 'actions', orderable:false, searchable:false }
-        ],
-
-        drawCallback: function(){
-            feather.replace();
+            return [y, m, d].join('-');
         }
-    });
 
-    $('#filterBtn').click(function(){
-        table.ajax.reload();
-    });
-
-    $('#resetBtn').click(function(){
         $('#from_date').val(formatDate(firstDay));
         $('#to_date').val(formatDate(today));
-        table.ajax.reload();
-    });
 
-    // column search
-    $('#datatables-buttons thead tr:eq(1) th').each(function (i) {
-        $('input', this).on('keyup change', function () {
-            table.column(i).search(this.value).draw();
+        let table = $('#datatables-buttons').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: false,
+            scrollX: true,
+            orderCellsTop: true,
+            fixedHeader: true,
+
+            ajax: {
+                url: "{{ route('customer_refund') }}",
+                data: function(d) {
+                    d.from_date = $('#from_date').val();
+                    d.to_date = $('#to_date').val();
+                }
+            },
+
+            columns: [{
+                    data: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'date',
+                    name: 'Date'
+                },
+                {
+                    data: 'customer_name',
+                    name: 'customers.CutomerName'
+                },
+                {
+                    data: 'schemes_name',
+                    name: 'schemes.Name'
+                },
+                {
+                    data: 'amt_pay',
+                    name: 'amt_pay'
+                },
+                {
+                    data: 'actions',
+                    orderable: false,
+                    searchable: false
+                }
+            ],
+
+            drawCallback: function() {
+                feather.replace();
+            }
         });
+
+        $('#filterBtn').click(function() {
+            table.ajax.reload();
+        });
+
+        $('#resetBtn').click(function() {
+            $('#from_date').val(formatDate(firstDay));
+            $('#to_date').val(formatDate(today));
+            table.ajax.reload();
+        });
+
+        // column search
+        $('#datatables-buttons thead tr:eq(1) th').each(function(i) {
+            $('input', this).on('keyup change', function() {
+                table.column(i).search(this.value).draw();
+            });
+        });
+
     });
-
-});
 </script>
-
-
-

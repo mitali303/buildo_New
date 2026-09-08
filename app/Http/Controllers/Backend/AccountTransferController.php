@@ -14,75 +14,75 @@ use Carbon\Carbon;
 
 class AccountTransferController extends Controller
 {
-    public function index(Request $request)
-{
-    if ($request->ajax()) {
+        public function index(Request $request)
+    {
+        if ($request->ajax()) {
 
-        $fromDate = $request->from_date
-            ? Carbon::parse($request->from_date)->startOfDay()
-            : Carbon::now()->startOfMonth();
+            $fromDate = $request->from_date
+                ? Carbon::parse($request->from_date)->startOfDay()
+                : Carbon::now()->startOfMonth();
 
-        $toDate = $request->to_date
-            ? Carbon::parse($request->to_date)->endOfDay()
-            : Carbon::now()->endOfDay();
+            $toDate = $request->to_date
+                ? Carbon::parse($request->to_date)->endOfDay()
+                : Carbon::now()->endOfDay();
 
-        $data = AccountTransfer::with(['accountFrom', 'accountTo'])
-        ->whereBetween('account_transfer.Date', [$fromDate, $toDate])
-        ->select(
-            'account_transfer.ID',
-            'account_transfer.Date',
-            'account_transfer.account_from',
-            'account_transfer.account_to',
-            'account_transfer.payment_method',
-            'account_transfer.balance',
-            'account_transfer.amt_pay'
-        )
-        ->orderBy('account_transfer.Date', 'DESC');
+            $data = AccountTransfer::with(['accountFrom', 'accountTo'])
+            ->whereBetween('account_transfer.Date', [$fromDate, $toDate])
+            ->select(
+                'account_transfer.ID',
+                'account_transfer.Date',
+                'account_transfer.account_from',
+                'account_transfer.account_to',
+                'account_transfer.payment_method',
+                'account_transfer.balance',
+                'account_transfer.amt_pay'
+            )
+            ->orderBy('account_transfer.Date', 'DESC');
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('date', fn($row) => date('d-m-Y', strtotime($row->Date)))
-            ->addColumn('account_from_name', fn($row) => $row->accountFrom->Name ?? '')
-            ->addColumn('account_to_name', fn($row) => $row->accountTo->Name ?? '')
-            ->addColumn('actions', function ($row) {
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('date', fn($row) => date('d-m-Y', strtotime($row->Date)))
+                ->addColumn('account_from_name', fn($row) => $row->accountFrom->Name ?? '')
+                ->addColumn('account_to_name', fn($row) => $row->accountTo->Name ?? '')
+                ->addColumn('actions', function ($row) {
 
-                $editUrl   = route('account_transfer.edit', $row->ID);
-                $deleteUrl = route('account_transfer.delete', $row->ID);
+                    $editUrl   = route('account_transfer.edit', $row->ID);
+                    $deleteUrl = route('account_transfer.delete', $row->ID);
 
-                $actions = '';
+                    $actions = '';
 
-                if (hasPermission('edit_add_bill')) {
-                    $actions .= '<a href="'.$editUrl.'" class="text-primary me-2">
-                                    <i class="align-middle" data-feather="edit"></i>
-                                </a>';
-                }
+                    if (hasPermission('edit_add_bill')) {
+                        $actions .= '<a href="'.$editUrl.'" class="text-primary me-2">
+                                        <i class="align-middle" data-feather="edit"></i>
+                                    </a>';
+                    }
 
-                if (hasPermission('delete_add_bill')) {
-                    $actions .= '<form action="'.$deleteUrl.'" method="POST" style="display:inline">
-                                    '.csrf_field().'
-                                    '.method_field("DELETE").'
-                                    <button type="submit" class="btn btn-link text-danger p-0"
-                                        onclick="return confirm(\'Are you sure?\')">
-                                        <i class="align-middle" data-feather="trash"></i>
-                                    </button>
-                                </form>';
-                }
+                    if (hasPermission('delete_add_bill')) {
+                        $actions .= '<form action="'.$deleteUrl.'" method="POST" style="display:inline">
+                                        '.csrf_field().'
+                                        '.method_field("DELETE").'
+                                        <button type="submit" class="btn btn-link text-danger p-0"
+                                            onclick="return confirm(\'Are you sure?\')">
+                                            <i class="align-middle" data-feather="trash"></i>
+                                        </button>
+                                    </form>';
+                    }
 
-                return $actions;
-            })
-            ->rawColumns(['actions'])
-            ->make(true);
+                    return $actions;
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+
+        /** ✅ DEFAULT VALUES FOR FIRST PAGE LOAD */
+        return view('backend.account_transfer.index', [
+            'fromDate' => $request->from_date 
+                ?? Carbon::now()->startOfMonth()->format('Y-m-d'),
+
+            'toDate' => $request->to_date 
+                ?? Carbon::now()->format('Y-m-d'),
+        ]);
     }
-
-    /** ✅ DEFAULT VALUES FOR FIRST PAGE LOAD */
-    return view('backend.account_transfer.index', [
-        'fromDate' => $request->from_date 
-            ?? Carbon::now()->startOfMonth()->format('Y-m-d'),
-
-        'toDate' => $request->to_date 
-            ?? Carbon::now()->format('Y-m-d'),
-    ]);
-}
 
 
     public function create()

@@ -48,35 +48,7 @@
                                     <th>Total Installments</th>
                                     <th>Action</th>
                                 </tr>
-                                 <!-- <tr>
-                                <th></th>
-
-                                <th>
-                                    <input type="date" id="search_date" class="form-control">
-                                </th>
-
-                                <th>
-                                    <input type="text" id="search_employee" placeholder="Search Employee" class="form-control">
-                                </th>
-
-                                <th>
-                                    <input type="text" id="search_advance" placeholder="Search Advance" class="form-control">
-                                </th>
-
-                                <th>
-                                    <input type="text" id="search_emi_amount" placeholder="Search EMI Amount" class="form-control">
-                                </th>
-
-                                <th>
-                                    <input type="text" id="search_remaining_amount" placeholder="Search Remaining Balance" class="form-control">
-                                </th>
-
-                                <th>
-                                    <input type="text" id="search_total_installments" placeholder="Search Total Installments" class="form-control">
-                                </th>
-
-                                <th></th>
-                            </tr> -->
+                                
                             </thead>
                         </table>
                     </div>
@@ -123,8 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
          dom:
             "<'row mb-2'<'col-md-6'l><'col-md-6 text-end'f>>" +
             "<'row mb-2'<'col-md-12'B>>" +
-            "<'row'<'col-sm-10'tr>>" +
-            "<'row mt-1'<'col-md-4'i><'col-md-7'p>>",
+            "<'row'<'col-md-12'tr>>" +
+            "<'row mt-1'<'col-md-4'i><'col-md-8'p>>",
 
         buttons: [
             {

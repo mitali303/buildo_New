@@ -25,8 +25,7 @@
           @endif -->
 
         @php
-        $PayStyle=$PStyle=$Style="display: none;";
-
+          $PayStyle = $PStyle = $Style = "display: none;";
         @endphp
           <div class="card-body">
             <form action="@if(!empty($postdated)){{ route('customer_refund.update') }}@else{{ route('customer_refund.store') }}@endif"
@@ -112,8 +111,8 @@
                       <th>Balance</th>
                       <th>Amount</th>
                       <th>Cheque No / Transaction ID</th>
-                      <th style="<?php echo $PayStyle ?>" id="banktitle" >Bank Charges</th>
-			                <th style="<?php echo $PayStyle ?>" id="totalvalue">Total Pay</th>
+                      <th style="{{ $PayStyle }}" id="banktitle" >Bank Charges</th>
+			                <th style="{{ $PayStyle }}" id="totalvalue">Total Pay</th>
                       
                       <th>Narration</th>
                       
@@ -168,10 +167,10 @@
                         <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $postdated->cheque_no ?? '') }}">
                       </td>
                       
-                      <td id="bankvalue" style="<?php echo $PayStyle ?>">
+                      <td id="bankvalue" style="{{ $PayStyle }}">
                         <input type="text" style="width: 100px"  <?php //echo $notread;?> name="bnk_charge" id="bnk_charge"   value="{{ old('bnk_charge', $postdated->amt_pay ?? '') }}"  onkeyup="cal_total();"  class=" form-control"/>
                       </td>
-			                <td id="totalamt" style="<?php echo $PayStyle ?>">
+			                <td id="totalamt" style="{{ $PayStyle }}">
                         <input type="text" style="width: 100px" readonly <?php //echo $notread;?> name="total_pay" id="total_pay"   value="{{ old('total_pay', $postdated->amt_pay ?? '') }}"  onkeyup="chkamt();cal_total();"  class=" form-control"/>
                       </td>
                       

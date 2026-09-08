@@ -14,11 +14,11 @@
                     <div class="card-body">
 
                         <form action="{{ !empty($bankform) ? route('BankForm.update') : route('BankForm.store') }}"
-                              method="POST">
+                            method="POST">
                             @csrf
                             @if(!empty($bankform))
-                                @method('PUT')
-                                <input type="hidden" name="id" value="{{ $bankform->ID }}">
+                            @method('PUT')
+                            <input type="hidden" name="id" value="{{ $bankform->ID }}">
                             @endif
 
                             <div class="row gy-3">
@@ -28,7 +28,7 @@
                                     <label class="form-label">Bank Name <span class="text-danger">*</span></label>
                                     <input type="text" name="bank_name"
                                         value="{{ old('bank_name', $bankform->bank_name ?? '') }}"
-                                        class="form-control @error('bank_name') is-invalid @enderror" >
+                                        class="form-control @error('bank_name') is-invalid @enderror">
                                     @error('bank_name') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -37,7 +37,7 @@
                                     <label class="form-label">To Name <span class="text-danger">*</span></label>
                                     <input type="text" name="to_name"
                                         value="{{ old('to_name', $bankform->to_name ?? '') }}"
-                                        class="form-control @error('to_name') is-invalid @enderror" >
+                                        class="form-control @error('to_name') is-invalid @enderror">
                                     @error('to_name') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -46,7 +46,7 @@
                                     <label class="form-label">Bank Address <span class="text-danger">*</span></label>
                                     <input type="text" name="bank_address"
                                         value="{{ old('bank_address', $bankform->address ?? '') }}"
-                                        class="form-control @error('bank_address') is-invalid @enderror" >
+                                        class="form-control @error('bank_address') is-invalid @enderror">
                                     @error('bank_address') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -55,7 +55,7 @@
                                     <label class="form-label">City <span class="text-danger">*</span></label>
                                     <input type="text" name="city"
                                         value="{{ old('city', $bankform->city ?? '') }}"
-                                        class="form-control @error('city') is-invalid @enderror" >
+                                        class="form-control @error('city') is-invalid @enderror">
                                     @error('city') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -64,7 +64,7 @@
                                     <label class="form-label">Pincode <span class="text-danger">*</span></label>
                                     <input type="text" name="pincode"
                                         value="{{ old('pincode', $bankform->pincode ?? '') }}"
-                                        class="form-control @error('pincode') is-invalid @enderror" >
+                                        class="form-control @error('pincode') is-invalid @enderror">
                                     @error('pincode') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -73,7 +73,7 @@
                                     <label class="form-label">Subject <span class="text-danger">*</span></label>
                                     <input type="text" name="subject"
                                         value="{{ old('subject', $bankform->subject	 ?? '') }}"
-                                        class="form-control @error('subject') is-invalid @enderror" >
+                                        class="form-control @error('subject') is-invalid @enderror">
                                     @error('subject') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -81,8 +81,7 @@
                                 <div class="col-md-12">
                                     <label class="form-label">Loan Request Details <span class="text-danger">*</span></label>
                                     <textarea name="loan_details" rows="4"
-                                            class="form-control @error('loan_details') is-invalid @enderror"
-                                            >{{ old('loan_details', $bankform->loan_request ?? '') }}</textarea>
+                                        class="form-control @error('loan_details') is-invalid @enderror">{{ old('loan_details', $bankform->loan_request ?? '') }}</textarea>
                                     @error('loan_details') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
 
@@ -109,4 +108,3 @@
     });
 </script>
 <!-- searchable dropdown script end-->
-
