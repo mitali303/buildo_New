@@ -6,49 +6,40 @@ Labour Work Details
 
 @section('maincontent')
 <main class="content">
-<div class="container-fluid p-0">
-
-    <div class="row mb-3">
-        <div class="col-6">
-            <h1 class="h3 mb-0">Labour Work Details</h1>
+    <div class="container-fluid p-0">
+        <div class="row mb-3">
+            <div class="col-6">
+                <h1 class="h3 mb-0">Labour Work Details</h1>
+            </div>
+            <div class="col-6 text-end">
+                <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">
+                    Back
+                </a>
+            </div>
         </div>
-
-        <div class="col-6 text-end">
-            <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">
-                Back
-            </a>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            
-            <table id="datatables-buttons" class="table table-striped w-100">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Work Date</th>
-                        <th>Grand Total</th>
-                        <th>Paid Amount</th>
-                    </tr>
-                </thead>
-
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th id="total-paid"></th>
-                    </tr>
-                </tfoot>
-            </table>
-
-            
-
+        <div class="card">
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Work Date</th>
+                            <th>Grand Total</th>
+                            <th>Paid Amount</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th id="total-paid"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
-
-</div>
 </main>
 @endsection
 

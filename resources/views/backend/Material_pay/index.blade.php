@@ -27,31 +27,26 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        @if (hasPermission('create_material_payment'))
-        <a href="{{route('Material_pay.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Material Payment</a>
-        @endif
-        <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Material Payment</h1> 
-        </div>
-
-        <div class="row mb-3">
-
-            <div class="col-6 col-md-3">
-                <label>From Date</label>
-                <input type="date" id="from_date" class="form-control">
+            @if (hasPermission('create_material_payment'))
+            <a href="{{route('Material_pay.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Material Payment</a>
+            @endif
+            <div class="mb-3">
+                <h1 class="h3 d-inline align-middle">Material Payment</h1> 
             </div>
-
-            <div class="col-6 col-md-3">
-                <label>To Date</label>
-                <input type="date" id="to_date" class="form-control">
+            <div class="row mb-3">
+                <div class="col-6 col-md-3">
+                    <label>From Date</label>
+                    <input type="date" id="from_date" class="form-control">
+                </div>
+                <div class="col-6 col-md-3">
+                    <label>To Date</label>
+                    <input type="date" id="to_date" class="form-control">
+                </div>
+                <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
+                    <button id="filterBtn" class="btn btn-primary">Filter</button>
+                    <button id="resetBtn" class="btn btn-secondary">Reset</button>
+                </div>
             </div>
-
-            <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-start align-items-end gap-2 mt-2 mt-md-0">
-                <button id="filterBtn" class="btn btn-primary">Filter</button>
-                <button id="resetBtn" class="btn btn-secondary">Reset</button>
-            </div>
-
-        </div>
         <div class="row">
             <div class="col-12"> 
                 <div class="card">

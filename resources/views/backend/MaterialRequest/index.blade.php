@@ -3,7 +3,6 @@
 @section('title')
     Material Request
 @endsection
-
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
@@ -13,7 +12,6 @@
                 <i class="fas fa-plus me-1"></i> New Material Request
             </a>
         </div>
-
         <div class="card">
             <div class="card-body">
                 <table id="material-request-table" class="table table-striped" style="width:100%">

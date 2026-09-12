@@ -3,33 +3,30 @@
 
 @section('maincontent')
 <main class="content">
-  <div class="container-fluid p-0">
-    <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Loan Management</h1>
-    </div>
+    <div class="container-fluid p-0">
+      <div class="mb-3">
+       <h1 class="h3 d-inline align-middle">Loan Management</h1>
+      </div>
 <style>
 .pdtl{
 	display:none;
-}</style>
+}
+</style>
     <div class="row">
       <div class="col-md-12">
         <div class="card">
-        @php
-        $PayStyle=$PStyle=$Style="display: none;";
-
-    
-
-        @endphp
+          @php
+          $PayStyle=$PStyle=$Style="display: none;";
+          @endphp
           <div class="card-body">
             <form action="@if(!empty($loans)){{ route('loan_management.update') }}@else{{ route('loan_management.store') }}@endif"
                   method="POST" enctype="multipart/form-data">
-              @csrf
-              @if(!empty($loans))
-                @method('PUT')
-                {{--<input type="hidden" name="ID" value="{{ $loans->ID }}">--}}
-              @endif
+                  @csrf
+                  @if(!empty($loans))
+                    @method('PUT')
+                    {{--<input type="hidden" name="ID" value="{{ $loans->ID }}">--}}
+                  @endif
               {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
-              
               <div class="row">
                 <div class="mb-3 col-md-3">
                     <label class="form-label" for="date">Date <small class="text-danger">*</small></label>
@@ -40,29 +37,26 @@
                 </div>
                 <div class="mb-3 col-md-3">
                     <label class="form-label d-block">Type<small class="text-danger">*</small></label>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="paytype" id="Paid" value="Paid"
-                            {{ old('paytype', $loans->paytype ?? '') == 'Paid' ? 'checked' : '' }}
-                            onchange="updateAmountTitle(); getAmt();">
-                      <label class="form-check-label">Given</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="paytype" id="Received" value="Received" {{ old('paytype', $loans->paytype ?? '') == 'Received' ? 'checked' : '' }}
-                            onchange="updateAmountTitle(); getAmt();">
-                      <label class="form-check-label">Taken</label>
-                  </div>
-                    @error('paytype')
-                      <small class="text-danger">{{ $message }}</small>
-                    @enderror
-
-                    <input type="hidden"  id="tp" name="tp" value="<?php echo $Paytype1; ?>">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="paytype" id="Paid" value="Paid"
+                              {{ old('paytype', $loans->paytype ?? '') == 'Paid' ? 'checked' : '' }}
+                              onchange="updateAmountTitle(); getAmt();">
+                        <label class="form-check-label">Given</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="paytype" id="Received" value="Received" {{ old('paytype', $loans->paytype ?? '') == 'Received' ? 'checked' : '' }}
+                                onchange="updateAmountTitle(); getAmt();">
+                          <label class="form-check-label">Taken</label>
+                      </div>
+                        @error('paytype')
+                          <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                      <input type="hidden"  id="tp" name="tp" value="<?php echo $Paytype1; ?>">
                 </div>
-
                 <div class="mb-3 col-md-3">
                   <label for="customer" class="form-label">Name <small class="text-danger">*</small></label>
                   <select name="customer" id="customer" class="form-control choices-single" required  onchange="getAmt();">
                     <option disabled selected value="">Select </option>
-                   
                     @foreach($partners_loan as $partners)
                       <option value="{{ $partners->ID }}"
                         {{ old('customer', $loans->customer ?? '') == $partners->ID ? 'selected' : '' }}>
@@ -74,19 +68,15 @@
                     <small class="text-danger">{{ $message }}</small>
                   @enderror
                 </div>
-
                 <div class="mb-3 col-md-3">
                   <label for="pending_amt" class="form-label">Pending Amount </label>
                   <div class="col-md-5" id="fcatdiv"> <lable  id="pendingAmt"  name="pendingAmt"> </lable>
 				          </div>
-                 
                 </div>
-
                 <div class="mb-3 col-md-3">
                   <label for="customer" class="form-label">Scheme <small class="text-danger">*</small></label>
                   <select name="scheme" id="scheme" class="form-control choices-single" required>
                     <option disabled selected value="">Select </option>
-                   
                     @foreach($schemes as $scheme)
                       <option value="{{ $scheme->ID }}"
                         {{ session('selected_scheme_id') == $scheme->ID ? 'selected' : '' }}>
@@ -104,58 +94,50 @@
                       <option disabled selected value="">Select </option>
                       <option value="0" {{ old('transType', $loans->transType ?? '') == '0' ? 'selected' : '' }}>Payment</option>
                       <option value="1" {{ old('transType', $loans->transType ?? '') == '1' ? 'selected' : '' }}>Interest</option>
-                      
                     </select>
-                  @error('transType')
-                    <small class="text-danger">{{ $message }}</small>
-                  @enderror
+                    @error('transType')
+                      <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
               </div>
-
               <div class="row">
                 <table class="table" id="mytable">
                   <thead>
                     <tr>
-                     
                       <th>Payment Method <small class="text-danger">*</small></th>
                       <th>Account No.</th>
                       <th  id="balanctitle">Balance</th>
                       <th>Cheque No / Transaction ID</th>
                       <th id="amount_title">Amount</th>
-
-
-                       
                       <th style="width: 12%;<?php echo $PayStyle ?>" id="banktitle" >Bank Charges</th>
 			                <th style="width: 18%;<?php echo $PayStyle ?>" id="totalvalue"> Total Pay</th>
 			                <th style="width: 20%;" class="pdtl">Bank Detail</th>
-                      
-                      <th>Narration</th>
+                       <th>Narration</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      
                       <td>
                         <div id="Div_paytype"> 
-                        <select name="Pay_type" id="Pay_type" class="form-control" onChange="checkType()">
-                          <option value="">Select Payment Method</option>
-                          <option value="cash" {{ old('payment_method', $loans->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
-                          <option value="cheque" {{ old('payment_method', $loans->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-                          <option value="e-payment" {{ old('payment_method', $loans->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
-                        </select>
-                      </div>
+                          <select name="Pay_type" id="Pay_type" class="form-control" onChange="checkType()">
+                            <option value="">Select Payment Method</option>
+                            <option value="cash" {{ old('payment_method', $loans->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="cheque" {{ old('payment_method', $loans->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                            <option value="e-payment" {{ old('payment_method', $loans->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
+                          </select>
+                        </div>
                       </td>
                       <td>
                         <div id="Ac" style="">
-                        <select name="account_no" id="account_no" class="form-control" onchange="getBalance();">
-                          <option value="">Select Account</option>
-                          @foreach($banks as $bank)
-                            <option value="{{ $bank->ID }}"
-                              {{ old('account_no', $loans->account_no ?? '') == $bank->ID ? 'selected' : '' }}>
-                              {{ $bank->Name }}
-                            </option>
-                          @endforeach
-                        </select>
+                          <select name="account_no" id="account_no" class="form-control" onchange="getBalance();">
+                            <option value="">Select Account</option>
+                            @foreach($banks as $bank)
+                              <option value="{{ $bank->ID }}"
+                                {{ old('account_no', $loans->account_no ?? '') == $bank->ID ? 'selected' : '' }}>
+                                {{ $bank->Name }}
+                              </option>
+                            @endforeach
+                          </select>
                         </div>
                       </td>
                       <td id="balancevalue">
@@ -171,7 +153,6 @@
                         @enderror
                         <input type="hidden"  style=""name="amount_pay_old" id="amount_pay_old"  value="<?php //echo $pendingAmt;?>" onkeyup="" class="required input-md form-control "/>
                       </td>
-                       
                       <td id="bankvalue" style="<?php echo $PayStyle ?>">
                         <input type="text"  name="bankcharge" id="bankcharge" class="form-control " value="{{ old('bankcharge', ($loans->amt_pay ?? 0) + ($loans->bankcharge ?? 0)) }}" onkeyup="cal_total();">
                         @error('bankcharge')
@@ -195,7 +176,6 @@
                   </tbody>
                 </table>
               </div>
-
               <br>
               <button type="submit" class="btn btn-primary">{{ empty($loans) ? 'Create' : 'Update' }}</button>
               <a href="{{ route('loan_management') }}" class="btn btn-secondary">Cancel</a>

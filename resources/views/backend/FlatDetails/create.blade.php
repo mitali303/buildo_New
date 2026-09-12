@@ -23,47 +23,40 @@
 <main class="content">
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3">{{ !empty($flat) ? 'Edit Flat Details' : 'Create Flat / Project Details' }}</h1>
-
         <div class="card">
             <div class="card-body">
-<form onsubmit="return handleFlatFormSubmit(this, event);" action="{{ !empty($flat) ? route('Flat.update') : route('Flat.store') }}" method="POST">
-    <input type="hidden" name="uploadfile[]">
-    <input type="hidden" id="Uid" name="Uid" value="{{ $flat->ID ?? '' }}">
-
-                    @csrf
-                    @if(!empty($flat))
-                        @method('PUT')
-                        <input type="hidden" name="id" value="{{ $flat->ID }}">
-                    @endif
-
+                <form onsubmit="return handleFlatFormSubmit(this, event);" action="{{ !empty($flat) ? route('Flat.update') : route('Flat.store') }}" method="POST">
+                        <input type="hidden" name="uploadfile[]">
+                        <input type="hidden" id="Uid" name="Uid" value="{{ $flat->ID ?? '' }}">
+                        @csrf
+                        @if(!empty($flat))
+                            @method('PUT')
+                            <input type="hidden" name="id" value="{{ $flat->ID }}">
+                        @endif
                     <div class="row">
                         <div class="col-md-4">
-                                    <label class="form-label">Scheme <span class="required-star">*</span></label>
-                                    <select class="form-control choices-single-scheme choices-single_status @error('scheme') is-invalid @enderror"
+                                <label class="form-label">Scheme <span class="required-star">*</span></label>
+                                <select class="form-control choices-single-scheme choices-single_status @error('scheme') is-invalid @enderror"
                                             name="scheme" id="scheme" onchange="fetchSchemeDetails(this.value)">
-                                        <option value="">Select Scheme</option>
+                                    <option value="">Select Scheme</option>
                                         @foreach($schemes as $scheme)
                                             <option value="{{ $scheme->ID }}"
                                                 {{ old('scheme', $flat->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
                                                 {{ $scheme->Name }}
                                             </option>
                                         @endforeach
-                                    </select>
-                                    <small id="scheme-error" class="text-danger"></small>
-                                </div>
-
+                                </select>
+                                <small id="scheme-error" class="text-danger"></small>
+                         </div>
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Address</label>
-                            <textarea readonly id="address" name="Address" rows="2"
-                            class="form-control @error('Address') is-invalid @enderror"
-                            placeholder="Address">{{ old('Address', $flat->Address ?? '') }}</textarea>
-                            @error('Address') <small class="text-danger">{{ $message }}</small> @enderror
+                            <textarea readonly id="address" name="Address" rows="2" class="form-control @error('Address') is-invalid @enderror"
+                                 placeholder="Address">{{ old('Address', $flat->Address ?? '') }}</textarea>
+                                @error('Address') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Location</label>
-                            <input readonly type="text" id="location" name="Location"
-                                value="{{ old('Location', $flat->Location ?? '') }}"
+                            <input readonly type="text" id="location" name="Location" value="{{ old('Location', $flat->Location ?? '') }}"
                                 class="form-control @error('Location') is-invalid @enderror"
                                 placeholder="Location">
                             @error('Location') <small class="text-danger">{{ $message }}</small> @enderror
@@ -73,359 +66,309 @@
                     <div class="row">
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Email</label>
-                            <input readonly type="email" id="email" name="Email"
-                                value="{{ old('Email', $flat->Email ?? '') }}"
-                                class="form-control @error('Email') is-invalid @enderror"
-                                placeholder="Email">
+                            <input readonly type="email" id="email" name="Email" value="{{ old('Email', $flat->Email ?? '') }}"
+                                class="form-control @error('Email') is-invalid @enderror" placeholder="Email">
                             @error('Email') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Contact Person</label>
-                            <input readonly type="text" id="cperson" name="ContactPerson"
-                                value="{{ old('ContactPerson', $flat->contactperson ?? '') }}"
-                                class="form-control @error('ContactPerson') is-invalid @enderror"
-                                placeholder="Contact Person">
+                            <input readonly type="text" id="cperson" name="ContactPerson" value="{{ old('ContactPerson', $flat->contactperson ?? '') }}"
+                                class="form-control @error('ContactPerson') is-invalid @enderror" placeholder="Contact Person">
                             @error('ContactPerson') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Contact Number</label>
-                            <input readonly type="text" id="cnumber" name="ContactNo"
-                                value="{{ old('ContactNo', $flat->cnumber ?? '') }}"
-                                class="form-control @error('ContactNo') is-invalid @enderror"
-                                placeholder="Contact Number">
+                            <input readonly type="text" id="cnumber" name="ContactNo" value="{{ old('ContactNo', $flat->cnumber ?? '') }}"
+                                class="form-control @error('ContactNo') is-invalid @enderror" placeholder="Contact Number">
                             @error('ContactNo') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
 
-                    <div class="row">
-                        {{-- Category --}}
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Category <span class="required-star">*</span></label>
+                                <div class="row">
+                                    {{-- Category --}}
+                                    <div class="mb-3 col-md-4">
+                                        <label class="form-label">Category <span class="required-star">*</span></label>
+                                        @php
+                                            $category_array = ["Residential", "Commercial", "Plotting", "Row Houses", "OTHER"];
+                                            $selected_categories = array_filter(
+                                                array_map('trim', explode(',', $flat->Category ?? '')),
+                                                fn($val) => $val !== ''
+                                            );
+                                            $custom_categories = collect($selected_categories)->diff($category_array)->values();
+                                            $other_value = $custom_categories->first() ?? '';
+                                        @endphp
 
-                            @php
-                                $category_array = ["Residential", "Commercial", "Plotting", "Row Houses", "OTHER"];
-                                $selected_categories = array_filter(
-                                    array_map('trim', explode(',', $flat->Category ?? '')),
-                                    fn($val) => $val !== ''
-                                );
-                                $custom_categories = collect($selected_categories)->diff($category_array)->values();
-                                $other_value = $custom_categories->first() ?? '';
-                            @endphp
+                                        <select name="category[]" id="categorySelect" class="form-control select2" multiple="multiple">
+                                            @foreach ($category_array as $category)
+                                                <option value="{{ $category }}"
+                                                    {{ in_array($category, $selected_categories) ? 'selected' : '' }}>
+                                                    {{ $category }}
+                                                </option>
+                                            @endforeach
+                                            {{-- Custom categories --}}
+                                            @foreach ($custom_categories as $customCat)
+                                                @if(trim($customCat) !== '')
+                                                    <option value="{{ $customCat }}" selected>
+                                                        {{ $customCat }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
 
-                            <select name="category[]" id="categorySelect"
-                                class="form-control select2" multiple="multiple">
+                                        </select>
+                                        <small id="category-error" class="text-danger"></small>
+                                    </div>
 
-                                @foreach ($category_array as $category)
-                                    <option value="{{ $category }}"
-                                        {{ in_array($category, $selected_categories) ? 'selected' : '' }}>
-                                        {{ $category }}
-                                    </option>
-                                @endforeach
-
-                                {{-- Custom categories --}}
-                                @foreach ($custom_categories as $customCat)
-                                    @if(trim($customCat) !== '')
-                                        <option value="{{ $customCat }}" selected>
-                                            {{ $customCat }}
-                                        </option>
-                                    @endif
-                                @endforeach
-
-                            </select>
-
-                            <small id="category-error" class="text-danger"></small>
-                        </div>
-
-                        {{-- Other Category --}}
-                       <div id="otherCategoryBox" class="mb-3 col-md-4" style="{{ in_array('OTHER', $selected_categories) ? '' : 'display: none;' }}">
-                        <label class="form-label">Other Category</label>
-                        <input type="text" name="OtherCat" id="OtherCat" class="form-control" placeholder="Enter other category"
-                            value="{{ $other_value }}"
-                            onkeyup="updateOtherCheckboxValue();">
-                    </div>
-
-                         <div class="col-md-4 goleft"><label class="form-label">Total Area In Sq.Ft.:<span class="required-star">*</span></label>
-                            <input type="text" id="area" name="area" class="form-control number" placeholder="Enter Total Area In Sq.Ft." oninput="calculateAllAmounts()"
-                                value="{{ old('area', $flat->Area ?? '') }}"
-                                onkeyup="calccost();" onblur="calccost();" />
-                                    <small id="area-error" class="text-danger"></small>
-                        </div>
-                    </div>
-                        <div class="row">
-                            <div class="col-md-4"><label class="form-label">Project / Contract Detail</label>
-                                <textarea name="detail" rows="3" class="form-control" 
-                                    {{ $readonly ?? '' }}  placeholder="Project / Contract Details">{{ old('detail', $flat->Detail ?? '') }}</textarea>
-                            </div>
-
-                            <div class="col-md-4"><label class="form-label">Government Rate Sq.Ft.<span class="required-star">*</span></label>
-                                <input name="gov_rate" id="gov_rate" type="text"  placeholder="Government Rate Sq.FT."
-                                    class="number form-control" oninput="calculateAllAmounts()"
-                                    value="{{ old('gov_rate', $flat->gov_rate ?? '') }}"
-                                    {{ $readonly ?? '' }} />
-                                        <small id="gov_rate-error" class="text-danger"></small>
-                            </div>
-
-                            <div class="col-md-4"><label class="form-label">Total Amount.<span class="required-star">*</span></label>
-                                <input name="TotalareaAmount" id="TotalareaAmount" type="text"  placeholder="Government Rate Sq.FT."
-                                    class="number form-control" oninput="calculateAllAmounts()"
-                                    value="{{ old('TotalareaAmount', $flat->TotalareaAmount ?? '') }}"
-                                    {{ $readonly ?? '' }} />
-                                        <small id="TotalareaAmount-error" class="text-danger"></small>
-                            </div>
-
-                           <div class="col-md-4 mt-3">
-                                <label class="form-label">Type <span class="required-star">*</span></label>
-                                <select name="type" id="typeSelector" class="form-control">
-                                    <option value="">Select Type</option>
-                                    <option value="project" {{ old('type', $flat->type ?? '')=='project' ? 'selected' : '' }}>
-                                        Project
-                                    </option>
-                                    <option value="individual" {{ old('type', $flat->type ?? '')=='individual' ? 'selected' : '' }}>
-                                        Individual
-                                    </option>
-                                </select>
-                                <small id="type-error" class="text-danger"></small>
-                            </div>
-                        </div>
-                        <div id="projectFields" style="display:none">
-                        <div class="row">
-                            
-                           <div class="col-md-4 mt-3"><label class="form-label">Project Builtup Area Sq.Ft.<span class="required-star">*</span></label>
-                                <input name="builtuparea" id="builtuparea" type="text"  placeholder="Project Builtup Area"
-                                    class="number form-control"
-                                    value="{{ old('builtuparea', $flat->BuiltupArea ?? '') }}"
-                                    {{ $readonly ?? '' }} />
-                                        <small id="builtuparea-error" class="text-danger"></small>
-                            </div>
-                        
-                        @php
-                            $amenities_array = ["Balcony", "Terrace Balcony", "Parking", "Lift", "Security", "OTHER"];
-                            $selected_amenities = explode(",", $flat->Amenities ?? '');
-                            $custom_amenities = collect($selected_amenities)->diff($amenities_array)->values();
-                        @endphp
-                        
-                        <div class="col-md-4 mt-3">
-                            <label class="form-label">Amenities<span class="required-star">*</span></label>
-                            <div class="position-relative">
-                                <button type="button" class="btn btn-outline-secondary w-100 text-left" id="amenityDropdownBtn">
-                                    Select Amenities <span class="float-end">▼</span>
-                                </button>
-
-                                <div id="ami"
-                                    class="border rounded p-2 bg-white position-absolute w-100 shadow"
-                                    style="display: none; max-height: 200px; overflow-y: auto; z-index: 1000;">
-
-                                    @foreach ($amenities_array as $item)
-                                        <label class="d-block px-2">
-                                            <input type="checkbox" name="amenities[]" value="{{ $item }}"
-                                                id="{{ $item == 'OTHER' ? 'OtherChk1' : '' }}"
-                                                {{ in_array($item, $selected_amenities) ? 'checked' : '' }}>
-                                            {{ $item }}
-                                        </label>
-                                    @endforeach
-
-                                   @foreach ($custom_amenities as $custom)
-                                        @if(trim($custom) !== '')
-                                            <label class="d-block px-2">
-                                                <input type="checkbox" name="amenities[]" value="{{ $custom }}" checked>
-                                                {{ $custom }}
-                                            </label>
-                                        @endif
-                                    @endforeach
+                                    {{-- Other Category --}}
+                                <div id="otherCategoryBox" class="mb-3 col-md-4" style="{{ in_array('OTHER', $selected_categories) ? '' : 'display: none;' }}">
+                                        <label class="form-label">Other Category</label>
+                                        <input type="text" name="OtherCat" id="OtherCat" class="form-control" placeholder="Enter other category"
+                                            value="{{ $other_value }}" onkeyup="updateOtherCheckboxValue();">
+                                    </div>
+                                    <div class="col-md-4 goleft"><label class="form-label">Total Area In Sq.Ft.:<span class="required-star">*</span></label>
+                                        <input type="text" id="area" name="area" class="form-control number" placeholder="Enter Total Area In Sq.Ft." oninput="calculateAllAmounts()"
+                                            value="{{ old('area', $flat->Area ?? '') }}" onkeyup="calccost();" onblur="calccost();" />
+                                                <small id="area-error" class="text-danger"></small>
+                                    </div>
                                 </div>
-                            </div>
-                                <small id="amenities-error" class="text-danger"></small>
-                        </div>
-                        {{-- Other Amenities Textbox --}}
-                        <div class="mb-3 col-md-4" id="OtherAmenities_div" style="display: {{ in_array('OTHER', $selected_amenities) ? 'block' : 'none' }};">
-                            <label class="form-label">Other Amenities</label>
-                            <input type="text" name="OtherAmenities" id="OtherAmenities" class="form-control"
-                                placeholder="Enter other amenities"
-                                value="{{ $custom_amenities->first() ?? '' }}"
-                                onkeyup="OtherValue()">
-                        </div>
-                    <div class="col-md-4 mt-3">
-                        <label class="form-label">Upload Amenities Images</label>
-                        
-                        <!-- File input -->
-                        <input type="file" id="fileInput" name="images[]" multiple class="form-control" />
+                                <div class="row">
+                                    <div class="col-md-4"><label class="form-label">Project / Contract Detail</label>
+                                            <textarea name="detail" rows="3" class="form-control" {{ $readonly ?? '' }}  placeholder="Project / Contract Details">{{ old('detail', $flat->Detail ?? '') }}</textarea>
+                                    </div>
+                                    <div class="col-md-4"><label class="form-label">Government Rate Sq.Ft.<span class="required-star">*</span></label>
+                                            <input name="gov_rate" id="gov_rate" type="text"  placeholder="Government Rate Sq.FT."
+                                                class="number form-control" oninput="calculateAllAmounts()" value="{{ old('gov_rate', $flat->gov_rate ?? '') }}"
+                                                {{ $readonly ?? '' }} />
+                                                <small id="gov_rate-error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Total Amount.<span class="required-star">*</span></label>
+                                            <input name="TotalareaAmount" id="TotalareaAmount" type="text"  placeholder="Government Rate Sq.FT."
+                                                class="number form-control" oninput="calculateAllAmounts()" value="{{ old('TotalareaAmount', $flat->TotalareaAmount ?? '') }}"
+                                                {{ $readonly ?? '' }} />
+                                                <small id="TotalareaAmount-error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <label class="form-label">Type <span class="required-star">*</span></label>
+                                            <select name="type" id="typeSelector" class="form-control">
+                                                <option value="">Select Type</option>
+                                                <option value="project" {{ old('type', $flat->type ?? '')=='project' ? 'selected' : '' }}>
+                                                    Project
+                                                </option>
+                                                <option value="individual" {{ old('type', $flat->type ?? '')=='individual' ? 'selected' : '' }}>
+                                                    Individual
+                                                </option>
+                                            </select>
+                                            <small id="type-error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div id="projectFields" style="display:none">
+                                    <div class="row">
+                                    <div class="col-md-4 mt-3"><label class="form-label">Project Builtup Area Sq.Ft.<span class="required-star">*</span></label>
+                                            <input name="builtuparea" id="builtuparea" type="text"  placeholder="Project Builtup Area"
+                                                class="number form-control" value="{{ old('builtuparea', $flat->BuiltupArea ?? '') }}"
+                                                {{ $readonly ?? '' }} />
+                                                <small id="builtuparea-error" class="text-danger"></small>
+                                        </div>
+                                        @php
+                                            $amenities_array = ["Balcony", "Terrace Balcony", "Parking", "Lift", "Security", "OTHER"];
+                                            $selected_amenities = explode(",", $flat->Amenities ?? '');
+                                            $custom_amenities = collect($selected_amenities)->diff($amenities_array)->values();
+                                        @endphp
+                                    
+                                        <div class="col-md-4 mt-3">
+                                            <label class="form-label">Amenities<span class="required-star">*</span></label>
+                                            <div class="position-relative">
+                                                <button type="button" class="btn btn-outline-secondary w-100 text-left" id="amenityDropdownBtn">
+                                                    Select Amenities <span class="float-end">▼</span>
+                                                </button>
 
-                        <!-- Upload status display -->
-                        <ul id="fileList" class="mt-3 list-unstyled"></ul>
-                    </div>
-                    </div>
-                    @php use App\Models\Backend\Scheme_Flat;
-                            @endphp
+                                                <div id="ami" class="border rounded p-2 bg-white position-absolute w-100 shadow"
+                                                    style="display: none; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                                                    @foreach ($amenities_array as $item)
+                                                        <label class="d-block px-2">
+                                                            <input type="checkbox" name="amenities[]" value="{{ $item }}"
+                                                                id="{{ $item == 'OTHER' ? 'OtherChk1' : '' }}"
+                                                                {{ in_array($item, $selected_amenities) ? 'checked' : '' }}>
+                                                            {{ $item }}
+                                                        </label>
+                                                    @endforeach
 
-                            @php
-                                $schemeId = old('scheme',isset($flat) ? $flat->ID : '');
-                                $flatRows = Scheme_Flat::where('scheme_ID', $schemeId)->get();
-                                if ($flatRows->isEmpty()) {
-                                    $flatRows = collect([['Type' => '', 'NoOfFlat' => '']]);
-                                }
-                            @endphp
+                                                    @foreach ($custom_amenities as $custom)
+                                                            @if(trim($custom) !== '')
+                                                                <label class="d-block px-2">
+                                                                    <input type="checkbox" name="amenities[]" value="{{ $custom }}" checked>
+                                                                    {{ $custom }}
+                                                                </label>
+                                                            @endif
+                                                        @endforeach
+                                            </div>
+                                        </div>
+                                            <small id="amenities-error" class="text-danger"></small>
+                                    </div>
+                                    {{-- Other Amenities Textbox --}}
+                                    <div class="mb-3 col-md-4" id="OtherAmenities_div" style="display: {{ in_array('OTHER', $selected_amenities) ? 'block' : 'none' }};">
+                                        <label class="form-label">Other Amenities</label>
+                                        <input type="text" name="OtherAmenities" id="OtherAmenities" class="form-control"
+                                            placeholder="Enter other amenities" value="{{ $custom_amenities->first() ?? '' }}"
+                                            onkeyup="OtherValue()">
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <label class="form-label">Upload Amenities Images</label>
+                                        <!-- File input -->
+                                        <input type="file" id="fileInput" name="images[]" multiple class="form-control" />
+                                        <!-- Upload status display -->
+                                        <ul id="fileList" class="mt-3 list-unstyled"></ul>
+                                    </div>
+                                </div>
+                                @php use App\Models\Backend\Scheme_Flat;
+                                        @endphp
 
-            <input type="hidden" id="cnt1" name="cnt1" value="{{ count($flatRows) }}">
-
-                                        <div class="row justify-content-center">
-                <div class="col-md-8"> {{-- Adjust width as needed --}}
-                    <table id="myTable1" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Type of Flat</th>
-                                <th>No Of flats/plots/row houses</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-            <tbody id="p_scents1">
-                @foreach($flatRows as $index => $row)
-                    <tr id="prod_{{ $loop->iteration }}">
-                        @php
-                            $rowId = $row->ID ?? uniqid();
-                        @endphp
-
-                        <input type="hidden" name="row_ids[]" value="{{ $rowId }}">
-
-                        <td id="ftypedv{{ $loop->iteration }}">
-                            <select name="ftype{{ $rowId }}" class="form-control chosen-select" id="ftype{{ $loop->iteration }}"
-                                onchange="checkexists('prod_{{ $loop->iteration }}'); Getother('prod_{{ $loop->iteration }}');">
-                                <option value="">Select</option>
-                                @php
-                                    $existingTypes = ['bhk', '1bhk', '2bhk', '3bhk', '4bhk'];
-                                    $allTypes = Scheme_Flat::select('Type')->groupBy('Type')->pluck('Type')->toArray();
-                                    $customTypes = array_diff($allTypes, $existingTypes);
+                                        @php
+                                            $schemeId = old('scheme',isset($flat) ? $flat->ID : '');
+                                            $flatRows = Scheme_Flat::where('scheme_ID', $schemeId)->get();
+                                            if ($flatRows->isEmpty()) {
+                                                $flatRows = collect([['Type' => '', 'NoOfFlat' => '']]);
+                                            }
                                 @endphp
 
-                                @foreach(array_merge($existingTypes, $customTypes) as $type)
-                                    <option value="{{ $type }}"
-                                        @if(($row->Type ?? '') == $type) selected @endif>
-                                        {{ $type }}
-                                    </option>
-                                @endforeach
-                                <option value="Other">Other</option>
-                            </select>
-                                <small id="ftype-error-{{ $rowId }}" class="text-danger"></small>
-                        </td>
-                        <td>
-                            <input type="text" name="flatcnt{{ $rowId }}" id="flatcnt{{ $loop->iteration }}"
-                                class="form-control number" value="{{ $row->NoOfFlat ?? '' }}">
-                                <small id="flatcnt-error-{{ $rowId }}" class="text-danger"></small>
-                        </td>
-                        <td id="rmv_{{ $loop->iteration }}">
-                            <a onclick="cancelrow({{ $loop->iteration }});" class="btn btn-sm">
-                               <i data-feather='trash'></i>
-                            </a>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                        <input type="hidden" id="cnt1" name="cnt1" value="{{ count($flatRows) }}">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8"> {{-- Adjust width as needed --}}
+                                <table id="myTable1" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Type of Flat</th>
+                                                    <th>No Of flats/plots/row houses</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                    <tbody id="p_scents1">
+                                        @foreach($flatRows as $index => $row)
+                                            <tr id="prod_{{ $loop->iteration }}">
+                                                @php
+                                                    $rowId = $row->ID ?? uniqid();
+                                                @endphp
 
-        <div class="row mt-3">
-            <div class="col text-start">
-                <button type="button" onclick="addRow1()" class="btn btn-danger btn-sm">Add New</button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
+                                                <input type="hidden" name="row_ids[]" value="{{ $rowId }}">
 
+                                                <td id="ftypedv{{ $loop->iteration }}">
+                                                    <select name="ftype{{ $rowId }}" class="form-control chosen-select" id="ftype{{ $loop->iteration }}"
+                                                        onchange="checkexists('prod_{{ $loop->iteration }}'); Getother('prod_{{ $loop->iteration }}');">
+                                                        <option value="">Select</option>
+                                                        @php
+                                                            $existingTypes = ['bhk', '1bhk', '2bhk', '3bhk', '4bhk'];
+                                                            $allTypes = Scheme_Flat::select('Type')->groupBy('Type')->pluck('Type')->toArray();
+                                                            $customTypes = array_diff($allTypes, $existingTypes);
+                                                        @endphp
 
-            <div class="row mt-3" id="titleAmountSection" style="display:none;">
-                        <div class="col-md-4 goleft"><label class="form-label">Head Room Area Sq.Ft.:<span class="required-star">*</span></label>
-                            <input type="text" id="head_roomarea" name="head_roomarea" class="form-control number" placeholder="Enter Total head room area In Sq.Ft." oninput="calculateAllAmounts()"
-                                value="{{ old('head_roomarea', $flat->head_roomarea ?? '') }}"
-                                onkeyup="calccost();" onblur="calccost();" />
-                                    <small id="head_roomarea-error" class="text-danger"></small>
-                        </div>
-                        <div class="col-md-4 goleft"><label class="form-label">Head Room Area Rate.:<span class="required-star">*</span></label>
-                            <input type="text" id="head_rate" name="head_rate" class="form-control number" placeholder="Enter Head Room Area Rate." oninput="calculateAllAmounts()"
-                                value="{{ old('head_rate', $flat->head_rate ?? '') }}"
-                                onkeyup="calccost();" onblur="calccost();" />
-                                    <small id="head_rate-error" class="text-danger"></small>
-                        </div>
-                        <div class="col-md-4 goleft"><label class="form-label">Head Room Amount.:<span class="required-star">*</span></label>
-                            <input type="text" id="TotalheadAmount" name="TotalheadAmount" class="form-control number" placeholder="Enter Head Room Amount" oninput="calculateAllAmounts()"
-                                value="{{ old('TotalheadAmount', $flat->TotalheadAmount ?? '') }}"
-                                onkeyup="calccost();" onblur="calccost();" />
-                                    <small id="TotalheadAmount-error" class="text-danger"></small>
-                        </div>
-                        <br><br>
-                        
-                        <div class="col-md-4 goleft mt-3"><label class="form-label">Final Amount:<span class="required-star">*</span></label>
-                            <input type="text" id="TotalProjectAmount" name="TotalProjectAmount" class="form-control number" placeholder="Enter Total Final amount."
-                                value="{{ old('TotalProjectAmount', $flat->TotalProjectAmount ?? '') }}"
-                                onkeyup="calccost();" onblur="calccost();" />
-                                    <small id="TotalProjectAmount-error" class="text-danger"></small>
-                        </div>
-                    
-    <div class="col-md-8 mt-3">
-        <table id="myTable2" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th style="width:150px;">Amount</th>
-                    <th style="width:50px;"></th>
-                </tr>
-            </thead>
-            <tbody id="p_scents2">
-                @php
-                    $titles = $titleAmounts ?? collect([
-                        (object)['title' => '', 'amt' => '']
-                    ]);
-                @endphp
-
-                @foreach($titles as $i => $row)
-                <tr id="prod2_{{ $loop->iteration }}">
-                    <td>
-                        <input type="text"
-                               name="title{{ $loop->iteration }}"
-                               id="title{{ $loop->iteration }}"
-                               class="form-control"
-                               value="{{ $row->title ?? '' }}">
-                    </td>
-                    <td>
-                        <input type="text"
-                               name="amt{{ $loop->iteration }}"
-                               id="amt{{ $loop->iteration }}"
-                               class="form-control number"
-                               value="{{ $row->amt ?? '' }}"
-                               oninput="recalculateTitleTotal()">
-                    </td>
-                    <td>
-                        <a onclick="removeTitleRow({{ $loop->iteration }})" class="btn btn-sm">
-                            <i data-feather="trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <input type="hidden" id="cnt2" name="cnt2" value="{{ count($titles) }}">
-
-        <button type="button" class="btn btn-danger btn-sm" onclick="addTitleRow()">
-            Add New
-        </button>
-    </div>
-</div>
-
-                                <!-- <div class="col-md-7">
-                                    <button type="button" onclick="CountFlat('{{ request('Task') }}')" class="btn btn-primary nextBtn">Show Flats Details</button>
-                                </div> -->
-
-                    {{-- Submit --}}
-                    <br>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btn-primary">
-                                {{ !empty($flat) ? 'Update' : 'Create' }}
-                            </button>
-                            <a href="{{ route('Flat') }}" class="btn btn-secondary">Cancel</a>
+                                                        @foreach(array_merge($existingTypes, $customTypes) as $type)
+                                                            <option value="{{ $type }}"
+                                                                @if(($row->Type ?? '') == $type) selected @endif>
+                                                                {{ $type }}
+                                                            </option>
+                                                        @endforeach
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                        <small id="ftype-error-{{ $rowId }}" class="text-danger"></small>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="flatcnt{{ $rowId }}" id="flatcnt{{ $loop->iteration }}"
+                                                        class="form-control number" value="{{ $row->NoOfFlat ?? '' }}">
+                                                        <small id="flatcnt-error-{{ $rowId }}" class="text-danger"></small>
+                                                </td>
+                                                <td id="rmv_{{ $loop->iteration }}">
+                                                    <a onclick="cancelrow({{ $loop->iteration }});" class="btn btn-sm">
+                                                    <i data-feather='trash'></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <div class="row mt-3">
+                                    <div class="col text-start">
+                                        <button type="button" onclick="addRow1()" class="btn btn-danger btn-sm">Add New</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                        <div class="row mt-3" id="titleAmountSection" style="display:none;">
+                            <div class="col-md-4 goleft"><label class="form-label">Head Room Area Sq.Ft.:<span class="required-star">*</span></label>
+                                <input type="text" id="head_roomarea" name="head_roomarea" class="form-control number" placeholder="Enter Total head room area In Sq.Ft." oninput="calculateAllAmounts()"
+                                    value="{{ old('head_roomarea', $flat->head_roomarea ?? '') }}" onkeyup="calccost();" onblur="calccost();" />
+                                <small id="head_roomarea-error" class="text-danger"></small>
+                            </div>
+                            <div class="col-md-4 goleft"><label class="form-label">Head Room Area Rate.:<span class="required-star">*</span></label>
+                                <input type="text" id="head_rate" name="head_rate" class="form-control number" placeholder="Enter Head Room Area Rate." oninput="calculateAllAmounts()"
+                                    value="{{ old('head_rate', $flat->head_rate ?? '') }}" onkeyup="calccost();" onblur="calccost();" />
+                                <small id="head_rate-error" class="text-danger"></small>
+                            </div>
+                            <div class="col-md-4 goleft"><label class="form-label">Head Room Amount.:<span class="required-star">*</span></label>
+                                <input type="text" id="TotalheadAmount" name="TotalheadAmount" class="form-control number" placeholder="Enter Head Room Amount" oninput="calculateAllAmounts()"
+                                    value="{{ old('TotalheadAmount', $flat->TotalheadAmount ?? '') }}" onkeyup="calccost();" onblur="calccost();" />
+                                <small id="TotalheadAmount-error" class="text-danger"></small>
+                            </div>
+                            <br><br>
+                            <div class="col-md-4 goleft mt-3"><label class="form-label">Final Amount:<span class="required-star">*</span></label>
+                                <input type="text" id="TotalProjectAmount" name="TotalProjectAmount" class="form-control number" placeholder="Enter Total Final amount."
+                                    value="{{ old('TotalProjectAmount', $flat->TotalProjectAmount ?? '') }}" onkeyup="calccost();" onblur="calccost();" />
+                                    <small id="TotalProjectAmount-error" class="text-danger"></small>
+                            </div>           
+                            <div class="col-md-8 mt-3">
+                                <table id="myTable2" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th style="width:150px;">Amount</th>
+                                            <th style="width:50px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="p_scents2">
+                                        @php
+                                            $titles = $titleAmounts ?? collect([
+                                                (object)['title' => '', 'amt' => '']
+                                            ]);
+                                        @endphp
+
+                                        @foreach($titles as $i => $row)
+                                            <tr id="prod2_{{ $loop->iteration }}">
+                                                <td>
+                                                    <input type="text"  name="title{{ $loop->iteration }}" id="title{{ $loop->iteration }}"
+                                                        class="form-control" value="{{ $row->title ?? '' }}">
+                                                </td>
+                                                <td>
+                                                    <input type="text"  name="amt{{ $loop->iteration }}" id="amt{{ $loop->iteration }}"
+                                                        class="form-control number" value="{{ $row->amt ?? '' }}" oninput="recalculateTitleTotal()">
+                                                </td>
+                                                <td>
+                                                    <a onclick="removeTitleRow({{ $loop->iteration }})" class="btn btn-sm">
+                                                        <i data-feather="trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="cnt2" name="cnt2" value="{{ count($titles) }}">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="addTitleRow()">
+                                    Add New
+                                </button>
+                            </div>
+                        </div>
+
+                                            <!-- <div class="col-md-7">
+                                                <button type="button" onclick="CountFlat('{{ request('Task') }}')" class="btn btn-primary nextBtn">Show Flats Details</button>
+                                            </div> -->
+
+                            {{-- Submit --}}
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary"> {{ !empty($flat) ? 'Update' : 'Create' }}</button>
+                                    <a href="{{ route('Flat') }}" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </div>
                 </form>
                 <div id="flatdetails" class="mt-3" style="display:none;"></div>
             </div>

@@ -3,8 +3,7 @@
   Loan Management
 @endsection
 @section('maincontent')
-<main class="content">
-    <style>
+<style>
         div.dataTables_wrapper div.dataTables_length select {
    
             width: 45%;
@@ -14,6 +13,7 @@
             padding: 0px;
         }   
     </style>
+<main class="content">
     <div class="container-fluid p-0">
         <div class="row mb-2 mb-xl-3">
             <div class="col-auto d-none d-sm-block">
@@ -27,12 +27,10 @@
                 @endif
             </div>
         </div>
-
         <form action="{{ route('loan_management') }}" method="GET" class="mb-3 row g-2">
            <div class="col-md-2">
                 <input type="date" name="FromDate" class="form-control" value="{{ $fromDate }}">
             </div>
-
             <div class="col-md-2">
                 <input type="date" name="ToDate" class="form-control" value="{{ $toDate }}">
             </div>
@@ -40,82 +38,81 @@
                 <button type="submit" class="btn btn-primary">Search</button>
             </div>
         </form>
-
         <div class="row">
-        <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-striped" id="bootstrap-table">
-                    <thead >
-                        <tr>
-                            <th>Sr.No</th>
-                            <th>Name</th>
-                            <th>Total Credit Amount</th>
-                            <th>Total Debit Amount</th>
-                            <th>Interest Credit</th>
-                            <th>Interest Debit</th>
-                            <th>Balance</th>
-                            @if(request('rtype') != 'report')
-                                <th>Action</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $i = 1;
-                            $credittotl = 0;
-                            $debittotl = 0;
-                            $intrestcredit = 0;
-                            $intrestdebit = 0;
-                            $totalbal = 0;
-                        @endphp
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped" id="bootstrap-table">
+                            <thead >
+                                <tr>
+                                    <th>Sr.No</th>
+                                    <th>Name</th>
+                                    <th>Total Credit Amount</th>
+                                    <th>Total Debit Amount</th>
+                                    <th>Interest Credit</th>
+                                    <th>Interest Debit</th>
+                                    <th>Balance</th>
+                                    @if(request('rtype') != 'report')
+                                        <th>Action</th>
+                                    @endif
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $i = 1;
+                                    $credittotl = 0;
+                                    $debittotl = 0;
+                                    $intrestcredit = 0;
+                                    $intrestdebit = 0;
+                                    $totalbal = 0;
+                                @endphp
 
-                        @foreach($loanData as $data)
-                            @php
-                                $credittotl += $data['loanAmtTaken'];
-                                $debittotl += $data['loanAmtGive'];
-                                $intrestcredit += $data['interestRec'];
-                                $intrestdebit += $data['interestPaid'];
-                                $totalbal += $data['balance'];
-                            @endphp
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>
-                                   
-                                        {{ $data['customer']->Name }}
-                                  
-                                </td>
-                                <td><span style="color:#289A47">{{ $data['loanAmtTaken'] }}</span></td>
-                                <td><span style="color:#E80000">{{ $data['loanAmtGive'] }}</span></td>
-                                <td><span style="color:#289A47">{{ $data['interestRec'] }}</span></td>
-                                <td><span style="color:#E80000">{{ $data['interestPaid'] }}</span></td>
-                                <td><span style="color:{{ $data['balance'] > 0 ? '#289A47' : '#E80000' }}">{{ $data['balance'] }}</span></td>
-                                @if(request('rtype') != 'report')
-                                    <td>
-                                        <a href="{{ route('loan_detail', ['customer' => $data['customer']->ID]) }}" class="btn btn-xs btn-primary">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
+                                @foreach($loanData as $data)
+                                    @php
+                                        $credittotl += $data['loanAmtTaken'];
+                                        $debittotl += $data['loanAmtGive'];
+                                        $intrestcredit += $data['interestRec'];
+                                        $intrestdebit += $data['interestPaid'];
+                                        $totalbal += $data['balance'];
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>
+                                        
+                                                {{ $data['customer']->Name }}
+                                        
+                                        </td>
+                                        <td><span style="color:#289A47">{{ $data['loanAmtTaken'] }}</span></td>
+                                        <td><span style="color:#E80000">{{ $data['loanAmtGive'] }}</span></td>
+                                        <td><span style="color:#289A47">{{ $data['interestRec'] }}</span></td>
+                                        <td><span style="color:#E80000">{{ $data['interestPaid'] }}</span></td>
+                                        <td><span style="color:{{ $data['balance'] > 0 ? '#289A47' : '#E80000' }}">{{ $data['balance'] }}</span></td>
+                                        @if(request('rtype') != 'report')
+                                            <td>
+                                                <a href="{{ route('loan_detail', ['customer' => $data['customer']->ID]) }}" class="btn btn-xs btn-primary">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
 
-                        <tr>
-                            <td></td>
-                            <td>Grand Total</td>
-                            <td>{{ $credittotl }}</td>
-                            <td>{{ $debittotl }}</td>
-                            <td>{{ $intrestcredit }}</td>
-                            <td>{{ $intrestdebit }}</td>
-                            <td>{{ $totalbal }}</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <tr>
+                                    <td></td>
+                                    <td>Grand Total</td>
+                                    <td>{{ $credittotl }}</td>
+                                    <td>{{ $debittotl }}</td>
+                                    <td>{{ $intrestcredit }}</td>
+                                    <td>{{ $intrestdebit }}</td>
+                                    <td>{{ $totalbal }}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
-      </div>
     </div>
 </main>
 @endsection

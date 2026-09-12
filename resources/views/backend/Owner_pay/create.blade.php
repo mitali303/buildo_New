@@ -13,74 +13,51 @@
 <main class="content">
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3">{{ 'Create Owner Payment' }}</h1>
-
         @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Something went wrong!</strong>
-        <ul style="margin-top:5px;">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-
+            <div class="alert alert-danger">
+                <strong>Something went wrong!</strong>
+                <ul style="margin-top:5px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="card">
             <div class="card-body">
                 <form action="{{ route('Owner_Pay.store') }}" method="POST">
                     @csrf
-                   
                     <input type="hidden" name="Pid" value="{{ $invoice->ID ?? '' }}">
-
                     <div class="row mb-3">
                         <div class="col-md-4 mb-2">
                             <label>Date</label>
-                            <input type="text" name="Date"
-                                class="form-control"
-                                value="{{ date('d-m-Y') }}" readonly>
+                            <input type="text" name="Date" class="form-control" value="{{ date('d-m-Y') }}" readonly>
                         </div>
-
                         <div class="col-md-4 mb-2">
                             <label>Scheme</label>
-                            <input type="text"
-                                class="form-control"
-                                value="{{ $scheme->Name }}"
-                                readonly>
+                            <input type="text" class="form-control" value="{{ $scheme->Name }}" readonly>
                             <input type="hidden" name="scheme" value="{{ $scheme->ID }}">
                         </div>
-
                         <div class="col-md-4">
                             <label>Total Amount</label>
-                            <input type="text"
-                                class="form-control"
-                                value="{{ number_format($totalAmount,2) }}"
+                            <input type="text" class="form-control" value="{{ number_format($totalAmount,2) }}"
                                 readonly>
                         </div>
                     </div>
-
                     {{-- Summary Section --}}
                     <div class="row mb-3">
-                        
                         <div class="col-md-4 mb-2">
                             <label>Paid Amount</label>
-                            <input type="text"
-                                class="form-control"
-                                value="{{ number_format($paidAmount,2) }}"
+                            <input type="text" class="form-control" value="{{ number_format($paidAmount,2) }}"
                                 readonly>
                         </div>
-
                         <div class="col-md-4">
                             <label>Pending Amount</label>
-                            <input type="text"
-                                id="pendingAmt"
-                                class="form-control"
-                                value="{{ number_format($pendingAmount,2) }}"
+                            <input type="text" id="pendingAmt" class="form-control" value="{{ number_format($pendingAmount,2) }}"
                                 readonly>
                         </div>
                     </div>
                     <hr>
-
                     <h5 class="mb-3">Owner Detail</h5>
                 <div class="table-responsive">
                     <table class="table table-bordered">
@@ -101,52 +78,34 @@
                                 {{-- Checkbox --}}
                                 <td>
                                     @if($row->pending > 0)
-                                    <input type="checkbox"
-                                        class="owner-check"
-                                        data-index="{{ $index }}">
+                                    <input type="checkbox" class="owner-check" data-index="{{ $index }}">
                                     @endif
                                 </td>
 
                                 {{-- Title --}}
                                 <td>
                                     {{ $row->title }}
-                                    <input type="hidden"
-                                        name="details[{{ $index }}][owner_id]"
-                                        value="{{ $row->id ?? $row->ID }}">
+                                    <input type="hidden" name="details[{{ $index }}][owner_id]" value="{{ $row->id ?? $row->ID }}">
                                         <input type="hidden"
                                         name="details[{{ $index }}][title]"
                                         value="{{ $row->title }}">
                                 </td>
-
                                 {{-- Total --}}
-                                <td>
-                                    {{ number_format($row->amt,2) }}
-                                </td>
-
+                                <td> {{ number_format($row->amt,2) }}  </td>
                                 {{-- Pending --}}
-                                <td>
-                                    {{ number_format($row->pending,2) }}
-                                    <input type="hidden"
-                                        id="pending_{{ $index }}"
-                                        value="{{ $row->pending }}">
+                                <td> {{ number_format($row->pending,2) }}
+                                    <input type="hidden" id="pending_{{ $index }}" value="{{ $row->pending }}">
                                 </td>
-
                                 {{-- Payable --}}
                                 <td>
                                     @if($row->pending > 0)
-                                    <input type="number"
-                                        name="details[{{ $index }}][amount]"
-                                        class="form-control pay-input"
-                                        id="pay_{{ $index }}"
-                                        data-index="{{ $index }}"
-                                        max="{{ $row->pending }}"
-                                        step="0.01"
-                                        disabled>
+                                    <input type="number" name="details[{{ $index }}][amount]" class="form-control pay-input"
+                                        id="pay_{{ $index }}" data-index="{{ $index }}" max="{{ $row->pending }}"
+                                        step="0.01" disabled>
                                     @else
                                     <span class="text-success">Paid</span>
                                     @endif
                                 </td>
-
                             </tr>
                             @endforeach
                         </tbody>
@@ -167,34 +126,26 @@
                             <th style="width: 20%;">Narration</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr>
-
                             {{-- Payment Method --}}
                             <td>
                                 <select id="Pay_type" name="Pay_type" class="form-control" onChange="check_type()">
                                     <option value="">SELECT</option>
-
                                     <option value="cash" {{ old('Pay_type') == 'cash' ? 'selected' : '' }}>
                                         Cash
                                     </option>
-
                                     <option value="cheque" {{ old('Pay_type') == 'cheque' ? 'selected' : '' }}>
                                         Cheque
                                     </option>
-
                                     <option value="e-Payment" {{ old('Pay_type') == 'e-Payment' ? 'selected' : '' }}>
                                         E-Payment
                                     </option>
                                 </select>
-
                                 @error('Pay_type')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </td>
-
-
                             {{-- Account No --}}
                             <td>
                                 <div id="Ac">
@@ -247,12 +198,10 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </td>
-
                             {{-- Narration --}}
                             <td>
                                 <textarea class="form-control" name="narration" id="narration" style="height:34px;"></textarea>
                             </td>
-
                         </tr>
                     </tbody>
                 </table>

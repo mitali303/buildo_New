@@ -11,15 +11,13 @@
             <h1 class="h3 mb-0">{{ isset($materialRequest) ? 'Edit Material Request' : 'New Material Request' }}</h1>
             <a href="{{ route('material_request.list') }}" class="btn btn-secondary">Back</a>
         </div>
-
         <div class="card">
             <div class="card-body">
                 <form action="{{ isset($materialRequest) ? route('material_request.update', $materialRequest->ID) : route('material_request.store') }}" method="POST">
-                    @csrf
-                    @if(isset($materialRequest))
-                        @method('PUT')
-                    @endif
-
+                        @csrf
+                        @if(isset($materialRequest))
+                            @method('PUT')
+                        @endif
                     @if(isset($materialRequest) && $materialRequest->ID)
                         <div class="row mb-3">
                             <div class="col-md-3">
@@ -32,7 +30,6 @@
                             </div>
                         </div>
                     @endif
-
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label class="form-label">Date</label>
@@ -47,14 +44,12 @@
                             <input type="text" name="description" class="form-control" value="{{ old('description', isset($materialRequest) ? $materialRequest->description : '') }}">
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-12">
                             <label class="form-label">Remark</label>
                             <input type="text" name="remark" class="form-control" value="{{ old('remark', isset($materialRequest) ? $materialRequest->remark : '') }}">
                         </div>
                     </div>
-
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Estimate extends Model
 {
-	protected $table = 'estimates';
+	protected $table = 'estimate1';
 
 	protected $fillable = [
 		'estimate_no', 'scheme_id', 'scheme_name', 'built_up_area', 'rate_per_sqft', 'customer_name', 'site_address', 'date', 'notes', 'items',

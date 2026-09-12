@@ -5,9 +5,9 @@
 @endsection
 <style>
     #datatables-buttons th:nth-child(2),
-#datatables-buttons td:nth-child(2) {
-    white-space: nowrap !important;
-}
+    #datatables-buttons td:nth-child(2) {
+        white-space: nowrap !important;
+    }
     @media (max-width: 768px) {
     #datatables-buttons_wrapper .dataTables_length,
     #datatables-buttons_wrapper .dataTables_filter {
@@ -24,42 +24,23 @@
 }
 </style>
 @section('maincontent')
-
 <main class="content">
-
     <div class="container-fluid p-0">
-
         @if (hasPermission('create_LateMarkCalculation'))
-
-            <a href="{{ route('LateMarkCalculation.create') }}"
-               class="btn btn-primary float-end mt-n1">
-
+            <a href="{{ route('LateMarkCalculation.create') }}" class="btn btn-primary float-end mt-n1">
                 <i class="fas fa-plus"></i> New Late Mark
-
             </a>
-
         @endif
-
         <div class="mb-3">
-
             <h1 class="h3 d-inline align-middle">
                 Late Mark Calculation
             </h1>
-
         </div>
-
         <div class="row">
-
             <div class="col-12">
-
                 <div class="card">
-
                     <div class="card-body">
-
-                        <table id="datatables-buttons"
-                               class="table table-striped"
-                               style="width:100%">
-
+                        <table id="datatables-buttons" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -70,28 +51,16 @@
                                     <th>Total Late Time</th>
                                     <th>Amount Reduce</th>
                                     <th>Action</th>
-                                </tr>
-
-                                
+                                </tr>                                
                             </thead>
-
                         </table>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </main>
-
 @endsection
-
-
 @push('scripts')
 <script>
 

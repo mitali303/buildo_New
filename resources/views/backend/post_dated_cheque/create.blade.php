@@ -2,104 +2,97 @@
 @section('title', 'Post Dated Cheque')
 
 @section('maincontent')
-<main class="content">
-  <div class="container-fluid p-0">
-    <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Post Dated Cheque</h1>
-    </div>
 <style>
 .pdtl{
 	display:none;
 }</style>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <!-- @if ($errors->any())
-              <div class="alert alert-danger">
-                  <ul class="mb-0">
-                      @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                  </ul>
-              </div>
-          @endif -->
-
-
-          <div class="card-body">
-            <form action="@if(!empty($postdated)){{ route('post_dated_cheque.update') }}@else{{ route('post_dated_cheque.store') }}@endif"
+<main class="content">
+  <div class="container-fluid p-0">
+      <div class="mb-3">
+        <h1 class="h3 d-inline align-middle">Post Dated Cheque</h1>
+      </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <!-- @if ($errors->any())
+                  <div class="alert alert-danger">
+                      <ul class="mb-0">
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif -->
+            <div class="card-body">
+                <form action="@if(!empty($postdated)){{ route('post_dated_cheque.update') }}@else{{ route('post_dated_cheque.store') }}@endif"
                   method="POST" enctype="multipart/form-data">
-              @csrf
-              
-              @if(!empty($postdated))
-                @method('PUT')
-                <input type="hidden" name="ID" value="{{ $postdated->ID }}">
-              @endif
-              {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
-              <div class="row">
-                <div class="mb-3 col-md-3">
-                    <label class="form-label" for="date">Date <small class="text-danger">*</small></label>
-                    <input type="date" class="form-control @error('date') is-invalid @enderror"  name="date" id="date" value="{{ old('date', $postdated->Date ?? date('Y-m-d')) }}" required>
-                    @error('date')
-                      <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="mb-3 col-md-3">
-                  <label for="scheme" class="form-label">Scheme <small class="text-danger">*</small></label>
-                  <select name="scheme" id="scheme" class="form-control choices-single @error('scheme') is-invalid @enderror" required  onchange="GetFlatDetail();">
-                    <option disabled selected value="">Select Scheme</option>
-                   
-                    @foreach($schemes as $scheme)
-                      <option value="{{ $scheme->ID }}"
-                         {{ old('schemeID', $postdated->schemeID ?? $schemes[0]->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
-                        {{ $scheme->Name }}
-                      </option>
-                    @endforeach
-                  </select>
-                  @error('scheme')
-                    <small class="text-danger">{{ $message }}</small>
-                  @enderror
-                </div>
-            
+                  @csrf
+                  
+                  @if(!empty($postdated))
+                    @method('PUT')
+                    <input type="hidden" name="ID" value="{{ $postdated->ID }}">
+                  @endif
+                 {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
+                  <div class="row">
+                    <div class="mb-3 col-md-3">
+                      <label class="form-label" for="date">Date <small class="text-danger">*</small></label>
+                      <input type="date" class="form-control @error('date') is-invalid @enderror"  name="date" id="date" value="{{ old('date', $postdated->Date ?? date('Y-m-d')) }}" required>
+                      @error('date')
+                        <small class="text-danger">{{ $message }}</small>
+                      @enderror
+                    </div>
+                    <div class="mb-3 col-md-3">
+                      <label for="scheme" class="form-label">Scheme <small class="text-danger">*</small></label>
+                      <select name="scheme" id="scheme" class="form-control choices-single @error('scheme') is-invalid @enderror" required  onchange="GetFlatDetail();">
+                        <option disabled selected value="">Select Scheme</option>
+                        @foreach($schemes as $scheme)
+                          <option value="{{ $scheme->ID }}"
+                            {{ old('schemeID', $postdated->schemeID ?? $schemes[0]->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
+                            {{ $scheme->Name }}
+                          </option>
+                        @endforeach
+                      </select>
+                        @error('scheme')
+                          <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                </div>            
                   <div class="mb-3 col-md-3" >
                       <label for="wing" class="form-label">Wing <small class="text-danger">*</small></label>
                       <div class="" id="Type_div">
                          <select name="typesrch" id="typesrch" class="input-sm form-control chosen-select @error('typesrch') is-invalid @enderror" data-placeholder="Select" onchange="wing();">
                           <option value="">Select Wing</option>
-                          @php
-                            $schemeId = $postdated->schemeID ?? null;
+                              @php
+                                $schemeId = $postdated->schemeID ?? null;
 
-                            $type_details = \DB::table('flats_details')
-                                ->select('Wing')
-                                ->when($schemeId, function ($query) use ($schemeId) {
-                                    $query->where('scheme_ID', $schemeId);
-                                })
-                                ->groupBy('Wing')
-                                ->get();
-                        @endphp
+                                $type_details = \DB::table('flats_details')
+                                    ->select('Wing')
+                                    ->when($schemeId, function ($query) use ($schemeId) {
+                                        $query->where('scheme_ID', $schemeId);
+                                    })
+                                    ->groupBy('Wing')
+                                    ->get();
+                            @endphp
 
-                          @foreach($type_details as $type_rec)
-                              <option value="{{ $type_rec->Wing }}" 
-                                  {{  old('typesrch', $postdated->Wing ?? '') == $type_rec->Wing ? 'selected' : '' }}>
-                                  {{ $type_rec->Wing }}
-                              </option>
-                          @endforeach
-                      </select>
-                      @error('typesrch')
-                        <small class="text-danger">{{ $message }}</small>
-                      @enderror
-                    </div>
+                              @foreach($type_details as $type_rec)
+                                  <option value="{{ $type_rec->Wing }}" 
+                                      {{  old('typesrch', $postdated->Wing ?? '') == $type_rec->Wing ? 'selected' : '' }}>
+                                      {{ $type_rec->Wing }}
+                                  </option>
+                              @endforeach
+                        </select>
+                        @error('typesrch')
+                          <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                      </div>
                       <input type="hidden" id="schemeH" name="schemeH" value="{{ $db_record->schemeID }}">
-                  </div>
-                  
+                </div>                  
                   <div class="mb-3 col-md-3" >
                      <label for="flat_no" class="form-label">Flat No <small class="text-danger">*</small></label>
-                     <div class="" id="fcatdiv">
-                      <select name="FlatID" id="FlatID" class="input-sm form-control chosen-select @error('FlatID') is-invalid @enderror" data-placeholder="Select Flat No" onchange="getCustomerDetails();">
-                        <option>Select Flat</option>
+                      <div class="" id="fcatdiv">
+                        <select name="FlatID" id="FlatID" class="input-sm form-control chosen-select @error('FlatID') is-invalid @enderror" data-placeholder="Select Flat No" onchange="getCustomerDetails();">
+                          <option>Select Flat</option>
                           @php
                               
-
                               // Get cancelled flat IDs
                               $bookcancel_flats = DB::table('booking_cancel')
                                   ->where('SchemID', session('Client_Id'))
@@ -142,26 +135,20 @@
                                     ->get();
                             }
 
-                          @endphp
-
-                          @foreach($flats as $flat)
-                              <option value="{{ $flat->ID }}" {{ ($postdated->FlatID == $flat->ID) ? 'selected' : '' }}>
-                                  {{ $flat->FlatNo }}
-                              </option>
-                          @endforeach
-                      </select>
-                       @error('FlatID')
-                        <small class="text-danger">{{ $message }}</small>
-                      @enderror
+                            @endphp
+                            @foreach($flats as $flat)
+                                <option value="{{ $flat->ID }}" {{ ($postdated->FlatID == $flat->ID) ? 'selected' : '' }}>
+                                    {{ $flat->FlatNo }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('FlatID')
+                          <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                   </div>
-
-
-                    
               </div>
-
               <div class="row" >
-                  
                     <div class="col-md-3" id="cust_div">
                       <label class="form-label">Customer</label>
                       <input type="text" readonly  class="input-sm form-control" id="Customer"  name="Customer" value="{{ $booking_cust->CutomerName }}"  />

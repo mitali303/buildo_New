@@ -4,251 +4,202 @@
 @section('maincontent')
 <main class="content">
   <div class="container-fluid p-0">
-    <div class="mb-3">
-      <h1 class="h3 d-inline align-middle">Land Expenses</h1>
-    </div>
+      <div class="mb-3">
+        <h1 class="h3 d-inline align-middle">Land Expenses</h1>
+      </div>
 <style>
-.pdtl{
-	display:none;
-}</style>
-    <div class="row">
+  .pdtl{
+    display:none;
+  }
+</style>
+  <div class="row">
       <div class="col-md-12">
         <div class="card">
-          <!-- @if ($errors->any())
-              <div class="alert alert-danger">
-                  <ul class="mb-0">
-                      @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                  </ul>
-              </div>
-          @endif -->
-
-        @php
-        $PayStyle=$PStyle=$Style="display: none;";
-
-        @endphp
+            <!-- @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif -->
+            @php
+            $PayStyle=$PStyle=$Style="display: none;";
+            @endphp
           <div class="card-body">
             <form action="@if(!empty($postdated)){{ route('land_expenses.update') }}@else{{ route('land_expenses.store') }}@endif"
                   method="POST" enctype="multipart/form-data">
-              @csrf
-              
-              @if(!empty($postdated))
-                @method('PUT')
-                <input type="hidden" name="ID" value="{{ $postdated->ID }}">
-              @endif
-              {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
-              <div class="row">
-                <div class="mb-3 col-md-3">
-                    <label class="form-label" for="date">Date <small class="text-danger">*</small></label>
-                    <input type="date" class="form-control @error('date') is-invalid @enderror"  name="date" id="date" value="{{ old('date', $postdated->Date ?? date('Y-m-d')) }}" required>
-                    @error('date')
-                      <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="mb-3 col-md-3">
-                  <label for="scheme" class="form-label">Scheme <small class="text-danger">*</small></label>
-                  <select name="scheme" id="scheme" class="form-control choices-single" required  >
-                    <option disabled selected value="">Select Scheme</option>
-                   
-                    @foreach($schemes as $scheme)
-                      <option value="{{ $scheme->ID }}"
-                       {{ (session('selected_scheme_id') == $scheme->ID) ? 'selected' : '' }}>
-                          
-                        {{ $scheme->Name }}
-                        
-                      </option>
-                    
-                    @endforeach
-                  </select>
-                  @error('schemeID')
-                    <small class="text-danger">{{ $message }}</small>
-                  @enderror
-                </div>
-
-                @php
-
-
-                  $select = '';
-                  $exp_array = ['land expence'];
-
-                  $site_record = DB::table('land')
-                      ->select('Exp_type')
-                      ->whereNotIn('Exp_type', $exp_array)
-                      ->groupBy('Exp_type')
-                      ->get();
-                  @endphp
-
-              <div class="col-md-3" id="type_div">
-                <label class="form-label">Expense Type <small class="text-danger">*</small></label>
-                
-                <select name="exptype" id="exptype"
-                class="input-lg form-control chosen-select required"
-                data-placeholder="Select Expenses Type"
-                onchange="GetEmp();">
-                
-                <option value="">Select</option>
-                
-                <option value="Land purchase"
-                {{ old('exptype', $postdated->Exp_type ?? $db_record['Exp_type'] ?? '') == 'Land purchase' ? 'selected' : '' }}>
-                Land purchase
-                </option>
-                
-                <option value="Land NA"
-                {{ old('exptype', $postdated->Exp_type ?? $db_record['Exp_type'] ?? '') == 'Land NA' ? 'selected' : '' }}>
-                Land NA
-                </option>
-                
-                <option value="Land stamp expence"
-                {{ old('exptype', $postdated->Exp_type ?? $db_record['Exp_type'] ?? '') == 'Land stamp expence' ? 'selected' : '' }}>
-                Land stamp expence
-                </option>
-                
-                </select>
-                </div>
-
-                <div class="mb-3 col-md-3">
-                  <label for="title" class="form-label">Title </label>
-
-                  <div  id="Titale_div">
-                  <select name="title" id="title" class="form-control" onchange="checkOtherExpense(this.value)">
-                      <option value="">Select</option>
-                      <option value="NEW">ADD NEW</option>
-
-                      @php
-                          // Determine the Exp_type to filter records
-                          $expType = !empty($postdated) ? $postdated->Exp_type : ($postdated['Exp_type'] ?? null);
-
-                          // Fetch records only if $expType exists
-                          $income_record = DB::table('land')
-                                ->select('title')
-                                ->distinct()
-                                ->orderBy('title')
-                                ->get();
-                      @endphp
-                        @php
-                        $selectedTitle = old('title', $postdated->title ?? '');
-                        @endphp
-                      @foreach($income_record as $expense)
-                        <option value="{{ $expense->title }}"
-                        {{ $selectedTitle == $expense->title ? 'selected' : '' }}>
-                        {{ $expense->title }}
-                        </option>
-                        @endforeach
-                  </select>
-
-                </div>
-                  <!-- Input for adding new expense type -->
-                  <div id="newExptypeDiv" style="margin-top:5px; display:none;">
-                    <input type="text"
-                    name="Exptitles"
-                    id="newExptypeInput"
-                    class="form-control"
-                    placeholder="Enter new title"
-                    value="{{ old('Exptitles') }}">                  
-                </div>
-                </div>
-
-                    
-              </div><br>
-
-              <div class="row">
-                <div class="table-responsive">
-                <table class="table" id="mytable">
-                  <thead>
-                    <tr>
-                     
-                      <th>Payment Method <small class="text-danger">*</small></th>
-                      
-                      <th>Account No</th>
-                      <th>Balance</th>
-                      <th>Amount</th>
-                      <th>Cheque No / Transaction ID</th>
-                      <th style="<?php echo $PayStyle ?>" id="banktitle" >Bank Charges</th>
-			                <th style="<?php echo $PayStyle ?>" id="totalvalue">Total Pay</th>
-                      
-                      <th>Narration</th>
-                      
-                      
-                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-
-                      <td>
-                        <select name="Pay_type" id="Pay_type" class="form-control" onChange="check_type();">
-                          <option value="">Select Payment Method</option>
-                          <option value="cash" {{ old('Pay_type', $postdated->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
-                          <option value="cheque" {{ old('Pay_type', $postdated->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-                          <option value="e-payment" {{ old('Pay_type', $postdated->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
-                        </select>
-                        @error('payment_method')
-                            <small class="text-danger">{{ $message }}</small>
+                   @csrf
+                  @if(!empty($postdated))
+                    @method('PUT')
+                    <input type="hidden" name="ID" value="{{ $postdated->ID }}">
+                  @endif
+                  {{--<input type="hidden" name="purchasesid" value="{{ $purchases->id }}">--}}
+                <div class="row">
+                    <div class="mb-3 col-md-3">
+                        <label class="form-label" for="date">Date <small class="text-danger">*</small></label>
+                        <input type="date" class="form-control @error('date') is-invalid @enderror"  name="date" id="date" value="{{ old('date', $postdated->Date ?? date('Y-m-d')) }}" required>
+                        @error('date')
+                          <small class="text-danger">{{ $message }}</small>
                         @enderror
-
-                      </td>
-                     
-                      <td>
-                        <div id="Ac" style="">
-                        <select name="account_no" id="account_no" class="form-control" onchange="getBalance();">
-                          <option value="">Select Account</option>
-                          @foreach($banks as $bank)
-                            <option value="{{ $bank->ID }}"
-                              {{ old('account_no', $postdated->account_no ?? '') == $bank->ID ? 'selected' : '' }}>
-                              {{ $bank->Name }}
-                            </option>
-                          @endforeach
-                        </select>
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="scheme" class="form-label">Scheme <small class="text-danger">*</small></label>
+                          <select name="scheme" id="scheme" class="form-control choices-single" required  >
+                            <option disabled selected value="">Select Scheme</option>
+                                @foreach($schemes as $scheme)
+                                  <option value="{{ $scheme->ID }}"
+                                    {{ (session('selected_scheme_id') == $scheme->ID) ? 'selected' : '' }}>   {{ $scheme->Name }}                                    
+                                  </option>
+                                @endforeach
+                            </select>
+                            @error('schemeID')
+                              <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
-                        
-                        @error('account_no')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                      </td>
-                      <td >
-			                  <input type="text" readonly  class="form-control" id="balance"  name="balance" value="{{ old('balance', $postdated->balance ?? '') }}"  />
-		                  </td>
-                      <td>
-                        <input type="number" name="amount_pay" id="amount_pay"
-                            class="form-control @error('amount_pay') is-invalid @enderror"
-                            value="{{ old('amount_pay', $postdated->amt_pay ?? '') }}" onkeyup="checkAmount();">
+                        @php
+                          $select = '';
+                          $exp_array = ['land expence'];
+                          $site_record = DB::table('land')
+                              ->select('Exp_type')
+                              ->whereNotIn('Exp_type', $exp_array)
+                              ->groupBy('Exp_type')
+                              ->get();
+                          @endphp
+                        <div class="col-md-3" id="type_div">
+                            <label class="form-label">Expense Type <small class="text-danger">*</small></label>
+                              <select name="exptype" id="exptype" class="input-lg form-control chosen-select required"
+                                 data-placeholder="Select Expenses Type" onchange="GetEmp();">
+                                  <option value="">Select</option>
+                                  <option value="Land purchase"
+                                      {{ old('exptype', $postdated->Exp_type ?? $db_record['Exp_type'] ?? '') == 'Land purchase' ? 'selected' : '' }}>
+                                      Land purchase
+                                  </option>
+                                  <option value="Land NA"
+                                      {{ old('exptype', $postdated->Exp_type ?? $db_record['Exp_type'] ?? '') == 'Land NA' ? 'selected' : '' }}>
+                                      Land NA
+                                  </option>                  
+                                  <option value="Land stamp expence"
+                                      {{ old('exptype', $postdated->Exp_type ?? $db_record['Exp_type'] ?? '') == 'Land stamp expence' ? 'selected' : '' }}>
+                                      Land stamp expence
+                                  </option>                          
+                              </select>
+                        </div>
+                        <div class="mb-3 col-md-3">
+                            <label for="title" class="form-label">Title </label>
+                              <div  id="Titale_div">
+                                  <select name="title" id="title" class="form-control" onchange="checkOtherExpense(this.value)">
+                                      <option value="">Select</option>
+                                      <option value="NEW">ADD NEW</option>
+                                        @php
+                                            // Determine the Exp_type to filter records
+                                            $expType = !empty($postdated) ? $postdated->Exp_type : ($postdated['Exp_type'] ?? null);
 
-                            <input type="hidden"  style=""name="amount_pay_old" id="amount_pay_old"  value="<?php //echo $pendingAmt;?>" onkeyup="" class=" input-md form-control "/>
-
-                        @error('amount_pay')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                      </td>
-                      <td>
-                        <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $postdated->cheque_no ?? '') }}">
-                      @error('cheque_no')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                      </td>
-                      
-                      <td id="bankvalue" style="<?php echo $PayStyle ?>">
-                        <input type="text" style="width: 100px"  <?php //echo $notread;?> name="bnk_charge" id="bnk_charge"   value="{{ old('bnk_charge', $postdated->amt_pay ?? '') }}"  onkeyup="cal_total();"  class=" form-control"/>
-                      </td>
-			                <td id="totalamt" style="<?php echo $PayStyle ?>">
-                        <input type="text" style="width: 100px" readonly <?php //echo $notread;?> name="total_pay" id="total_pay"   value="{{ old('total_pay', $postdated->amt_pay ?? '') }}"  onkeyup="cal_total();"  class=" form-control"/>
-                      </td>
-                      
-                      <td>
-                        <textarea type="text" style="height: 34px;"    class=" input-medium form-control"  id="narration"  name="narration" >{{ old('narration', $postdated->narration ?? '') }}</textarea>
-                      </td>
-                      
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-              </div>
-              <input type='hidden' name="Uid" id="Uid" value="{{ $db_record->ID ?? '000' }}">
-
-              <br>
-              <button type="submit" class="btn btn-primary">{{ empty($postdated) ? 'Create' : 'Update' }}</button>
-              <a href="{{ route('land_expenses') }}" class="btn btn-secondary">Cancel</a>
+                                            // Fetch records only if $expType exists
+                                            $income_record = DB::table('land')
+                                                  ->select('title')
+                                                  ->distinct()
+                                                  ->orderBy('title')
+                                                  ->get();
+                                        @endphp
+                                        @php
+                                        $selectedTitle = old('title', $postdated->title ?? '');
+                                        @endphp
+                                        @foreach($income_record as $expense)
+                                          <option value="{{ $expense->title }}"
+                                            {{ $selectedTitle == $expense->title ? 'selected' : '' }}>
+                                            {{ $expense->title }}
+                                          </option>
+                                          @endforeach
+                                  </select>
+                                </div>
+                                  <!-- Input for adding new expense type -->
+                                  <div id="newExptypeDiv" style="margin-top:5px; display:none;">
+                                    <input type="text" name="Exptitles" id="newExptypeInput" class="form-control"
+                                    placeholder="Enter new title" value="{{ old('Exptitles') }}">                  
+                                </div>
+                              </div>                              
+                        </div><br>
+                        <div class="row">
+                          <div class="table-responsive">
+                              <table class="table" id="mytable">
+                                <thead>
+                                  <tr>                              
+                                    <th>Payment Method <small class="text-danger">*</small></th>                                
+                                    <th>Account No</th>
+                                    <th>Balance</th>
+                                    <th>Amount</th>
+                                    <th>Cheque No / Transaction ID</th>
+                                    <th style="<?php echo $PayStyle ?>" id="banktitle" >Bank Charges</th>
+                                    <th style="<?php echo $PayStyle ?>" id="totalvalue">Total Pay</th>                                    
+                                    <th>Narration</th>                                
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <select name="Pay_type" id="Pay_type" class="form-control" onChange="check_type();">
+                                        <option value="">Select Payment Method</option>
+                                        <option value="cash" {{ old('Pay_type', $postdated->payment_method ?? '') == 'cash' ? 'selected' : '' }}>Cash</option>
+                                        <option value="cheque" {{ old('Pay_type', $postdated->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                                        <option value="e-payment" {{ old('Pay_type', $postdated->payment_method ?? '') == 'e-payment' ? 'selected' : '' }}>E‑payment</option>
+                                      </select>
+                                        @error('payment_method')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </td>                              
+                                    <td>
+                                      <div id="Ac" style="">
+                                          <select name="account_no" id="account_no" class="form-control" onchange="getBalance();">
+                                            <option value="">Select Account</option>
+                                            @foreach($banks as $bank)
+                                              <option value="{{ $bank->ID }}"
+                                                  {{ old('account_no', $postdated->account_no ?? '') == $bank->ID ? 'selected' : '' }}>
+                                                  {{ $bank->Name }}
+                                              </option>
+                                            @endforeach
+                                          </select>
+                                      </div>                                  
+                                        @error('account_no')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </td>
+                                    <td >
+                                      <input type="text" readonly  class="form-control" id="balance"  name="balance" value="{{ old('balance', $postdated->balance ?? '') }}"  />
+                                    </td>
+                                    <td>
+                                      <input type="number" name="amount_pay" id="amount_pay" class="form-control @error('amount_pay') is-invalid @enderror"
+                                          value="{{ old('amount_pay', $postdated->amt_pay ?? '') }}" onkeyup="checkAmount();">
+                                          <input type="hidden"  style=""name="amount_pay_old" id="amount_pay_old"  value="<?php //echo $pendingAmt;?>" onkeyup="" class=" input-md form-control "/>
+                                          @error('amount_pay')
+                                              <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </td>
+                                    <td>
+                                      <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ old('cheque_no', $postdated->cheque_no ?? '') }}">
+                                        @error('cheque_no')
+                                              <small class="text-danger">{{ $message }}</small>
+                                          @enderror
+                                    </td>                                
+                                    <td id="bankvalue" style="<?php echo $PayStyle ?>">
+                                      <input type="text" style="width: 100px"  <?php //echo $notread;?> name="bnk_charge" id="bnk_charge"   value="{{ old('bnk_charge', $postdated->amt_pay ?? '') }}"  onkeyup="cal_total();"  class=" form-control"/>
+                                    </td>
+                                    <td id="totalamt" style="<?php echo $PayStyle ?>">
+                                      <input type="text" style="width: 100px" readonly <?php //echo $notread;?> name="total_pay" id="total_pay"   value="{{ old('total_pay', $postdated->amt_pay ?? '') }}"  onkeyup="cal_total();"  class=" form-control"/>
+                                    </td>                                
+                                    <td>
+                                      <textarea type="text" style="height: 34px;"    class=" input-medium form-control"  id="narration"  name="narration" >{{ old('narration', $postdated->narration ?? '') }}</textarea>
+                                    </td>                               
+                                  </tr>
+                                </tbody>
+                              </table>
+                          </div>
+                        </div>
+                      <input type='hidden' name="Uid" id="Uid" value="{{ $db_record->ID ?? '000' }}">
+                    <br>
+                <button type="submit" class="btn btn-primary">{{ empty($postdated) ? 'Create' : 'Update' }}</button>
+                <a href="{{ route('land_expenses') }}" class="btn btn-secondary">Cancel</a>
             </form>
           </div>
         </div>

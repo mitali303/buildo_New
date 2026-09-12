@@ -16,207 +16,147 @@
 </style>
 @section('maincontent')
 <main class="content">
-<div class="container-fluid p-0">
-
-    <h1 class="h3 mb-3">Create Labour Payment</h1>
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    @php
-        $firstWork = $works->first();
-    @endphp
-
-    <div class="card">
-        <div class="card-body">
-
-            <form action="{{ route('Labour_work_pay.store') }}" method="POST">
-                @csrf
-
-                {{-- DATE --}}
-                <div class="row mb-3">
-                    <div class="col-md-4 mb-3">
-                        <label>Date *</label>
-                        <input type="text"
-                               name="Date"
-                               id="datepicker"
-                               class="form-control"
-                               value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}">
-                    </div>
-
-                    {{-- AGENCY --}}
-                    <div class="col-md-4 mb-3">
-                        <label>Agency</label>
-                        <input type="text"
-                               class="form-control"
-                               value="{{ $firstWork->agency->Name ?? '' }}"
-                               readonly>
-                               <input type="hidden" name="AgencyID" value="{{ $firstWork->Agency_ID }}">
-                    </div>
-
-                    {{-- SCHEME --}}
-                    <div class="col-md-4">
-                        <label>Scheme</label>
-                        <input type="text"
-                               class="form-control"
-                               value="{{ $firstWork->scheme->Name ?? '' }}"
-                               readonly>
-                    </div>
+    <div class="container-fluid p-0">
+        <h1 class="h3 mb-3">Create Labour Payment</h1>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
+            @php
+                $firstWork = $works->first();
+            @endphp
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('Labour_work_pay.store') }}" method="POST">
+                        @csrf
+                        {{-- DATE --}}
+                        <div class="row mb-3">
+                            <div class="col-md-4 mb-3">
+                                <label>Date *</label>
+                                    <input type="text" name="Date" id="datepicker" class="form-control" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}">
+                            </div>
+                            {{-- AGENCY --}}
+                            <div class="col-md-4 mb-3">
+                                <label>Agency</label>
+                                <input type="text" class="form-control"value="{{ $firstWork->agency->Name ?? '' }}" readonly>
+                                    <input type="hidden" name="AgencyID" value="{{ $firstWork->Agency_ID }}">
+                            </div>
+                            {{-- SCHEME --}}
+                            <div class="col-md-4">
+                                <label>Scheme</label>
+                                <input type="text" class="form-control" value="{{ $firstWork->scheme->Name ?? '' }}" readonly>
+                            </div>
+                        </div>
+                        {{-- TOTAL PENDING --}}
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label>Total Pending</label>
+                                <input type="text" id="Total" class="form-control" value="{{ number_format($totalPending,2) }}" readonly>
+                            </div>
+                        </div>
+                        {{-- WORK ENTRY TABLE --}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Grand Total</th>
+                                        <th>Pending</th>
+                                        <th>Pay Now</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($works as $work)
+                                        @if($work->pending > 0)
+                                        <tr>
+                                            <td>{{ \Carbon\Carbon::parse($work->Date)->format('d-m-Y') }}</td>
+                                            <td>{{ number_format($work->gtotal,2) }}</td>
+                                            <td>{{ number_format($work->pending,2) }}</td>
+                                            <td>
+                                                <input type="number" name="payments[{{ $work->ID }}]" class="form-control pay-input"
+                                                    max="{{ $work->pending }}" step="0.01" value="0" oninput="calculateTotal()">
+                                            </td>
+                                        </tr>
+                                        @endif
 
-                {{-- TOTAL PENDING --}}
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label>Total Pending</label>
-                        <input type="text"
-                               id="Total"
-                               class="form-control"
-                               value="{{ number_format($totalPending,2) }}"
-                               readonly>
-                    </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr>
+                        {{-- PAYMENT SECTION --}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Payment Method</th>
+                                        <th>Account</th>
+                                        <th>Balance</th>
+                                        <th>Total Amount</th>
+                                        <th>Cheque / Txn</th>
+                                        <th id="banktitle" style="display:none;">Bank Charges</th>
+                                        <th>Payable</th>
+                                        <th>Narration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select id="Pay_type" name="Pay_type"
+                                                    class="form-control"
+                                                    onchange="check_type()">
+                                                <option value="">Select</option>
+                                                <option value="cash">Cash</option>
+                                                <option value="cheque">Cheque</option>
+                                                <option value="e-Payment">E-Payment</option>
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <div id="Ac">
+                                                <select id="account_no" name="account_no"
+                                                        class="form-control">
+                                                    <option value="">Select</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="balanceamt"  class="form-control" readonly>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="amount_pay" name="amount_pay" class="form-control" readonly>
+                                        </td>
+                                        <td>
+                                            <input type="text"  name="cheque_no" id="cheque_no" class="form-control">
+                                        </td>
+                                        <td id="bankvalue" style="display:none;">
+                                            <input type="number" name="bnk_charge" id="bnk_charge" class="form-control"
+                                                value="0" oninput="calculatePayable()">
+                                        </td>
+                                        <td>
+                                            <input type="text" id="payable" name="payable" class="form-control" readonly>
+                                        </td>
+                                        <td>
+                                            <textarea name="narration" class="form-control"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary">Create</button>
+                            <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
                 </div>
-
-                {{-- WORK ENTRY TABLE --}}
-                <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Grand Total</th>
-                            <th>Pending</th>
-                            <th>Pay Now</th>
-                        </tr>
-                    </thead>
-                
-                    <tbody>
-                 @foreach($works as $work)
-
-                        @if($work->pending > 0)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($work->Date)->format('d-m-Y') }}</td>
-                            <td>{{ number_format($work->gtotal,2) }}</td>
-                            <td>{{ number_format($work->pending,2) }}</td>
-                            <td>
-                                <input type="number"
-                                    name="payments[{{ $work->ID }}]"
-                                    class="form-control pay-input"
-                                    max="{{ $work->pending }}"
-                                    step="0.01"
-                                    value="0"
-                                    oninput="calculateTotal()">
-                            </td>
-                        </tr>
-                        @endif
-
-                     @endforeach
-                    </tbody>
-                </table>
             </div>
-                <hr>
 
-                {{-- PAYMENT SECTION --}}
-                <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Payment Method</th>
-                            <th>Account</th>
-                            <th>Balance</th>
-                            <th>Total Amount</th>
-                            <th>Cheque / Txn</th>
-                            <th id="banktitle" style="display:none;">Bank Charges</th>
-                            <th>Payable</th>
-                            <th>Narration</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <select id="Pay_type" name="Pay_type"
-                                        class="form-control"
-                                        onchange="check_type()">
-                                    <option value="">Select</option>
-                                    <option value="cash">Cash</option>
-                                    <option value="cheque">Cheque</option>
-                                    <option value="e-Payment">E-Payment</option>
-                                </select>
-                            </td>
-
-                            <td>
-                                <div id="Ac">
-                                    <select id="account_no" name="account_no"
-                                            class="form-control">
-                                        <option value="">Select</option>
-                                    </select>
-                                </div>
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       id="balanceamt"
-                                       class="form-control"
-                                       readonly>
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       id="amount_pay"
-                                       name="amount_pay"
-                                       class="form-control"
-                                       readonly>
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       name="cheque_no"
-                                       id="cheque_no"
-                                       class="form-control">
-                            </td>
-
-                            <td id="bankvalue" style="display:none;">
-                                <input type="number"
-                                       name="bnk_charge"
-                                       id="bnk_charge"
-                                       class="form-control"
-                                       value="0"
-                                       oninput="calculatePayable()">
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       id="payable"
-                                       name="payable"
-                                       class="form-control"
-                                       readonly>
-                            </td>
-
-                            <td>
-                                <textarea name="narration"
-                                          class="form-control"></textarea>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-                <div class="mt-3">
-                    <button class="btn btn-primary">Create</button>
-                    <a href="{{ route('Labour_work_pay') }}"
-                       class="btn btn-secondary">Cancel</a>
-                </div>
-
-            </form>
-
-        </div>
     </div>
-
-</div>
 </main>
 @endsection
 <script>

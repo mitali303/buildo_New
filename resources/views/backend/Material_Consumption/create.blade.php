@@ -14,16 +14,16 @@
 <main class="content">
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3">{{ !empty($transfer) ? 'Edit Material Consumption' : 'Create Material Consumption' }}</h1>
- @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Something went wrong!</strong>
-        <ul style="margin-top:5px;">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Something went wrong!</strong>
+                <ul style="margin-top:5px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="card">
             <div class="card-body">
                 <form action="{{ !empty($transfer) ? route('Material_Consumption.update', $transfer->ID) : route('Material_Consumption.store') }}" method="POST">

@@ -64,35 +64,33 @@
 
 <main class="content">
     <div class="container-fluid p-0">
-        @if (hasPermission('create_material_consumption'))
-        <a href="{{route('Material_Consumption.create')}}" class="btn btn-primary float-end mt-n1 new-material-btn"><i class="fas fa-plus"></i> New Material Consumption</a>
-        @endif
-        <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Material Consumption</h1> 
-        </div>
-
-        <div class="row">
-            <div class="col-12"> 
-                <div class="card">
-                    <div class="card-body">
-                        <table id="datatables-buttons" class="table table-striped" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Date</th>
-                                    <th>Scheme</th>
-                                    <th>Material - Type</th>
-                                    <th>Unit</th>
-                                    <th>Quantity</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
+            @if (hasPermission('create_material_consumption'))
+            <a href="{{route('Material_Consumption.create')}}" class="btn btn-primary float-end mt-n1 new-material-btn"><i class="fas fa-plus"></i> New Material Consumption</a>
+            @endif
+            <div class="mb-3">
+                <h1 class="h3 d-inline align-middle">Material Consumption</h1> 
+            </div>
+            <div class="row">
+                <div class="col-12"> 
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Scheme</th>
+                                        <th>Material - Type</th>
+                                        <th>Unit</th>
+                                        <th>Quantity</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
     </div>
 </main>
 @endsection

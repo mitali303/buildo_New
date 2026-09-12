@@ -471,6 +471,22 @@
 						</span>
 					</a>
 				</li>
+				{{-- =========================================================
+			CONSTRUCTION BOQ
+			========================================================= --}}
+		<li class="{{ request()->routeIs('construction-boq.*') ? 'active' : '' }}">
+
+			<a href="{{ route('construction-boq.index') }}">
+
+				<i class="fa fa-file-invoice-dollar"></i>
+
+				<span>
+					Construction BOQ
+				</span>
+
+			</a>
+
+		</li>
 			</ul>
 		</li>
 		@endif

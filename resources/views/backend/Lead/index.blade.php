@@ -6,149 +6,140 @@
 
 @section('maincontent')
 <main class="content">
-<div class="container-fluid p-0">
-
-{{-- Header --}}
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <div>
-        <h1 class="h4 mb-0">Leads</h1>
-        <p class="text-muted small mb-0">Track and manage every lead in one place</p>
-    </div>
-    <div class="d-flex gap-2">
-         <a href="{{ route('CreateLead.create') }}" class="btn btn-primary btn-sm">
-                <i class="align-middle" data-feather="plus" style="width:16px;height:16px;"></i> Add Lead
-            </a>
-             <button type="button" class="btn btn-outline-danger btn-sm" id="bulk-delete-btn">
-                <i class="align-middle" data-feather="trash-2" style="width:16px;height:16px;"></i> Delete
-            </button>
-        <!-- @if(hasPermission('create_CreateLead'))
-            <a href="{{ route('CreateLead.create') }}" class="btn btn-primary btn-sm">
-                <i class="align-middle" data-feather="plus" style="width:16px;height:16px;"></i> Add Lead
-            </a>
-        @endif
-        @if(hasPermission('delete_CreateLead'))
-            <button type="button" class="btn btn-outline-danger btn-sm" id="bulk-delete-btn">
-                <i class="align-middle" data-feather="trash-2" style="width:16px;height:16px;"></i> Delete
-            </button>
-        @endif -->
-    </div>
-</div>
-
-{{-- Stage pipeline tabs --}}
-<!-- @php
-    // Lightweight keyword → icon match so the pills get a sensible icon
-    // without hardcoding against specific stage IDs.
-    $iconFor = function ($label) {
-    $label = strtolower(trim($label));
-
-    return match (true) {
-
-        str_contains($label, 'new')             => 'plus-circle',
-        str_contains($label, 'save')            => 'save',
-        str_contains($label, 'quotation')       => 'file-text',
-        str_contains($label, 'quote')           => 'file-text',
-        str_contains($label, 'interested')      => 'thumbs-up',
-        str_contains($label, 'review')          => 'eye',
-
-        str_contains($label, 'convert')         => 'check-square',
-        str_contains($label, 'unqualified')     => 'user-x',
-
-        str_contains($label, 'contact')         => 'phone-call',
-        str_contains($label, 'visit')           => 'map-pin',
-        str_contains($label, 'reply')           => 'clock',
-        str_contains($label, 'wait')            => 'clock',
-        str_contains($label, 'negot')           => 'message-circle',
-        str_contains($label, 'demo')            => 'monitor',
-        str_contains($label, 'po')              => 'shopping-cart',
-        str_contains($label, 'requirement')     => 'check-circle',
-        str_contains($label, 'reject')          => 'x-circle',
-
-        default => 'circle',
-    };
-};
-@endphp -->
-<div class="stage-tabs mb-3" id="stage-tabs">
-    <button type="button" class="stage-tab active" data-stage="all" style="--tab-color:#0da5aa">
-        <i class="align-middle" data-feather="layers"></i> All <span class="stage-count">{{ $counts['all'] }}</span>
-    </button>
-    @foreach($stageLabels as $value => $label)
-        <button type="button" class="stage-tab" data-stage="{{ $value }}" style="--tab-color: {{ $stageColors[$value] ?? '#6c757d' }};">
-            <i class="align-middle" data-feather="{{ $iconFor($label) }}"></i>
-            {{ strtoupper($label) }}
-            <span class="stage-count" style="background: {{ $stageColors[$value] ?? '#6c757d' }};">{{ $counts[$value] ?? 0 }}</span>
-        </button>
-    @endforeach
-</div>
-
-{{-- Toolbar: search, date filters, view toggle --}}
-<div class="toolbar mb-3">
-    <div class="toolbar-left">
-        <div class="search-box">
-            <i class="align-middle" data-feather="search"></i>
-            <input type="text" id="filter-search" class="form-control form-control-sm" placeholder="Search company, mobile, city...">
+    <div class="container-fluid p-0">
+         {{-- Header --}}
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+                <h1 class="h4 mb-0">Leads</h1>
+                <p class="text-muted small mb-0">Track and manage every lead in one place</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ route('CreateLead.create') }}" class="btn btn-primary btn-sm">
+                        <i class="align-middle" data-feather="plus" style="width:16px;height:16px;"></i> Add Lead
+                    </a>
+                    <button type="button" class="btn btn-outline-danger btn-sm" id="bulk-delete-btn">
+                        <i class="align-middle" data-feather="trash-2" style="width:16px;height:16px;"></i> Delete
+                    </button>
+                <!-- @if(hasPermission('create_CreateLead'))
+                    <a href="{{ route('CreateLead.create') }}" class="btn btn-primary btn-sm">
+                        <i class="align-middle" data-feather="plus" style="width:16px;height:16px;"></i> Add Lead
+                    </a>
+                @endif
+                @if(hasPermission('delete_CreateLead'))
+                    <button type="button" class="btn btn-outline-danger btn-sm" id="bulk-delete-btn">
+                        <i class="align-middle" data-feather="trash-2" style="width:16px;height:16px;"></i> Delete
+                    </button>
+                @endif -->
+            </div>
         </div>
-        <input type="date" id="filter-from" class="form-control form-control-sm" title="From date">
-        <input type="date" id="filter-to" class="form-control form-control-sm" title="To date">
-        <button type="button" id="reset-filters-btn" class="btn btn-sm btn-light" title="Reset filters">
-            <i class="align-middle" data-feather="x" style="width:14px;height:14px;"></i>
-        </button>
-    </div>
-    <div class="btn-group btn-group-sm view-toggle" role="group">
-        <button class="btn btn-outline-secondary active" id="view-toggle-card" title="Card view">
-            <i class="align-middle" data-feather="grid" style="width:14px;height:14px;"></i>
-        </button>
-        <button class="btn btn-outline-secondary" id="view-toggle-table" title="Table view">
-            <i class="align-middle" data-feather="list" style="width:14px;height:14px;"></i>
-        </button>
-    </div>
-</div>
+        {{-- Stage pipeline tabs --}}
+            <!-- @php
+                // Lightweight keyword → icon match so the pills get a sensible icon
+                // without hardcoding against specific stage IDs.
+                $iconFor = function ($label) {
+                $label = strtolower(trim($label));
 
-{{-- Results --}}
-<div class="card border-0 shadow-sm">
-<div class="card-body">
-<div id="leads-wrap">
-    <div id="leads-card-view" class="leads-grid"></div>
-    <div id="leads-table-view" class="table-responsive d-none">
-        <table class="table table-sm align-middle mb-0 leads-table">
-            <thead>
-                <tr>
-                    <th style="width:32px"><input type="checkbox" id="select-all-rows"></th>
-                    <th>Company</th>
-                    <th>Mobile</th>
-                    <th>City</th>
-                    <th>Type</th>
-                    <th>Stage</th>
-                    <th>Source</th>
-                    <th>Assigned To</th>
-                    <th>Created</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="leads-table-body"></tbody>
-        </table>
+                return match (true) {
+
+                    str_contains($label, 'new')             => 'plus-circle',
+                    str_contains($label, 'save')            => 'save',
+                    str_contains($label, 'quotation')       => 'file-text',
+                    str_contains($label, 'quote')           => 'file-text',
+                    str_contains($label, 'interested')      => 'thumbs-up',
+                    str_contains($label, 'review')          => 'eye',
+
+                    str_contains($label, 'convert')         => 'check-square',
+                    str_contains($label, 'unqualified')     => 'user-x',
+
+                    str_contains($label, 'contact')         => 'phone-call',
+                    str_contains($label, 'visit')           => 'map-pin',
+                    str_contains($label, 'reply')           => 'clock',
+                    str_contains($label, 'wait')            => 'clock',
+                    str_contains($label, 'negot')           => 'message-circle',
+                    str_contains($label, 'demo')            => 'monitor',
+                    str_contains($label, 'po')              => 'shopping-cart',
+                    str_contains($label, 'requirement')     => 'check-circle',
+                    str_contains($label, 'reject')          => 'x-circle',
+
+                    default => 'circle',
+                };
+            };
+            @endphp -->
+        <div class="stage-tabs mb-3" id="stage-tabs">
+            <button type="button" class="stage-tab active" data-stage="all" style="--tab-color:#0da5aa">
+                <i class="align-middle" data-feather="layers"></i> All <span class="stage-count">{{ $counts['all'] }}</span>
+            </button>
+            @foreach($stageLabels as $value => $label)
+                <button type="button" class="stage-tab" data-stage="{{ $value }}" style="--tab-color: {{ $stageColors[$value] ?? '#6c757d' }};">
+                    <i class="align-middle" data-feather="{{ $iconFor($label) }}"></i>
+                    {{ strtoupper($label) }}
+                    <span class="stage-count" style="background: {{ $stageColors[$value] ?? '#6c757d' }};">{{ $counts[$value] ?? 0 }}</span>
+                </button>
+            @endforeach
+        </div>
+        {{-- Toolbar: search, date filters, view toggle --}}
+        <div class="toolbar mb-3">
+            <div class="toolbar-left">
+                <div class="search-box">
+                    <i class="align-middle" data-feather="search"></i>
+                    <input type="text" id="filter-search" class="form-control form-control-sm" placeholder="Search company, mobile, city...">
+                </div>
+                <input type="date" id="filter-from" class="form-control form-control-sm" title="From date">
+                <input type="date" id="filter-to" class="form-control form-control-sm" title="To date">
+                <button type="button" id="reset-filters-btn" class="btn btn-sm btn-light" title="Reset filters">
+                    <i class="align-middle" data-feather="x" style="width:14px;height:14px;"></i>
+                </button>
+            </div>
+            <div class="btn-group btn-group-sm view-toggle" role="group">
+                <button class="btn btn-outline-secondary active" id="view-toggle-card" title="Card view">
+                    <i class="align-middle" data-feather="grid" style="width:14px;height:14px;"></i>
+                </button>
+                <button class="btn btn-outline-secondary" id="view-toggle-table" title="Table view">
+                    <i class="align-middle" data-feather="list" style="width:14px;height:14px;"></i>
+                </button>
+            </div>
+        </div>
+        {{-- Results --}}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div id="leads-wrap">
+                    <div id="leads-card-view" class="leads-grid"></div>
+                        <div id="leads-table-view" class="table-responsive d-none">
+                            <table class="table table-sm align-middle mb-0 leads-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:32px"><input type="checkbox" id="select-all-rows"></th>
+                                        <th>Company</th>
+                                        <th>Mobile</th>
+                                        <th>City</th>
+                                        <th>Type</th>
+                                        <th>Stage</th>
+                                        <th>Source</th>
+                                        <th>Assigned To</th>
+                                        <th>Created</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leads-table-body"></tbody>
+                            </table>
+                     </div>
+                    <div id="no-data-message" class="text-center text-muted py-5 d-none">
+                        <i class="align-middle" data-feather="inbox" style="width:36px;height:36px;opacity:.4;"></i>
+                        <p class="mt-2 mb-1">No leads found</p>
+                        <p class="small">Try adjusting your search or filters.</p>
+                    </div>
+                    <div id="loading-message" class="text-center text-muted py-5">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                        <p class="small mt-2 mb-0">Loading leads...</p>
+                    </div>
+                </div>
+                <nav id="pagination-container" class="mt-3 d-none">
+                    <ul class="pagination pagination-sm justify-content-center mb-0" id="pagination"></ul>
+                </nav>
+            </div>
+        </div>
     </div>
-
-    <div id="no-data-message" class="text-center text-muted py-5 d-none">
-        <i class="align-middle" data-feather="inbox" style="width:36px;height:36px;opacity:.4;"></i>
-        <p class="mt-2 mb-1">No leads found</p>
-        <p class="small">Try adjusting your search or filters.</p>
-    </div>
-
-    <div id="loading-message" class="text-center text-muted py-5">
-        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-        <p class="small mt-2 mb-0">Loading leads...</p>
-    </div>
-</div>
-
-<nav id="pagination-container" class="mt-3 d-none">
-    <ul class="pagination pagination-sm justify-content-center mb-0" id="pagination"></ul>
-</nav>
-</div>
-</div>
-
-</div>
 </main>
-
 <form id="bulk-delete-form" action="{{ route('CreateLead.bulkDelete') }}" method="POST" class="d-none">
     @csrf
     @method('DELETE')

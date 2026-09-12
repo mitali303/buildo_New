@@ -27,60 +27,54 @@
 </style>
 @section('maincontent')
 <main class="content">
-<div class="container-fluid p-0">
+    <div class="container-fluid p-0">
+        <div class="row mb-3">
+            <div class="col-6">
+                <h1 class="h3 mb-0">Labour Payment</h1>
+            </div>
 
-    <div class="row mb-3">
-        <div class="col-6">
-            <h1 class="h3 mb-0">Labour Payment</h1>
+            <div class="col-6 text-end">
+                <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">
+                    Back
+                </a>
+            </div>
         </div>
-
-        <div class="col-6 text-end">
-            <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">
-                Back
-            </a>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-
-                    <table id="payment-table" class="table table-striped w-100">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Date</th>
-                                <th>Payment By</th>
-                                <th>Amount Paid</th>
-                                <th>Bank Charge</th>
-                                <th>Payable</th>
-                                <th>Narration</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-
-                        <!-- FOOTER -->
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th id="ft-gtotal"></th>     <!-- below Date -->
-                                <th></th>
-                                <th id="ft-paid"></th>       <!-- below Amount Paid -->
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th id="ft-pending"></th>    <!-- below Action -->
-                            </tr>
-                        </tfoot>
-                    </table>
-
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="payment-table" class="table table-striped w-100">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Payment By</th>
+                                    <th>Amount Paid</th>
+                                    <th>Bank Charge</th>
+                                    <th>Payable</th>
+                                    <th>Narration</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <!-- FOOTER -->
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th id="ft-gtotal"></th>     <!-- below Date -->
+                                    <th></th>
+                                    <th id="ft-paid"></th>       <!-- below Amount Paid -->
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th id="ft-pending"></th>    <!-- below Action -->
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-</div>
 </main>
 
 <script>

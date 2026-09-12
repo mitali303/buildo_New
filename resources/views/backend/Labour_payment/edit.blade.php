@@ -4,188 +4,125 @@
 
 @section('maincontent')
 <main class="content">
-<div class="container-fluid p-0">
-
-    <h1 class="h3 mb-3">Edit Labour Payment</h1>
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    @php
-        $firstWork = $works->first();
-    @endphp
-
-    <div class="card">
-        <div class="card-body">
-
-            <form action="{{ route('Labour_work_pay.update',$payment->ID) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                {{-- DATE / AGENCY / SCHEME --}}
-                <div class="row mb-3">
-
-                    <div class="col-md-4">
-                        <label>Date *</label>
-                        <input type="text"
-                               name="Date"
-                               id="datepicker"
-                               class="form-control"
-                               value="{{ \Carbon\Carbon::parse($payment->Date)->format('d-m-Y') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label>Agency</label>
-                        <input type="text"
-                               class="form-control"
-                               value="{{ $firstWork->agency->Name ?? '' }}"
-                               readonly>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label>Scheme</label>
-                        <input type="text"
-                               class="form-control"
-                               value="{{ $firstWork->scheme->Name ?? '' }}"
-                               readonly>
-                    </div>
-
-                </div>
-
-                {{-- ENTRY WISE WORK TABLE --}}
-                <h5 class="mb-3">Work Allocation</h5>
-
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Grand Total</th>
-                            <th>Pending</th>
-                            <th>Pay Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($works as $work)
-                            @php
-                                $detail = $details->firstWhere('labourworkID',$work->ID);
-                                $allocated = $detail->amt_pay ?? 0;
-                            @endphp
-                            <tr>
-                                <td>{{ \Carbon\Carbon::parse($work->Date)->format('d-m-Y') }}</td>
-                                <td>{{ number_format($work->gtotal,2) }}</td>
-                                <td>{{ number_format($work->pending,2) }}</td>
-                                <td>
-                                    <input type="number"
-                                           name="payments[{{ $work->ID }}]"
-                                           value="{{ $allocated }}"
-                                           class="form-control pay-input"
-                                           step="0.01"
-                                           oninput="calculateTotal()">
-                                </td>
-                            </tr>
+    <div class="container-fluid p-0">
+        <h1 class="h3 mb-3">Edit Labour Payment</h1>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
                         @endforeach
-                    </tbody>
-                </table>
-
-                <hr>
-
-                {{-- PAYMENT SECTION --}}
-                <h5 class="mb-3">Payment Details</h5>
-
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Payment Method</th>
-                            <th>Account</th>
-                            <th>Total Amount</th>
-                            <th>Cheque / Txn</th>
-                            <th>Bank Charge</th>
-                            <th>Payable</th>
-                            <th>Narration</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-
-                            <td>
-                                <select name="Pay_type" id="Pay_type" class="form-control">
-                                    <option value="cash" {{ $payment->payment_method=='cash'?'selected':'' }}>Cash</option>
-                                    <option value="cheque" {{ $payment->payment_method=='cheque'?'selected':'' }}>Cheque</option>
-                                    <option value="e-Payment" {{ $payment->payment_method=='e-Payment'?'selected':'' }}>E-Payment</option>
-                                </select>
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       name="account_no"
-                                       value="{{ $payment->account_no }}"
-                                       class="form-control">
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       name="amount_pay"
-                                       id="amount_pay"
-                                       value="{{ $payment->amt_pay }}"
-                                       class="form-control"
-                                       readonly>
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       name="cheque_no"
-                                       value="{{ $payment->cheque_no }}"
-                                       class="form-control">
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       name="bnk_charge"
-                                       id="bnk_charge"
-                                       value="{{ $payment->bankcharge }}"
-                                       class="form-control"
-                                       oninput="calculatePayable()">
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       name="payable"
-                                       id="payable"
-                                       value="{{ $payment->Payable }}"
-                                       class="form-control"
-                                       readonly>
-                            </td>
-
-                            <td>
-                                <textarea name="narration"
-                                          class="form-control">{{ $payment->narration }}</textarea>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="mt-3">
-                    <button class="btn btn-primary">Update</button>
-                    <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">Cancel</a>
+                    </ul>
                 </div>
-
-            </form>
-
+            @endif
+            @php
+                $firstWork = $works->first();
+            @endphp
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ route('Labour_work_pay.update',$payment->ID) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    {{-- DATE / AGENCY / SCHEME --}}
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label>Date *</label>
+                            <input type="text" name="Date" id="datepicker" class="form-control" value="{{ \Carbon\Carbon::parse($payment->Date)->format('d-m-Y') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label>Agency</label>
+                            <input type="text" class="form-control" value="{{ $firstWork->agency->Name ?? '' }}"
+                                readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Scheme</label>
+                            <input type="text" class="form-control" value="{{ $firstWork->scheme->Name ?? '' }}"
+                                readonly>
+                        </div>
+                    </div>
+                        {{-- ENTRY WISE WORK TABLE --}}
+                        <h5 class="mb-3">Work Allocation</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Grand Total</th>
+                                    <th>Pending</th>
+                                    <th>Pay Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($works as $work)
+                                    @php
+                                        $detail = $details->firstWhere('labourworkID',$work->ID);
+                                        $allocated = $detail->amt_pay ?? 0;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($work->Date)->format('d-m-Y') }}</td>
+                                        <td>{{ number_format($work->gtotal,2) }}</td>
+                                        <td>{{ number_format($work->pending,2) }}</td>
+                                        <td>
+                                            <input type="number" name="payments[{{ $work->ID }}]" value="{{ $allocated }}"
+                                                class="form-control pay-input" step="0.01" oninput="calculateTotal()">
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <hr>
+                        {{-- PAYMENT SECTION --}}
+                        <h5 class="mb-3">Payment Details</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Payment Method</th>
+                                    <th>Account</th>
+                                    <th>Total Amount</th>
+                                    <th>Cheque / Txn</th>
+                                    <th>Bank Charge</th>
+                                    <th>Payable</th>
+                                    <th>Narration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <select name="Pay_type" id="Pay_type" class="form-control">
+                                            <option value="cash" {{ $payment->payment_method=='cash'?'selected':'' }}>Cash</option>
+                                            <option value="cheque" {{ $payment->payment_method=='cheque'?'selected':'' }}>Cheque</option>
+                                            <option value="e-Payment" {{ $payment->payment_method=='e-Payment'?'selected':'' }}>E-Payment</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="account_no" value="{{ $payment->account_no }}" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="amount_pay" id="amount_pay" value="{{ $payment->amt_pay }}" class="form-control" readonly>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="cheque_no" value="{{ $payment->cheque_no }}" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input type="number" name="bnk_charge" id="bnk_charge" value="{{ $payment->bankcharge }}" class="form-control" oninput="calculatePayable()">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="payable" id="payable" value="{{ $payment->Payable }}" class="form-control" readonly>
+                                    </td>
+                                    <td>
+                                        <textarea name="narration" class="form-control">{{ $payment->narration }}</textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-3">
+                            <button class="btn btn-primary">Update</button>
+                            <a href="{{ route('Labour_work_pay') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                </form>
+            </div>
         </div>
     </div>
-
-</div>
 </main>
-
 <script>
 function calculateTotal() {
 

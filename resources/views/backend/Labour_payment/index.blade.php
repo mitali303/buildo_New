@@ -3,36 +3,35 @@
     Labour Work
 @endsection
 <style>
-.nowrap { white-space: nowrap; }
+    .nowrap { white-space: nowrap; }
 
-@media (max-width: 768px) {
-    #datatables-buttons_wrapper .dataTables_length,
-    #datatables-buttons_wrapper .dataTables_filter {
-        width: 100%;
-        float: none;
-        text-align: left;
-        margin-bottom: 10px;
-    }
+    @media (max-width: 768px) {
+        #datatables-buttons_wrapper .dataTables_length,
+        #datatables-buttons_wrapper .dataTables_filter {
+            width: 100%;
+            float: none;
+            text-align: left;
+            margin-bottom: 10px;
+        }
 
-    #datatables-buttons_wrapper .dt-buttons .btn {
-        padding: 4px 8px;
-        font-size: 12px;
+        #datatables-buttons_wrapper .dt-buttons .btn {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        #datatables-buttons_wrapper td:nth-child(2),
+        #datatables-buttons_wrapper th:nth-child(2) {
+            white-space: nowrap;
     }
-      #datatables-buttons_wrapper td:nth-child(2),
-    #datatables-buttons_wrapper th:nth-child(2) {
-        white-space: nowrap;
-}
 </style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        @if (hasPermission('create_labour_work_payment'))
-        <!-- <a href="{{route('Labour_work_pay.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Labour Work</a> -->
-        @endif
-        <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Labour Work</h1> 
-        </div>
-
+         @if (hasPermission('create_labour_work_payment'))
+            <!-- <a href="{{route('Labour_work_pay.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Labour Work</a> -->
+         @endif
+            <div class="mb-3">
+                <h1 class="h3 d-inline align-middle">Labour Work</h1> 
+            </div>
         <div class="row">
             <div class="col-12"> 
                 @php
@@ -40,7 +39,6 @@
                     $today = \Carbon\Carbon::now()->format('Y-m-d');
                 @endphp
                 <div class="row mb-3">
-
                     <!-- <div class="col-md-3">
                         <label>From Date</label>
                         <input type="date" id="from_date" value="{{ $startOfMonth }}" class="form-control">
@@ -50,7 +48,6 @@
                         <label>To Date</label>
                         <input type="date" id="to_date" value="{{ $today }}" class="form-control">
                     </div> -->
-
                     @php
                     use App\Models\Backend\Agency;
 
@@ -66,14 +63,11 @@
                             @endforeach
                         </select>
                     </div>
-
                         <div class="col-md-3 d-flex align-items-end g-2">
                             <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
                             <button id="resetBtn" class="btn btn-secondary">Reset</button>
                         </div>
-
                 </div> 
-
                 <div class="card">
                     <div class="card-body">
                         <table id="datatables-buttons" class="table table-striped" style="width:100%">

@@ -71,6 +71,7 @@ use App\Http\Controllers\Backend\QuotationController;
 use App\Http\Controllers\Backend\EstimateController;
 use App\Http\Controllers\Backend\DailyWorkController;
 use App\Http\Controllers\Backend\MaterialRequestController;
+use App\Http\Controllers\Backend\ConstructionBoqController;
 
 /*
 |--------------------------------------------------------------------------
@@ -720,10 +721,10 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/customer-payment/{id}', [CustomerPaymentController::class, 'show'])->name('customer_payment.show');
         Route::get('/customer_payment/print/{id}', [CustomerPaymentController::class, 'receipt'])
-    ->name('customer_payment.print');
+        ->name('customer_payment.print');
 
-    //    Route::get('/customer_payment/{id}', [CustomerPaymentController::class, 'receipt'])
-    // ->name('customer_payment.receipt');
+        //    Route::get('/customer_payment/{id}', [CustomerPaymentController::class, 'receipt'])
+        // ->name('customer_payment.receipt');
 
 
         // Post Dated Cheque
@@ -1003,7 +1004,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/Shift/delete/{id}', [ShiftController::class, 'destroy'])->name('Shift.delete')->middleware('hasPermission:delete_Shift');
 
 
- //AttendanceMaster Controller
+        //AttendanceMaster Controller
         Route::get('/AttendanceMaster', [AttendanceMasterController::class, 'index'])->name('AttendanceMaster')->middleware('hasPermission:AttendanceMaster_read');
          Route::get('/AttendanceMaster/create', [AttendanceMasterController::class, 'create'])->name('AttendanceMaster.create')->middleware('hasPermission:create_AttendanceMaster');
         Route::post('/AttendanceMaster/save', [AttendanceMasterController::class, 'store'])->name('AttendanceMaster.store');
@@ -1012,7 +1013,7 @@ Route::group(['middleware' => 'auth'], function () {
        Route::delete('/AttendanceMaster/delete/{id}', [AttendanceMasterController::class, 'destroy'])->name('AttendanceMaster.destroy')
        ->middleware('hasPermission:delete_AttendanceMaster');
        Route::post('/AttendanceMaster/import', [AttendanceMasterController::class, 'import'])
-    ->name('attendance.import');
+        ->name('attendance.import');
 
 
        //SalaryMasterController Controller
@@ -1179,16 +1180,59 @@ Route::group(['middleware' => 'auth'], function () {
 
                
     
-//daily-work
+        //daily-work
 
-    Route::prefix('daily-work')->group(function(){
-    Route::get('/',  [DailyWorkController::class,'index'])->name('DailyWork');
-    Route::get('/create',[DailyWorkController::class,'create'] )->name('DailyWork.create');
-    Route::post('/store',[DailyWorkController::class,'store'])->name('DailyWork.store');
-    Route::get('/edit/{id}',[DailyWorkController::class,'edit'] )->name('DailyWork.edit');
-    Route::post('/update',[DailyWorkController::class,'update'])->name('DailyWork.update');
-    Route::delete('/delete/{id}',[DailyWorkController::class,'destroy'])->name('DailyWork.delete');
-});
+        Route::prefix('daily-work')->group(function(){
+        Route::get('/',  [DailyWorkController::class,'index'])->name('DailyWork');
+        Route::get('/create',[DailyWorkController::class,'create'] )->name('DailyWork.create');
+        Route::post('/store',[DailyWorkController::class,'store'])->name('DailyWork.store');
+        Route::get('/edit/{id}',[DailyWorkController::class,'edit'] )->name('DailyWork.edit');
+        Route::post('/update',[DailyWorkController::class,'update'])->name('DailyWork.update');
+        Route::delete('/delete/{id}',[DailyWorkController::class,'destroy'])->name('DailyWork.delete');
+         });
 
-            });
+
+          /*
+            |--------------------------------------------------------------------------
+            | Construction BOQ
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/construction-boq',
+                [ConstructionBoqController::class, 'index']
+            )->name('construction-boq.index');
+
+            Route::get(
+                '/construction-boq/create',
+                [ConstructionBoqController::class, 'create']
+            )->name('construction-boq.create');
+
+            Route::post(
+                '/construction-boq/store',
+                [ConstructionBoqController::class, 'store']
+            )->name('construction-boq.store');
+
+            Route::get(
+                '/construction-boq/{id}',
+                [ConstructionBoqController::class, 'show']
+            )->name('construction-boq.show');
+
+            Route::get(
+                '/construction-boq/{id}/edit',
+                [ConstructionBoqController::class, 'edit']
+            )->name('construction-boq.edit');
+
+            Route::put(
+                '/construction-boq/{id}',
+                [ConstructionBoqController::class, 'update']
+            )->name('construction-boq.update');
+
+            Route::delete(
+                '/construction-boq/{id}',
+                [ConstructionBoqController::class, 'destroy']
+            )->name('construction-boq.destroy');
+
+
+             });
 });

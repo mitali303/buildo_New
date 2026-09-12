@@ -13,22 +13,19 @@
 <main class="content">
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3">{{ 'Edit Payment' }}</h1>
-
-        @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Something went wrong!</strong>
-        <ul style="margin-top:5px;">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <strong>Something went wrong!</strong>
+                        <ul style="margin-top:5px;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
         <div class="card">
             <div class="card-body">
-                     <form action="{{ !empty($payment)
+                <form action="{{ !empty($payment)
                     ? route('Partner_pay.update', ['type' => $type, 'id' => $payment->ID])
                     : route('Partner_pay.store', ['type' => $type]) }}"
                     method="POST">
@@ -36,77 +33,43 @@
                     @if(!empty($payment->ID))
                         @method('PUT')
                     @endif
-                   
                     <input type="hidden" name="Pid" value="{{ $payment->ID ?? '' }}">
-
                     <div class="row">
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Date <span class="text-danger">*</span></label>
-
                             <div class="input-group flatpickr-container">
-                                <input type="text"
-                                    name="Date"
-                                    id="datepicker"
-                                    class="form-control @error('Date') is-invalid @enderror"
-                                    placeholder="Select date"
-                                    value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}">
+                                <input type="text" name="Date" id="datepicker" class="form-control @error('Date') is-invalid @enderror"
+                                    placeholder="Select date" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}">
                             </div>
-
                             @error('Date') 
                                 <small class="text-danger">{{ $message }}</small> 
                             @enderror
                         </div>
-
-
                         <div class="mb-3 col-md-4">
-                            <label class="form-label">
-                                Type <span class="text-danger">*</span>
-                            </label>
-
+                            <label class="form-label">  Type <span class="text-danger">*</span> </label>
                             <div class="d-flex align-items-center mt-2">
-
                                 <div class="me-4">
-                                    <input
-                                        type="radio"
-                                        id="payment_type_paid"
-                                        name="paymenttype"
-                                        value="Paid"
+                                    <input type="radio" id="payment_type_paid" name="paymenttype" value="Paid"
                                         onchange="handleAdjustmentMode()"
                                         {{ old('paymenttype', $payment->paytype ?? '') === 'Paid' ? 'checked' : '' }}
                                     >
-                                    <label for="payment_type_paid" class="ms-1">
-                                        Paid
-                                    </label>
+                                    <label for="payment_type_paid" class="ms-1">  Paid </label>
                                 </div>
-
                                 <div>
-                                    <input
-                                        type="radio"
-                                        id="payment_type_recieve"
-                                        name="paymenttype"
-                                        value="Received"
+                                    <input type="radio" id="payment_type_recieve" name="paymenttype" value="Received"
                                         onchange="handleAdjustmentMode()"
                                         {{ old('paymenttype', $payment->paytype ?? '') === 'Received' ? 'checked' : '' }}
                                     >
-                                    <label for="payment_type_recieve" class="ms-1">
-                                        Receive
-                                    </label>
+                                    <label for="payment_type_recieve" class="ms-1"> Receive </label>
                                 </div>
-
                             </div>
-
                             @error('paymenttype')
                                 <small class="text-danger d-block">{{ $message }}</small>
                             @enderror
                         </div>
-
-
                         <div class="col-md-4" id="payment_type">
                             <label class="form-label">Payment Type <span class="text-danger">*</span></label>
-
-                            <select name="payment_type"
-                                    id="pay_type_select"
-                                    class="form-control choices-single-pay-type">
+                            <select name="payment_type" id="pay_type_select" class="form-control choices-single-pay-type">
                                 <option value="">Select</option>
                                 <option value="0"
                                     {{ old('payment_type', $payment->type ?? '') == '0' ? 'selected' : '' }}>
@@ -117,20 +80,15 @@
                                     Interest
                                 </option>
                             </select>
-
                             @error('payment_type')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
                         <div class="col-md-4">
                             <label class="form-label">
                                 {{ $type === 'investor' ? 'Investor' : 'Partner' }} <span class="text-danger">*</span>
                             </label>
-
-                            <select name="partner"
-                                    id="partner_select"
-                                    class="form-control choices-single-partner"
+                            <select name="partner" id="partner_select" class="form-control choices-single-partner"
                                     data-placeholder="Select">
                                 <option value="">Select</option>
                                 @foreach($partners as $partner)
@@ -140,134 +98,114 @@
                                     </option>
                                 @endforeach
                             </select>
-
                             @error('partner')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
                     </div>
                     <br>
-
                     <table id="pmttble" class="table table-bordered table-hover" style="width:95%;">
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Payment Method</th>
-                            <th style="width: 15%;">Account No.</th>
-                            <th style="width: 15%;" id="balance_th">Balance</th>
-                            <th style="width: 12%;">Amount</th>
-                            <th style="width: 15%;">Cheque No / Transaction ID</th>
-                            <th style="width: 12%; display:none;" id="banktitle">Bank Charges</th>  
-                            <th style="width: 12%; display:none;" id="bankdetails">Bank Details</th>  
-                            <th style="width: 10%;">Payable Amount</th>
-                            <th style="width: 20%;">Narration</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-
-                            {{-- Payment Method --}}
-                            <td>
-                                <select id="Pay_type" name="Pay_type" class="form-control" onChange="check_type()">
-                                    <option value="">SELECT</option>
-                                    <option value="cash"
-                                    {{ old('Pay_type', $payment->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
-                                        Cash
-                                    </option>
-
-                                    <option value="cheque"
-                                    {{ old('Pay_type', $payment->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
-                                        Cheque
-                                    </option>
-
-                                    <option value="e-Payment"
-                                    {{ old('Pay_type', $payment->payment_method ?? '') == 'e-Payment' ? 'selected' : '' }}>
-                                        E-Payment
-                                    </option>
-                                </select>
-
-                                @error('Pay_type')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-
-                            {{-- Account No --}}
-                            <td>
-                                <div id="Ac">
-                                    <select id="account_no" name="account_no" class="form-control" onchange="getBalance()">
-                                        <option value="">Select</option>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Payment Method</th>
+                                <th style="width: 15%;">Account No.</th>
+                                <th style="width: 15%;" id="balance_th">Balance</th>
+                                <th style="width: 12%;">Amount</th>
+                                <th style="width: 15%;">Cheque No / Transaction ID</th>
+                                <th style="width: 12%; display:none;" id="banktitle">Bank Charges</th>  
+                                <th style="width: 12%; display:none;" id="bankdetails">Bank Details</th>  
+                                <th style="width: 10%;">Payable Amount</th>
+                                <th style="width: 20%;">Narration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {{-- Payment Method --}}
+                                <td>
+                                    <select id="Pay_type" name="Pay_type" class="form-control" onChange="check_type()">
+                                        <option value="">SELECT</option>
+                                        <option value="cash"
+                                        {{ old('Pay_type', $payment->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
+                                            Cash
+                                        </option>
+                                        <option value="cheque"
+                                        {{ old('Pay_type', $payment->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
+                                            Cheque
+                                        </option>
+                                        <option value="e-Payment"
+                                        {{ old('Pay_type', $payment->payment_method ?? '') == 'e-Payment' ? 'selected' : '' }}>
+                                            E-Payment
+                                        </option>
                                     </select>
-                                </div>
-                                @error('account_no')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Balance --}}
-                            <td id="balance_td">
-                                <input  type="text" readonly class="form-control" id="balanceamt" name="balanceamt">
-                                @error('balanceamt')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-   
-                            {{-- Amount Paid --}}
-                            <td>
-                                <input type="text" class="form-control" name="amount_pay" id="amount_pay" value="{{ old('amount_pay', $payment->amt_pay ?? '') }}">
-                                <input type="hidden" name="amount_pay_old" id="amount_pay_old" >
-                                @error('amount_pay')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Cheque / Transaction No --}}
-                            <td>
-                                <input type="text" class="form-control" name="cheque_no" id="cheque_no" value="{{ old('cheque_no', $payment->cheque_no ?? '') }}">
-                                @error('cheque_no')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Bank Charges --}}
-                            <td id="bankvalue" style="display:none;">
-                                <input type="text" class="form-control" name="bnk_charge" id="bnk_charge" oninput="calculatePayable()" value="{{ old('bnk_charge', $payment->bankcharge ?? '') }}">
-                                @error('bnk_charge')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Bank Details --}}
-                            <td id="bankvaluedet" style="display:none;" value="{{ old('bankvaluedet', $payment->paydetail ?? '') }}">
-                                <textarea class="form-control" name="paydetail" id="paydetail" style="height:34px;"></textarea>
-                            </td>
-
-                            {{-- Payable Amount --}}
-                            <td>
-                                <input type="text" readonly class="form-control" name="payable" id="payable">
-                                @error('payable')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Narration --}}
-                            <td>
-                                <textarea class="form-control" name="narration" id="narration" style="height:34px;"></textarea>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-
+                                    @error('Pay_type')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Account No --}}
+                                <td>
+                                    <div id="Ac">
+                                        <select id="account_no" name="account_no" class="form-control" onchange="getBalance()">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </div>
+                                    @error('account_no')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Balance --}}
+                                <td id="balance_td">
+                                    <input  type="text" readonly class="form-control" id="balanceamt" name="balanceamt">
+                                    @error('balanceamt')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Amount Paid --}}
+                                <td>
+                                    <input type="text" class="form-control" name="amount_pay" id="amount_pay" value="{{ old('amount_pay', $payment->amt_pay ?? '') }}">
+                                    <input type="hidden" name="amount_pay_old" id="amount_pay_old" >
+                                    @error('amount_pay')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Cheque / Transaction No --}}
+                                <td>
+                                    <input type="text" class="form-control" name="cheque_no" id="cheque_no" value="{{ old('cheque_no', $payment->cheque_no ?? '') }}">
+                                    @error('cheque_no')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Bank Charges --}}
+                                <td id="bankvalue" style="display:none;">
+                                    <input type="text" class="form-control" name="bnk_charge" id="bnk_charge" oninput="calculatePayable()" value="{{ old('bnk_charge', $payment->bankcharge ?? '') }}">
+                                    @error('bnk_charge')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Bank Details --}}
+                                <td id="bankvaluedet" style="display:none;" value="{{ old('bankvaluedet', $payment->paydetail ?? '') }}">
+                                    <textarea class="form-control" name="paydetail" id="paydetail" style="height:34px;"></textarea>
+                                </td>
+                                {{-- Payable Amount --}}
+                                <td>
+                                    <input type="text" readonly class="form-control" name="payable" id="payable">
+                                    @error('payable')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Narration --}}
+                                <td>
+                                    <textarea class="form-control" name="narration" id="narration" style="height:34px;"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <br>
-
                     {{-- Submit --}}
                     <div class="row">
                         <div class="col-md-12">
-                <button type="submit" id="submitBtn" class="btn btn-primary">
-                        {{ !empty($payment->ID) ? 'Update' : 'Create' }}
-                </button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary">
+                                    {{ !empty($payment->ID) ? 'Update' : 'Create' }}
+                            </button>
                             <a href="{{ route('Partner_pay',['type' => $type]) }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>

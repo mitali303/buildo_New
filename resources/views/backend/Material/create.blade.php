@@ -5,68 +5,59 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-
-    
         <h1 class="h3 mb-4">{{ !empty($material) ? 'Edit Material' : 'Create Material' }}</h1>
-
-        <div class="card">
-            <div class="card-body">
-
-                <form action="{{ !empty($material) ? route('Material.update') : route('Material.store') }}"
-                      method="POST">
-                    @csrf
-                   @if(!empty($materialRows) && is_object($materialRows->first()))
-                        @method('PUT')
-                        <input type="hidden" name="id" value="{{ $materialRows->first()->ID }}">
-                    @endif
-
-
-                    {{-- ===== Material Name ===== --}}
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Material Name <span class="text-danger">*</span></label>
-                            <input type="text" name="material_name"
-                            value="{{ old('material_name', $material_name ?? '') }}"
-                            class="form-control @error('material_name') is-invalid @enderror">
-                            @error('material_name')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ !empty($material) ? route('Material.update') : route('Material.store') }}"
+                        method="POST">
+                            @csrf
+                        @if(!empty($materialRows) && is_object($materialRows->first()))
+                                @method('PUT')
+                                <input type="hidden" name="id" value="{{ $materialRows->first()->ID }}">
+                            @endif
+                            {{-- ===== Material Name ===== --}}
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Material Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="material_name"
+                                    value="{{ old('material_name', $material_name ?? '') }}"
+                                    class="form-control @error('material_name') is-invalid @enderror">
+                                    @error('material_name')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
 
                     @if ($errors->any())
-    @php
-        $rowErrors = [];
+                        @php
+                            $rowErrors = [];
 
-        foreach ($errors->getMessages() as $key => $messages) {
-            // Match type.0, unit.0, type.1, unit.1
-            if (preg_match('/^(type|unit)\.(\d+)/', $key, $matches)) {
-                $rowIndex = (int) $matches[2] + 1; // Row number (1-based)
+                            foreach ($errors->getMessages() as $key => $messages) {
+                                // Match type.0, unit.0, type.1, unit.1
+                                if (preg_match('/^(type|unit)\.(\d+)/', $key, $matches)) {
+                                    $rowIndex = (int) $matches[2] + 1; // Row number (1-based)
 
-                foreach ($messages as $msg) {
-                    $rowErrors[$rowIndex][] = $msg;
-                }
-            }
-        }
-    @endphp
-
-    @if (!empty($rowErrors))
-        <div class="alert alert-danger py-2">
-            @foreach ($rowErrors as $row => $messages)
-                <div class="mb-1">
-                    <strong>Row {{ $row }}:</strong>
-                    <ul class="mb-1 ps-3">
-                        @foreach ($messages as $msg)
-                            <li>{{ $msg }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endforeach
-        </div>
-    @endif
-@endif
-
-
+                                    foreach ($messages as $msg) {
+                                        $rowErrors[$rowIndex][] = $msg;
+                                    }
+                                }
+                            }
+                        @endphp
+                        @if (!empty($rowErrors))
+                            <div class="alert alert-danger py-2">
+                                @foreach ($rowErrors as $row => $messages)
+                                    <div class="mb-1">
+                                        <strong>Row {{ $row }}:</strong>
+                                        <ul class="mb-1 ps-3">
+                                            @foreach ($messages as $msg)
+                                                <li>{{ $msg }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    @endif
                     {{-- ===== Type / Unit Table ===== --}}
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered align-middle" id="typeUnitTable">
@@ -137,7 +128,6 @@
                             </button>
                         </div>
                     </div>
-
                     {{-- ===== Form Submit ===== --}}
                     <div class="pt-4">
                         <button type="submit" class="btn btn-primary me-2">
@@ -146,10 +136,8 @@
                         <a href="{{ route('Material') }}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
-
             </div>
         </div>
-
     </div>
 </main>
 @endsection

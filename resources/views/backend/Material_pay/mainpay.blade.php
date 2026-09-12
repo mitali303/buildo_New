@@ -31,15 +31,12 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3 mb-0">Invoice Payment List</h1>
-
             <a href="{{ route('Material_pay') }}" class="btn btn-sm btn-secondary">
                 ← Back
             </a>
         </div>
-
         <div class="card">
             <div class="card-body">
                 <table id="mainpay-table" class="table table-striped w-100">
@@ -56,7 +53,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 </main>
 @endsection

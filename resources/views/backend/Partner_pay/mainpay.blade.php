@@ -26,11 +26,11 @@
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">{{ $type === 'investor' ? 'Investor' : 'Partner' }} Payment Table</h1> 
         </div>
-<div class="d-flex justify-content-end mb-2">
-    <a href="{{ route('Partner_pay',['type' => $type]) }}" class="btn btn-secondary">
-        Back
-    </a>
-    </div>
+        <div class="d-flex justify-content-end mb-2">
+            <a href="{{ route('Partner_pay',['type' => $type]) }}" class="btn btn-secondary">
+                Back
+            </a>
+        </div>
         <div class="row">
             <div class="col-12"> 
                 <div class="card">

@@ -34,22 +34,18 @@
             <h1 class="h3 d-inline align-middle">Owner Payment</h1> 
         </div>
         <div class="row mb-3">
-
             <div class="col-md-3 col-6">
                 <label>From Date</label>
                 <input type="date" id="from_date" class="form-control">
             </div>
-
             <div class="col-md-3 col-6">
                 <label>To Date</label>
                 <input type="date" id="to_date" class="form-control">
             </div>
-
             <div class="col-md-3 col-12 mt-2 mt-md-0 text-center">
                 <button id="filterBtn" class="btn btn-primary me-2">Filter</button>
                 <button id="resetBtn" class="btn btn-secondary">Reset</button>
             </div>
-
         </div>
         <div class="row">
             <div class="col-12"> 

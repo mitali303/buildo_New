@@ -4,94 +4,38 @@
     Lead Master
 @endsection
 
-
 @section('maincontent')
-
 <main class="content">
-
     <div class="container-fluid p-0">
-
-
         <div class="mb-3 d-flex justify-content-between align-items-center">
-
-            <h1 class="h3 d-inline align-middle">
-                Lead Master
-            </h1>
-
-
+            <h1 class="h3 d-inline align-middle"> Lead Master</h1>
             <a href="{{ route('leads.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add Lead
             </a>
-
         </div>
-
-
-
         <div class="row">
-
             <div class="col-12">
-
                 <div class="card">
-
                     <div class="card-body">
-
-
-                        <table id="datatables-buttons" 
-                               class="table table-striped"
-                               style="width:100%">
-
-
+                        <table id="datatables-buttons"  class="table table-striped" style="width:100%">
                             <thead>
-
                                 <tr>
-
-                                    <th>
-                                        SR NO.
-                                    </th>
-
-                                    <th>
-                                        Date
-                                    </th>
-
-                                    <th>
-                                        Name
-                                    </th>
-
-                                    <th>
-                                        Action
-                                    </th>
-
+                                    <th> SR NO.</th>
+                                    <th> Date</th>
+                                    <th> Name</th>
+                                    <th> Action</th>
                                 </tr>
-
                             </thead>
-
-
                         </table>
-
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
-
     </div>
-
 </main>
-
-
 @endsection
-
-
-
 @section('scripts')
-
-
 <script>
-
 document.addEventListener("DOMContentLoaded", function() {
 
 

@@ -13,383 +13,316 @@
 <main class="content">
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3">{{ 'Create Material Payment' }}</h1>
-
         @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Something went wrong!</strong>
-        <ul style="margin-top:5px;">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-
+            <div class="alert alert-danger">
+                <strong>Something went wrong!</strong>
+                <ul style="margin-top:5px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="card">
             <div class="card-body">
                     <form action="{{ !empty($invoice) ? route('Material_pay.update', $invoice->ID) : route('Material_pay.store') }}"
-                      method="POST">
-                    @csrf
-                    @if(!empty($invoice->ID))
-                        @method('PUT')
-                    @endif
-                   
-                <input type="hidden" name="Pid" value="{{ $invoice->ID ?? '' }}">
-
-                    <div class="row">
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Date <span class="text-danger">*</span></label>
-
-                            <div class="input-group flatpickr-container">
-                                <input type="text"
-                                    name="Date"
-                                    id="datepicker"
-                                    class="form-control @error('Date') is-invalid @enderror"
-                                    placeholder="Select date"
-                                    value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}">
+                        method="POST">
+                            @csrf
+                            @if(!empty($invoice->ID))
+                                @method('PUT')
+                            @endif
+                            <input type="hidden" name="Pid" value="{{ $invoice->ID ?? '' }}">
+                        <div class="row">
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label">Date <span class="text-danger">*</span></label>
+                                <div class="input-group flatpickr-container">
+                                    <input type="text"
+                                        name="Date"
+                                        id="datepicker"
+                                        class="form-control @error('Date') is-invalid @enderror"
+                                        placeholder="Select date"
+                                        value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}">
+                                </div>
+                                @error('Date') 
+                                    <small class="text-danger">{{ $message }}</small> 
+                                @enderror
                             </div>
-
-                            @error('Date') 
-                                <small class="text-danger">{{ $message }}</small> 
-                            @enderror
-                        </div>
-
-
-                        <div class="col-md-4 mb-3" id="po_div">
-                            <label class="form-label">Supplier <span class="text-danger">*</span></label>
-
-                            <select name="PurchaseFrom"
-                                    id="PurchaseFromSelect"
-                                    class="form-control choices-single-purchasefrom">
-                                <option value="">Select</option>
-                                @foreach($vendors as $vendor)
-                                    <option value="{{ $vendor->ID }}"
-                                        {{ old('PurchaseFrom', $invoice->PurchaseFrom ?? '') == $vendor->ID ? 'selected' : '' }}>
-                                        {{ $vendor->Name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('PurchaseFrom')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>                                            
-
-                        <div class="col-md-4 mb-3" id="scheme">
-                            <label class="form-label">Scheme <span class="text-danger">*</span></label>
-
-                            <select name="Destination" id="Destination"
-                                    class="form-control choices-single-destination"
-                                    data-placeholder="Select Destination"
-                                    >
-                                <option value="">Select</option>
-                                    @foreach($schemes as $scheme)
-                                        <option value="{{ $scheme->ID }}"
-                                            {{ old('scheme', $transfer->scheme ?? $schemes[0]->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
-                                            {{ $scheme->Name }}
+                            <div class="col-md-4 mb-3" id="po_div">
+                                <label class="form-label">Supplier <span class="text-danger">*</span></label>
+                                <select name="PurchaseFrom" id="PurchaseFromSelect" class="form-control choices-single-purchasefrom">
+                                    <option value="">Select</option>
+                                    @foreach($vendors as $vendor)
+                                        <option value="{{ $vendor->ID }}"
+                                            {{ old('PurchaseFrom', $invoice->PurchaseFrom ?? '') == $vendor->ID ? 'selected' : '' }}>
+                                            {{ $vendor->Name }}
                                         </option>
                                     @endforeach
-                            </select>
-                            @error('Destination') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
+                                </select>
+                                @error('PurchaseFrom')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>                                            
+                            <div class="col-md-4 mb-3" id="scheme">
+                                <label class="form-label">Scheme <span class="text-danger">*</span></label>
+                                <select name="Destination" id="Destination" class="form-control choices-single-destination"
+                                        data-placeholder="Select Destination" >
+                                    <option value="">Select</option>
+                                        @foreach($schemes as $scheme)
+                                            <option value="{{ $scheme->ID }}"
+                                                {{ old('scheme', $transfer->scheme ?? $schemes[0]->ID ?? '') == $scheme->ID ? 'selected' : '' }}>
+                                                {{ $scheme->Name }}
+                                            </option>
+                                        @endforeach
+                                </select>
+                                @error('Destination') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-4" id="pay_type">
+                                <label class="form-label">Payment Type <span class="text-danger">*</span></label>
 
-                        <div class="col-md-4" id="pay_type">
-                            <label class="form-label">Payment Type <span class="text-danger">*</span></label>
+                                <select name="pay_type"
+                                        id="pay_type_select"
+                                        class="form-control choices-single-pay-type" onchange="handleAdjustmentMode()">
+                                    <option value="">Select</option>
+                                    <option value="payment"
+                                        {{ old('pay_type', $invoice->Type ?? '') == 'payment' ? 'selected' : '' }}>
+                                        Payment
+                                    </option>
+                                    <option value="adjustment"
+                                        {{ old('pay_type', $invoice->Type ?? '') == 'adjustment' ? 'selected' : '' }}>
+                                        Adjustment Payment
+                                    </option>
+                                </select>
 
-                            <select name="pay_type"
-                                    id="pay_type_select"
-                                    class="form-control choices-single-pay-type" onchange="handleAdjustmentMode()">
-                                <option value="">Select</option>
-                                <option value="payment"
-                                    {{ old('pay_type', $invoice->Type ?? '') == 'payment' ? 'selected' : '' }}>
-                                    Payment
-                                </option>
-                                <option value="adjustment"
-                                    {{ old('pay_type', $invoice->Type ?? '') == 'adjustment' ? 'selected' : '' }}>
-                                    Adjustment Payment
-                                </option>
-                            </select>
-
-                            @error('pay_type')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        
-                    </div>
-                        @if ($errors->has('invoice_id'))
-                            <small class="text-danger">{{ $errors->first('invoice_id') }}</small>
-                        @endif
-
-                    <div class="row">
-                       <div class="row mt-4">
-                            <div class="col-md-12" id="invoiceSection" style="overflow-x: auto; width: 100%;">
-                               {{-- 🔴 TABLE VALIDATION ERRORS (ROW-WISE, SAFE) --}}
-                                @php
-                                    $rowErrors = [];
-                                    $rowIndexMap = []; // invoice_id => row number
-                                    $rowCounter = 1;
-
-                                    foreach ($errors->messages() as $key => $messages) {
-
-                                        // match amt.{invoiceId} or extra.{invoiceId}
-                                        if (preg_match('/^(amt|extra)\.(.+)$/', $key, $matches)) {
-
-                                            $invoiceId = $matches[2];
-
-                                            // assign row number if not already assigned
-                                            if (!isset($rowIndexMap[$invoiceId])) {
-                                                $rowIndexMap[$invoiceId] = $rowCounter++;
-                                            }
-
-                                            foreach ($messages as $msg) {
-                                                $rowErrors[$invoiceId][] = $msg;
-                                            }
-                                        }
-
-                                        // general table error (no row id)
-                                        if ($key === 'checked_invoice') {
-                                            $rowErrors['general'] = $messages;
-                                        }
-                                    }
-                                @endphp
-
-                                @if (!empty($rowErrors))
-                                    <div class="alert alert-danger mb-3">
-                                        <strong>Please fix errors in the invoice table below:</strong>
-
-                                        <ul class="mb-0">
-                                            {{-- General error --}}
-                                            @if(isset($rowErrors['general']))
-                                                @foreach($rowErrors['general'] as $msg)
-                                                    <li>{{ $msg }}</li>
-                                                @endforeach
-                                            @endif
-
-                                            {{-- Row-wise errors --}}
-                                            @foreach($rowErrors as $invoiceId => $messages)
-                                                @if($invoiceId !== 'general')
-                                                    <li>
-                                                        <strong>Row {{ $rowIndexMap[$invoiceId] ?? '?' }}:</strong>
-                                                        <ul>
-                                                            @foreach(array_unique($messages) as $msg)
-                                                                <li>{{ $msg }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </li>
-                                                @endif
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-                            <div class="table-responsive">
-                               <table class="table table-bordered table-striped" id="materialTable" style="font-size:13px;">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th></th>
-                                        <th style="min-width: 180px;">Inv Details</th>
-                                        <th style="min-width: 90px;">Total Payable</th>
-                                        <th style="min-width: 90px;">Amount</th>
-                                        <th style="min-width: 90px;">Extra</th>
-                                        <th style="min-width: 120px;">Balance</th>
-                                    </tr>
-                                </thead>
-
-                                    <tbody id="invoiceBody">
-                                    @isset($rows)
-                                    @foreach($rows as $row)
-                                    <tr class="invoice-row">
-                                        <td>
-                                            <input type="checkbox"
-                                                class="select-row"
-                                                name="checked_invoice[]"
-                                                value="{{ $row['invoice_id'] }}"
-                                                onchange="toggleRow(this)"
-                                                {{ $row['checked'] ? 'checked' : '' }}>
-                                        </td>
-
-                                        <td>
-                                            <input type="hidden" name="invoice_id[]" value="{{ $row['invoice_id'] }}">
-                                            <strong>{{ $row['invno'] }}</strong>
-                                        </td>
-
-                                        <td>
-                                            <input type="text" class="form-control payamount"
-                                                value="{{ $row['payamount'] }}" readonly>
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="amt[{{ $row['invoice_id'] }}]"
-                                                class="form-control amt"
-                                                value="{{ $row['amt'] }}"
-                                                {{ !$row['checked'] ? 'disabled' : '' }}
-                                                oninput="calculateBalance(this)">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" name="extra[{{ $row['invoice_id'] }}]"
-                                                class="form-control extra"
-                                                value="{{ $row['extra'] }}"
-                                                {{ !$row['checked'] ? 'disabled' : '' }}
-                                                oninput="updateTotal()">
-                                        </td>
-
-                                        <td>
-                                            <input type="text" class="form-control balance"
-                                                value="{{ $row['balance'] }}" readonly>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                    @endisset
-                                    </tbody>
-
-
-                                </table>
+                                @error('pay_type')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                         </div>
-                    </div> 
+                            @if ($errors->has('invoice_id'))
+                                <small class="text-danger">{{ $errors->first('invoice_id') }}</small>
+                            @endif
+                        <div class="row">
+                            <div class="row mt-4">
+                                <div class="col-md-12" id="invoiceSection" style="overflow-x: auto; width: 100%;">
+                                {{-- 🔴 TABLE VALIDATION ERRORS (ROW-WISE, SAFE) --}}
+                                    @php
+                                        $rowErrors = [];
+                                        $rowIndexMap = []; // invoice_id => row number
+                                        $rowCounter = 1;
+
+                                        foreach ($errors->messages() as $key => $messages) {
+
+                                            // match amt.{invoiceId} or extra.{invoiceId}
+                                            if (preg_match('/^(amt|extra)\.(.+)$/', $key, $matches)) {
+
+                                                $invoiceId = $matches[2];
+
+                                                // assign row number if not already assigned
+                                                if (!isset($rowIndexMap[$invoiceId])) {
+                                                    $rowIndexMap[$invoiceId] = $rowCounter++;
+                                                }
+
+                                                foreach ($messages as $msg) {
+                                                    $rowErrors[$invoiceId][] = $msg;
+                                                }
+                                            }
+
+                                            // general table error (no row id)
+                                            if ($key === 'checked_invoice') {
+                                                $rowErrors['general'] = $messages;
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if (!empty($rowErrors))
+                                        <div class="alert alert-danger mb-3">
+                                            <strong>Please fix errors in the invoice table below:</strong>
+
+                                            <ul class="mb-0">
+                                                {{-- General error --}}
+                                                @if(isset($rowErrors['general']))
+                                                    @foreach($rowErrors['general'] as $msg)
+                                                        <li>{{ $msg }}</li>
+                                                    @endforeach
+                                                @endif
+
+                                                {{-- Row-wise errors --}}
+                                                @foreach($rowErrors as $invoiceId => $messages)
+                                                    @if($invoiceId !== 'general')
+                                                        <li>
+                                                            <strong>Row {{ $rowIndexMap[$invoiceId] ?? '?' }}:</strong>
+                                                            <ul>
+                                                                @foreach(array_unique($messages) as $msg)
+                                                                    <li>{{ $msg }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" id="materialTable" style="font-size:13px;">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th></th>
+                                                <th style="min-width: 180px;">Inv Details</th>
+                                                <th style="min-width: 90px;">Total Payable</th>
+                                                <th style="min-width: 90px;">Amount</th>
+                                                <th style="min-width: 90px;">Extra</th>
+                                                <th style="min-width: 120px;">Balance</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="invoiceBody">
+                                            @isset($rows)
+                                            @foreach($rows as $row)
+                                            <tr class="invoice-row">
+                                                <td>
+                                                    <input type="checkbox" class="select-row"  name="checked_invoice[]"
+                                                        value="{{ $row['invoice_id'] }}" onchange="toggleRow(this)"
+                                                        {{ $row['checked'] ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="invoice_id[]" value="{{ $row['invoice_id'] }}">
+                                                    <strong>{{ $row['invno'] }}</strong>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control payamount"  value="{{ $row['payamount'] }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="amt[{{ $row['invoice_id'] }}]" class="form-control amt"
+                                                        value="{{ $row['amt'] }}" {{ !$row['checked'] ? 'disabled' : '' }}
+                                                        oninput="calculateBalance(this)">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="extra[{{ $row['invoice_id'] }}]"
+                                                        class="form-control extra" value="{{ $row['extra'] }}"
+                                                        {{ !$row['checked'] ? 'disabled' : '' }} oninput="updateTotal()">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control balance" value="{{ $row['balance'] }}" readonly>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                            @endisset
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> 
                     <input type="hidden" name="checkids" id="checkids">
                     <input type="hidden" name="count" id="count">
                     <div class="row">
                         <div class="mb-3 col-md-3">
                                 <label class="mb-2 d-block">Total<span class="text-danger">*</span></label>
-                                <input name="Total" id="Total"
-                                    type="text"
-                                    class="form-control"
-                                    readonly
+                                <input name="Total" id="Total" type="text" class="form-control" readonly
                                     style="background-color:#f5f5f5;">
                             @error('Total') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-
                         <div class="col-md-3">
                             <label class="mb-2 d-block">Debit<span class="text-danger">*</span></label>
-
-                            <input name="debit" id="debit"
-                                type="text"
-                                class="form-control"
-                                value="{{ old('debit', 0) }}"
-                                readonly
-                                style="background-color:#f5f5f5;">
+                            <input name="debit" id="debit" type="text" class="form-control"
+                                value="{{ old('debit', 0) }}" readonly style="background-color:#f5f5f5;">
                         </div>
-
                         <div class="col-md-3">
                             <label class="mb-2 d-block">Amount Use<span class="text-danger">*</span></label>
-
-                            <input name="amtuse" id="amtuse"
-                                type="text"
-                                class="form-control" 
+                            <input name="amtuse" id="amtuse" type="text" class="form-control" 
                                 value="{{ old('amtuse', $invoice->debit_amount ?? 0) }}">
                         </div>
-
                     </div><br>
-
                     <table id="pmttble" class="table table-bordered table-hover" style="width:95%;">
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Payment Method</th>
-                            <th style="width: 15%;">Account No.</th>
-                            <th style="width: 15%;">Balance</th>
-                            <th style="width: 12%;">Amount Paid</th>
-                            <th style="width: 15%;">Cheque No / Transaction ID</th>
-                            <th style="width: 12%; display:none;" id="banktitle">Bank Charges</th>
-                            <th style="width: 12%;">Payable Amount</th>
-                            <th style="width: 20%;">Narration</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-
-                            {{-- Payment Method --}}
-                            <td>
-                                <select id="Pay_type" name="Pay_type" class="form-control" onChange="check_type()">
-                                    <option value="">SELECT</option>
-                                   <option value="cash"
-                                    {{ old('Pay_type', $invoice->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
-                                        Cash
-                                    </option>
-
-                                    <option value="cheque"
-                                    {{ old('Pay_type', $invoice->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
-                                        Cheque
-                                    </option>
-
-                                    <option value="e-Payment"
-                                    {{ old('Pay_type', $invoice->payment_method ?? '') == 'e-Payment' ? 'selected' : '' }}>
-                                        E-Payment
-                                    </option>
-                                </select>
-
-                                @error('Pay_type')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-
-                            {{-- Account No --}}
-                            <td>
-                                <div id="Ac">
-                                    <select id="account_no" name="account_no" class="form-control">
-                                        <option value="">Select</option>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Payment Method</th>
+                                <th style="width: 15%;">Account No.</th>
+                                <th style="width: 15%;">Balance</th>
+                                <th style="width: 12%;">Amount Paid</th>
+                                <th style="width: 15%;">Cheque No / Transaction ID</th>
+                                <th style="width: 12%; display:none;" id="banktitle">Bank Charges</th>
+                                <th style="width: 12%;">Payable Amount</th>
+                                <th style="width: 20%;">Narration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {{-- Payment Method --}}
+                                <td>
+                                    <select id="Pay_type" name="Pay_type" class="form-control" onChange="check_type()">
+                                        <option value="">SELECT</option>
+                                        <option value="cash"
+                                            {{ old('Pay_type', $invoice->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
+                                            Cash
+                                        </option>
+                                        <option value="cheque"
+                                        {{ old('Pay_type', $invoice->payment_method ?? '') == 'cheque' ? 'selected' : '' }}>
+                                            Cheque
+                                        </option>
+                                        <option value="e-Payment"
+                                        {{ old('Pay_type', $invoice->payment_method ?? '') == 'e-Payment' ? 'selected' : '' }}>
+                                            E-Payment
+                                        </option>
                                     </select>
-                                </div>
-                                @error('account_no')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Balance --}}
-                            <td>
-                                <input type="text" readonly class="form-control" id="balanceamt" name="balanceamt">
-                                @error('balanceamt')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Amount Paid --}}
-                            <td>
-                                <input type="text" class="form-control" name="amount_pay" id="amount_pay" readonly>
-                                <input type="hidden" name="amount_pay_old" id="amount_pay_old" >
-                                @error('amount_pay')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Cheque / Transaction No --}}
-                            <td>
-                                <input type="text" class="form-control" name="cheque_no" id="cheque_no">
-                                @error('cheque_no')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Bank Charges --}}
-                            <td id="bankvalue" style="display:none;">
-                                <input type="text" class="form-control" name="bnk_charge" id="bnk_charge" value="{{ old('bnk_charge', $invoice->bankcharge ?? '') }}" oninput="calculateTotalPayable()">
-                                @error('bnk_charge')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Payable Amount --}}
-                            <td>
-                                <input type="text" readonly class="form-control" name="totalpayable" id="totalpayable">
-                                @error('totalpayable')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-
-                            {{-- Narration --}}
-                            <td>
-                                <textarea class="form-control" name="narration" id="narration" style="height:34px;"></textarea>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-
+                                    @error('Pay_type')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Account No --}}
+                                <td>
+                                    <div id="Ac">
+                                        <select id="account_no" name="account_no" class="form-control">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </div>
+                                    @error('account_no')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Balance --}}
+                                <td>
+                                    <input type="text" readonly class="form-control" id="balanceamt" name="balanceamt">
+                                    @error('balanceamt')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Amount Paid --}}
+                                <td>
+                                    <input type="text" class="form-control" name="amount_pay" id="amount_pay" readonly>
+                                    <input type="hidden" name="amount_pay_old" id="amount_pay_old" >
+                                    @error('amount_pay')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Cheque / Transaction No --}}
+                                <td>
+                                    <input type="text" class="form-control" name="cheque_no" id="cheque_no">
+                                    @error('cheque_no')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Bank Charges --}}
+                                <td id="bankvalue" style="display:none;">
+                                    <input type="text" class="form-control" name="bnk_charge" id="bnk_charge" value="{{ old('bnk_charge', $invoice->bankcharge ?? '') }}" oninput="calculateTotalPayable()">
+                                    @error('bnk_charge')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Payable Amount --}}
+                                <td>
+                                    <input type="text" readonly class="form-control" name="totalpayable" id="totalpayable">
+                                    @error('totalpayable')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </td>
+                                {{-- Narration --}}
+                                <td>
+                                    <textarea class="form-control" name="narration" id="narration" style="height:34px;"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <br>
-
                     {{-- Submit --}}
                     <div class="row">
                         <div class="col-md-12">

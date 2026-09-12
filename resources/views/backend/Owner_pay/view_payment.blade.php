@@ -16,7 +16,6 @@
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Site Work Payment</h1> 
         </div>
-
         <div class="row">
             <div class="col-12"> 
                 <div class="card">
@@ -40,7 +39,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </main>
 <script>

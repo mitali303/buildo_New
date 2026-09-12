@@ -16,18 +16,17 @@
         padding: 4px 8px;
         font-size: 12px;
     }
-}
+    }
 </style>
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-        @if (hasPermission('create_flat_detail'))
-        <a href="{{route('Flat.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Flat Details</a>
-        @endif
+            @if (hasPermission('create_flat_detail'))
+            <a href="{{route('Flat.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Flat Details</a>
+            @endif
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Flat / Project Details</h1> 
         </div>
-
         <div class="row">
             <div class="col-12"> 
                 <div class="card">
@@ -51,10 +50,8 @@
                 </div>
             </div>
         </div>
-
     </div>
 </main>
-
 <!-- Modal for Viewing Flat Details -->
 <div class="modal fade" id="flatDetailsModal" tabindex="-1" aria-labelledby="flatDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">

@@ -22,7 +22,6 @@
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Partners/Loan/Investors</h1> 
         </div>
-
         <div class="row">
             <div class="col-12"> 
                 <div class="card">

@@ -48,13 +48,12 @@
 </style>
 <main class="content">
     <div class="container-fluid p-0">
-        @if (hasPermission('create_labour_work'))
-        <a href="{{route('Labour_Work.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Labour Work</a>
-        @endif
-        <div class="mb-3">
-            <h1 class="h3 d-inline align-middle">Labour Work</h1> 
-        </div>
-
+            @if (hasPermission('create_labour_work'))
+            <a href="{{route('Labour_Work.create')}}" class="btn btn-primary float-end mt-n1"><i class="fas fa-plus"></i> New Labour Work</a>
+            @endif
+            <div class="mb-3">
+                <h1 class="h3 d-inline align-middle">Labour Work</h1> 
+            </div>
         <div class="row">
             <div class="col-12"> 
                 <div class="card">
@@ -75,7 +74,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </main>
 @endsection

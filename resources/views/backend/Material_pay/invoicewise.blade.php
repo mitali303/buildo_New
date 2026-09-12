@@ -30,9 +30,7 @@
 @section('maincontent')
 <main class="content">
     <div class="container-fluid p-0">
-
         <h1 class="h3 mb-3">Invoice-wise Payments</h1>
-
         <div class="card">
             <div class="card-body">
                 <table id="invoicewise-table" class="table table-striped w-100">
@@ -52,7 +50,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 </main>
 @endsection
